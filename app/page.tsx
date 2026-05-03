@@ -65,27 +65,39 @@ const workflow = [
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <BrandLogo href="/" size="md" />
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-600 md:flex">
-            <a href="#training" className="hover:text-slate-950">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm shadow-slate-950/[0.03] backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:flex-nowrap">
+          <BrandLogo href="/" size="sm" className="gap-2.5 [&>span:last-child]:text-[15px] [&>span:last-child]:font-extrabold" />
+          <nav className="order-3 flex w-full items-center justify-center gap-1 rounded-xl bg-slate-50 p-1 text-sm font-semibold text-slate-600 sm:gap-2 md:order-2 md:w-auto md:bg-transparent md:p-0 lg:gap-3">
+            <a
+              href="#training"
+              className="focus-ring rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-950 md:hover:bg-slate-50"
+            >
               Training
             </a>
-            <a href="#services" className="hover:text-slate-950">
+            <a
+              href="#services"
+              className="focus-ring rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-950 md:hover:bg-slate-50"
+            >
               Skills
             </a>
-            <a href="#workflow" className="hover:text-slate-950">
+            <a
+              href="#workflow"
+              className="focus-ring rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-950 md:hover:bg-slate-50"
+            >
               Workflow
             </a>
           </nav>
-          <div className="flex items-center gap-2">
-            <Link href="/login" className="focus-ring rounded-md px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100">
+          <div className="order-2 flex items-center gap-2 md:order-3 sm:gap-3">
+            <Link
+              href="/login"
+              className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl px-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 sm:px-4"
+            >
               Login
             </Link>
             <Link
               href="/signup"
-              className="focus-ring hidden min-h-10 items-center justify-center rounded-md bg-[#071527] px-4 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white sm:inline-flex"
+              className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-900 bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-950/15 transition hover:border-slate-800 hover:bg-slate-800 hover:text-white sm:px-5"
             >
               Join Training
             </Link>
@@ -94,56 +106,58 @@ export default function LandingPage() {
       </header>
 
       <section className="relative overflow-hidden bg-[#071527] text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px)] bg-[size:44px_44px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.28),transparent_32%),radial-gradient(circle_at_82%_18%,rgba(6,182,212,0.18),transparent_30%),linear-gradient(135deg,#071527_0%,#0b2742_52%,#08111f_100%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:min-h-[720px] lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-24">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-white/10 px-3 py-1 text-sm font-semibold text-cyan-100">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(56,189,248,0.22),transparent_30%),radial-gradient(circle_at_82%_20%,rgba(6,182,212,0.14),transparent_28%),linear-gradient(135deg,#071527_0%,#0a2238_54%,#08111f_100%)]" />
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-18 sm:px-6 sm:py-22 lg:min-h-[680px] lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:py-24">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-cyan-50 shadow-sm shadow-slate-950/20">
               <Sparkles className="h-4 w-4 text-cyan-300" />
               Turn skills into income
             </div>
-            <h1 className="mt-6 max-w-4xl text-5xl font-bold leading-tight tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="mt-7 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-normal sm:text-6xl lg:text-7xl">
               Remote work training that feels clear from day one.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-100 sm:text-xl">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-100/95 sm:text-xl">
               Making remote work less confusing. Learn, build, earn with guided practice in AI projects, data annotation,
               transcription, CV tips, online hustles, and freelancing.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/signup"
-                className="focus-ring inline-flex min-h-12 min-w-40 items-center justify-center rounded-md bg-cyan-400 px-6 text-sm font-bold text-[#071527] shadow-lg shadow-cyan-950/30 hover:bg-cyan-300 hover:text-[#071527]"
+                className="focus-ring inline-flex min-h-12 min-w-40 items-center justify-center rounded-xl bg-cyan-300 px-6 text-sm font-bold text-[#071527] shadow-lg shadow-cyan-950/30 transition hover:bg-cyan-200 hover:text-[#071527]"
               >
                 Join Training
               </Link>
               <Link
                 href="/login"
-                className="focus-ring inline-flex min-h-12 min-w-32 items-center justify-center rounded-md border border-slate-200 bg-white px-6 text-sm font-bold text-[#071527] shadow-sm hover:bg-sky-50 hover:text-[#071527]"
+                className="focus-ring inline-flex min-h-12 min-w-32 items-center justify-center rounded-xl border border-white/25 bg-white/10 px-6 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:border-white/40 hover:bg-white/15 hover:text-white"
               >
                 Login
               </Link>
             </div>
-            <p className="mt-6 max-w-2xl text-sm leading-6 text-slate-300">
+            <p className="mt-7 max-w-2xl text-sm leading-6 text-slate-300">
               Built for internal training, practice, reviews, scores, availability, and payment tracking. No scraping,
               automation, proxying, account sharing, or third-party platform access.
             </p>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-white/10 p-4 shadow-2xl shadow-slate-950/40 backdrop-blur">
-            <div className="rounded-md bg-white p-5 text-slate-950">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.08] p-3 shadow-2xl shadow-slate-950/35 backdrop-blur">
+            <div className="rounded-xl bg-white p-5 text-slate-950 shadow-xl">
               <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-sm font-semibold text-cyan-700">Training portal</p>
-                  <h2 className="mt-1 text-2xl font-bold">Online Geek Hub</h2>
+                  <h2 className="mt-1 text-2xl font-extrabold">Online Geek Hub</h2>
                 </div>
-                <BadgeCheck className="h-8 w-8 text-cyan-600" />
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-cyan-50">
+                  <BadgeCheck className="h-6 w-6 text-cyan-600" />
+                </div>
               </div>
               <div className="mt-5 grid gap-3">
                 {workflow.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={item.title} className="grid grid-cols-[44px_1fr] gap-3 rounded-md border border-slate-200 p-4">
-                      <div className="grid h-11 w-11 place-items-center rounded-md bg-cyan-50 text-cyan-700">
+                    <div key={item.title} className="grid grid-cols-[44px_1fr] gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                      <div className="grid h-11 w-11 place-items-center rounded-xl bg-white text-cyan-700 shadow-sm">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
