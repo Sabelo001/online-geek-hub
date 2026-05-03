@@ -15,11 +15,11 @@ export function ButtonLink({
     <Link
       href={href}
       className={clsx(
-        "focus-ring inline-flex min-h-11 min-w-32 items-center justify-center rounded-md px-5 text-sm font-bold shadow-sm transition",
+        "focus-ring",
         variant === "primary" && "border border-cyan-300 bg-cyan-400 text-slate-950 hover:bg-cyan-300",
-        variant === "dark" && "dark-cta whitespace-nowrap border border-slate-950 bg-slate-950 text-white hover:bg-slate-800 hover:text-white focus:text-white active:text-white",
-        variant === "secondary" && "border border-sky-200 bg-white text-slate-950 hover:bg-sky-50",
-        variant === "ghost" && "text-sky-100 hover:bg-white/10 hover:text-white"
+        variant === "dark" && "cta-primary dark-cta",
+        variant === "secondary" && "cta-secondary",
+        variant === "ghost" && "inline-flex min-h-11 min-w-32 items-center justify-center rounded-[4px] px-5 text-sm font-bold text-sky-100 shadow-sm transition hover:bg-white/10 hover:text-white"
       )}
     >
       {children}

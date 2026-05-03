@@ -28,22 +28,22 @@ import { PublicNavbar } from "@/components/public-navbar";
 const reasons = [
   {
     title: "Trained Scholars",
-    description: "A focused group of contributors prepared through modules, practice tasks, and guided feedback.",
+    description: "A starter team of 12 contributors prepared through modules, practice tasks, and guided feedback.",
     icon: Users
   },
   {
     title: "Review-Based Quality",
-    description: "Work is checked through rubrics, scoring, comments, and revision where needed.",
+    description: "Work is reviewed against clear instructions, scoring rubrics, comments, and revision steps.",
     icon: ShieldCheck
   },
   {
     title: "Remote-First Workforce",
-    description: "The team is organized for online delivery, clear communication, and structured coordination.",
+    description: "Scholars are trained for online coordination, documented workflows, and responsible remote delivery.",
     icon: Laptop
   },
   {
     title: "Practical AI Project Skills",
-    description: "Scholars practice AI data work, transcription, model evaluation, and digital operations.",
+    description: "Training covers data annotation, transcription, AI output review, and digital operations support.",
     icon: Bot
   }
 ];
@@ -51,32 +51,32 @@ const reasons = [
 const solutions = [
   {
     title: "Data Annotation",
-    description: "Text, image, audio, video, and document labeling support for AI projects.",
+    description: "Structured text, image, audio, video, and document labeling support for pilot AI data projects.",
     icon: Tags
   },
   {
     title: "AI Model Evaluation",
-    description: "Human review of AI outputs for accuracy, relevance, safety, clarity, and usefulness.",
+    description: "Human review of AI outputs for accuracy, relevance, clarity, usefulness, and guideline alignment.",
     icon: BadgeCheck
   },
   {
     title: "Audio Transcription",
-    description: "Clean transcription support with formatting, speaker clarity, and quality checks.",
+    description: "Transcription support with clean formatting, speaker clarity, and review before delivery.",
     icon: Headphones
   },
   {
     title: "Prompt and Response Review",
-    description: "Reviewing AI prompts and responses using clear rubrics and feedback standards.",
+    description: "Prompt and response review using defined rubrics, notes, and feedback standards.",
     icon: MessageSquareText
   },
   {
     title: "CV and Remote Work Support",
-    description: "Helping trainees prepare better CVs, profiles, and applications for online work.",
+    description: "Helping trainees improve CVs, profiles, and applications for credible online work opportunities.",
     icon: FileText
   },
   {
     title: "Training and Talent Preparation",
-    description: "Structured modules, practice tasks, scoring, and reviewer feedback.",
+    description: "Structured modules, practice tasks, scoring, and reviewer feedback for project readiness.",
     icon: BookOpen
   }
 ];
@@ -91,7 +91,7 @@ const domains = [
 ];
 
 const scholarStats = [
-  { value: "12", label: "Scholars to Start" },
+  { value: "12", label: "Scholars in Starter Team" },
   { value: "7", label: "Training Tracks" },
   { value: "100", label: "Point Review Rubric" },
   { value: "Remote", label: "First Delivery" }
@@ -131,28 +131,28 @@ export default function LandingPage() {
               Emerging AI workforce and digital skills hub
             </div>
             <h1 className="mt-7 max-w-[780px] text-5xl font-extrabold leading-[1.04] tracking-normal sm:text-6xl lg:text-[68px] xl:text-[76px]">
-              Trusted AI Data and Remote Work Talent, Trained for Quality
+              Reliable AI Data and Remote Work Support, Trained for Quality
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100/95 sm:text-xl">
-              Online Geek Hub prepares and manages a growing team of skilled Scholars for AI training, data annotation,
-              transcription, model evaluation, CV support, and digital operations.
+              Online Geek Hub trains and coordinates a small team of Scholars for AI data work, transcription,
+              model evaluation, prompt review, CV support, and remote operations.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a
                 href="/contact"
-                className="dark-cta focus-ring inline-flex min-h-12 min-w-40 whitespace-nowrap items-center justify-center rounded-xl border border-cyan-200/30 bg-slate-950 px-6 text-sm font-bold text-white shadow-lg shadow-slate-950/35 transition hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+                className="cta-primary dark-cta focus-ring"
               >
                 Request a Team
               </a>
               <Link
                 href="/signup"
-                className="dark-cta focus-ring inline-flex min-h-12 min-w-40 whitespace-nowrap items-center justify-center rounded-xl border border-white/25 bg-slate-950 px-6 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:border-slate-800 hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+                className="cta-primary dark-cta focus-ring"
               >
                 Join Training
               </Link>
             </div>
             <p className="mt-7 max-w-2xl text-sm font-semibold leading-6 text-slate-300">
-              Built for structured training, quality review, and remote-first delivery.
+              Built for pilot projects, structured training, review-based quality, and remote-first delivery.
             </p>
           </div>
 
@@ -161,7 +161,7 @@ export default function LandingPage() {
               <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-sm font-semibold text-cyan-700">Scholar workforce</p>
-                  <h2 className="mt-1 text-2xl font-extrabold">12 trained contributors</h2>
+                  <h2 className="mt-1 text-2xl font-extrabold">12 trained Scholars</h2>
                 </div>
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-cyan-50">
                   <Users className="h-6 w-6 text-cyan-600" />
@@ -178,10 +178,10 @@ export default function LandingPage() {
                       <div>
                         <h3 className="font-bold">{item.title}</h3>
                         <p className="mt-1 text-sm leading-6 text-slate-600">
-                          {item.title === "Train" && "Structured modules and skills tracks prepare Scholars for real project patterns."}
+                          {item.title === "Train" && "Structured modules prepare Scholars for common AI data and remote-work tasks."}
                           {item.title === "Practice" && "Internal tasks help contributors build accuracy, consistency, and confidence."}
                           {item.title === "Review" && "Reviewers check work against rubrics before feedback is shared."}
-                          {item.title === "Score" && "Scores and notes help the team improve and identify deployment readiness."}
+                          {item.title === "Score" && "Scores and notes help identify readiness for supervised pilot work."}
                         </p>
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export default function LandingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Why Online Geek Hub</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Small Team. Strong Skills. Quality-Focused Delivery.</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              We are building a practical workforce model: train carefully, review consistently, and grow responsibly.
+              We are building a practical workforce model: train carefully, review consistently, and grow at a responsible pace.
             </p>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -281,20 +281,20 @@ export default function LandingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Scholars</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Online Geek Hub Scholars</h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">
-              Our Scholars are trained contributors with practical skills in AI data work, transcription, online operations,
-              and digital service delivery. Each Scholar goes through training modules, practice tasks, review, scoring, and
-              continuous improvement.
+              Our Scholars are trained contributors with practical skills in AI data work, transcription, prompt review,
+              online operations, and digital support. Each Scholar goes through modules, practice tasks, review, scoring,
+              and continuous improvement before being considered for project work.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="/scholars"
-                className="focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-cyan-300 px-6 text-sm font-bold text-[#071527] hover:bg-cyan-200 hover:text-[#071527] focus:text-[#071527] active:text-[#071527]"
+                className="cta-secondary focus-ring"
               >
                 Meet Our Scholars
               </a>
               <Link
                 href="/signup"
-                className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl border border-cyan-200/25 bg-slate-950 px-6 text-sm font-bold text-white shadow-sm shadow-slate-950/25 hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+                className="cta-primary dark-cta focus-ring"
               >
                 Join the Scholar Program
               </Link>
@@ -317,7 +317,7 @@ export default function LandingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Quality process</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Our Quality Loop</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              Every task goes through clear instructions, rubric-based review, feedback, and revision where needed.
+              Work is handled through clear instructions, rubric-based review, feedback, and revision where needed.
             </p>
           </div>
           <div className="mt-10 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
@@ -343,21 +343,22 @@ export default function LandingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Vendor readiness</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Ready for Vendor and Project Partnerships</h2>
             <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
-              Online Geek Hub is preparing to support bulk annotation, AI evaluation, transcription, and digital operations
-              projects through a trained and managed team. We can start small, maintain quality control, and scale responsibly.
+              Online Geek Hub is preparing to support annotation, AI evaluation, transcription, and digital operations
+              through a trained and managed starter team. We are best suited for pilot projects, small batches, and
+              gradually scalable workflows after successful delivery.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <Link
               href="/contact"
-              className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+              className="cta-primary dark-cta focus-ring"
             >
               <Mail className="h-4 w-4 text-white" />
               Contact Us
             </Link>
             <Link
               href="/vendor-profile"
-              className="focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-sm font-bold text-slate-950 shadow-sm transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-slate-950 focus:text-slate-950 active:text-slate-950"
+              className="cta-secondary focus-ring"
             >
               View Vendor Profile
             </Link>
@@ -371,14 +372,22 @@ export default function LandingPage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Private portal</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A Private Portal for Training and Team Management</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              The portal keeps training, coordination, review, and operational records in one simple place.
+              The portal keeps training, coordination, reviews, availability, and operational records in one simple place.
             </p>
             <Link
               href="/login"
-              className="dark-cta focus-ring mt-8 inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+              className="cta-primary dark-cta focus-ring mt-8"
             >
               Login to Portal
             </Link>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link href="/signup" className="cta-secondary focus-ring">
+                Join Training
+              </Link>
+              <Link href="/cv" className="cta-secondary focus-ring">
+                CV Generator
+              </Link>
+            </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {portalFeatures.map((feature) => (
@@ -410,6 +419,7 @@ export default function LandingPage() {
             <h3 className="font-bold text-white">Company</h3>
             <div className="mt-4 grid gap-2 text-sm">
               <a href="#why" className="hover:text-white">About</a>
+              <a href="#domains" className="hover:text-white">Domains</a>
               <Link href="/scholars" className="hover:text-white">Scholars</Link>
               <a href="#training" className="hover:text-white">Training</a>
               <Link href="/vendor-profile" className="hover:text-white">Vendor Profile</Link>
@@ -419,6 +429,7 @@ export default function LandingPage() {
           <div>
             <h3 className="font-bold text-white">Portal</h3>
             <div className="mt-4 grid gap-2 text-sm">
+              <Link href="/login" className="hover:text-white">Training Portal</Link>
               <Link href="/login" className="hover:text-white">Login</Link>
               <Link href="/signup" className="text-white hover:text-white focus:text-white active:text-white">Join Training</Link>
               <Link href="/cv" className="hover:text-white">CV Generator</Link>

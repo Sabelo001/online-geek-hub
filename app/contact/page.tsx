@@ -8,22 +8,22 @@ import { Card, Select, TextArea, TextInput } from "@/components/ui";
 const contactOptions = [
   {
     title: "Vendor and Project Partnerships",
-    description: "Discuss annotation, evaluation, transcription, or remote operations pilot work.",
+    description: "Discuss pilot work for annotation, evaluation, transcription, prompt review, or remote operations.",
     icon: BriefcaseBusiness
   },
   {
     title: "Scholar Program",
-    description: "Ask about joining or supporting the Online Geek Hub Scholar program.",
+    description: "Ask about joining, supporting, or learning more about the Online Geek Hub Scholar program.",
     icon: GraduationCap
   },
   {
     title: "CV and Remote Work Support",
-    description: "Get help with CV preparation, training readiness, and remote-work basics.",
+    description: "Ask about CV preparation, training readiness, and practical remote-work support.",
     icon: FileText
   },
   {
     title: "General Inquiry",
-    description: "Send a general question or partnership note to the team.",
+    description: "Send a general question, collaboration note, or follow-up request to the team.",
     icon: HelpCircle
   }
 ];
@@ -46,7 +46,7 @@ export default async function ContactPage({
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Contact</p>
             <h1 className="mt-4 text-5xl font-extrabold leading-tight tracking-normal sm:text-6xl">Contact Online Geek Hub</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
-              Reach out for training, Scholar program inquiries, pilot projects, vendor discussions, or remote workforce support.
+              Reach out for training, Scholar program inquiries, pilot projects, vendor discussions, or AI workforce support.
             </p>
           </div>
         </div>
@@ -72,12 +72,12 @@ export default async function ContactPage({
             <div>
               <h2 className="text-2xl font-extrabold tracking-normal text-slate-950">View Vendor Profile</h2>
               <p className="mt-2 max-w-3xl leading-7 text-slate-700">
-                See Online Geek Hub&apos;s capacity, services, quality process, and project readiness.
+                See Online Geek Hub&apos;s current capacity, services, quality review process, and project readiness.
               </p>
             </div>
             <Link
               href="/vendor-profile"
-              className="focus-ring mt-4 inline-flex min-h-11 whitespace-nowrap items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-bold text-slate-950 shadow-sm transition hover:border-cyan-300 hover:bg-white hover:text-slate-950 focus:text-slate-950 active:text-slate-950 sm:mt-0"
+              className="cta-secondary focus-ring mt-4 sm:mt-0"
             >
               View Vendor Profile
             </Link>
@@ -91,11 +91,11 @@ export default async function ContactPage({
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Send an inquiry</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Tell us how we can help.</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              Your inquiry will be saved securely for the Online Geek Hub team to review. Email sending can be added later.
+              Your inquiry will be saved for the Online Geek Hub team to review and follow up through an appropriate channel.
             </p>
             <div className="mt-6 flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-700">
               <Mail className="h-5 w-5 text-cyan-700" />
-              No private contact emails are exposed on this page.
+              Contact details are collected through this form so private email addresses do not need to be published.
             </div>
           </div>
           <Card>
@@ -129,7 +129,7 @@ export default async function ContactPage({
                 Message
                 <TextArea name="message" required placeholder="Share a few details about your inquiry." />
               </label>
-              <button className="dark-cta focus-ring inline-flex min-h-11 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 font-semibold text-white hover:bg-slate-800 hover:text-white focus:text-white active:text-white sm:w-fit">
+              <button className="cta-primary dark-cta focus-ring sm:w-fit">
                 <Send className="h-4 w-4 text-white" />
                 Submit inquiry
               </button>

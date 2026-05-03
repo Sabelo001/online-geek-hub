@@ -16,15 +16,15 @@ const overview = [
   ["Name", "Online Geek Hub"],
   ["Tagline", "Turn skills into income"],
   ["Type", "Emerging AI workforce and digital skills hub"],
-  ["Current capacity", "12 trained Scholars to start"],
-  ["Delivery model", "Remote-first, review-based, quality-focused"]
+  ["Current capacity", "12 trained Scholars in the starter team"],
+  ["Delivery model", "Remote-first, review-based, and quality-focused"]
 ];
 
 const skills = [
   "AI training",
   "Text and image annotation",
   "Audio transcription",
-  "Prompt review",
+  "Prompt and response review",
   "Model response evaluation",
   "CV and digital work support",
   "Research and document review"
@@ -63,8 +63,8 @@ export default function VendorProfilePage() {
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Online Geek Hub</p>
             <h1 className="mt-4 text-5xl font-extrabold leading-tight tracking-normal sm:text-6xl">Vendor Profile</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
-              Online Geek Hub is an emerging AI workforce and digital skills hub preparing trained Scholars for data annotation,
-              AI evaluation, transcription, and remote digital operations.
+              Online Geek Hub is an emerging AI workforce and digital skills hub building a trained starter team of Scholars for
+              data annotation, AI evaluation, transcription, prompt review, and remote digital operations.
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function VendorProfilePage() {
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Company overview</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A small team preparing for responsible project delivery.</h2>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A small team preparing for responsible pilot delivery.</h2>
           </div>
           <div className="grid gap-3">
             {overview.map(([label, value]) => (
@@ -90,7 +90,7 @@ export default function VendorProfilePage() {
       <section className="bg-slate-50 px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">What we do</p>
-          <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">AI data and remote workforce support.</h2>
+          <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">AI data and remote workforce support for starter projects.</h2>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {work.map((item) => {
               const Icon = item.icon;
@@ -113,7 +113,8 @@ export default function VendorProfilePage() {
             <Users className="h-8 w-8 text-cyan-700" />
             <h2 className="mt-4 text-3xl font-extrabold text-slate-950">Current team capacity</h2>
             <p className="mt-4 leading-8 text-slate-600">
-              We are starting with a small team of 12 Scholars and can support pilot projects, small batches, and gradually scalable workflows after successful delivery.
+              We are starting with 12 trained Scholars and are best suited for pilot projects, small batches, and workflows
+              that can grow gradually after successful delivery and quality review.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -134,7 +135,7 @@ export default function VendorProfilePage() {
       <section className="bg-[#071527] px-4 py-16 text-white sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Quality assurance</p>
-          <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Quality assurance process</h2>
+          <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Quality review process</h2>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {quality.map((step, index) => (
               <div key={step} className="rounded-xl border border-white/10 bg-white/10 p-5">
@@ -169,7 +170,9 @@ export default function VendorProfilePage() {
           <ShieldCheck className="h-8 w-8 text-cyan-700" />
           <h2 className="mt-4 text-3xl font-extrabold text-slate-950">Data privacy and compliance statement</h2>
           <p className="mt-4 max-w-4xl leading-8 text-slate-600">
-            Online Geek Hub is committed to responsible data handling, confidentiality, role-based access, and avoiding unauthorized sharing of third-party platform accounts or client data. We only accept work under permitted terms and approved project arrangements.
+            Online Geek Hub is committed to responsible data handling, confidentiality, role-based access, and avoiding
+            unauthorized sharing of third-party platform accounts or client data. We only accept work under permitted terms,
+            clear instructions, and approved project arrangements.
           </p>
         </div>
       </section>
@@ -179,10 +182,11 @@ export default function VendorProfilePage() {
           <div>
             <h2 className="text-3xl font-extrabold">Interested in a Pilot Project?</h2>
             <p className="mt-3 max-w-3xl leading-7 text-slate-800">
-              Online Geek Hub is open to vendor, subcontracting, and pilot project discussions for AI data work, transcription, evaluation, and remote operations.
+              Online Geek Hub is open to vendor, subcontracting, and pilot project discussions for AI data work,
+              transcription, evaluation, prompt review, and remote operations.
             </p>
           </div>
-          <Link href="/contact" className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white">
+          <Link href="/contact" className="cta-primary dark-cta focus-ring">
             <Mail className="h-4 w-4 text-white" />
             Contact Online Geek Hub
           </Link>

@@ -16,28 +16,28 @@ const skills = [
 const scholars = [
   {
     name: "Scholar 01",
-    focus: "Data Annotation and AI Evaluation",
+    focus: "Data annotation and AI evaluation",
     status: "Training complete",
     availability: "Available for supervised tasks",
-    quality: "Accuracy, rubric consistency, and careful edge-case review"
+    quality: "Accuracy, rubric consistency, and careful review of edge cases"
   },
   {
     name: "Scholar 02",
-    focus: "Audio Transcription",
+    focus: "Audio transcription",
     status: "Practice reviewed",
     availability: "Available for transcription support",
     quality: "Speaker clarity, clean formatting, and careful listening"
   },
   {
     name: "Scholar 03",
-    focus: "CV and Remote Work Support",
+    focus: "CV and remote work support",
     status: "Training active",
     availability: "Available for support tasks",
     quality: "Clear writing, profile structure, and practical remote-work readiness"
   },
   {
     name: "Scholar 04",
-    focus: "Prompt and Response Review",
+    focus: "Prompt and response review",
     status: "Review-ready",
     availability: "Available for evaluation practice",
     quality: "Relevance, safety, clarity, usefulness, and feedback quality"
@@ -61,7 +61,8 @@ export default function ScholarsPage() {
             </div>
             <h1 className="mt-7 text-5xl font-extrabold leading-tight tracking-normal sm:text-6xl">Online Geek Hub Scholars</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
-              A growing network of trained contributors prepared for AI data, transcription, evaluation, and remote digital work.
+              A small but growing network of trained contributors prepared for AI data work, transcription, evaluation,
+              prompt review, and remote digital support.
             </p>
           </div>
         </div>
@@ -71,14 +72,15 @@ export default function ScholarsPage() {
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">What is a Scholar?</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Trained contributors with practical project readiness.</h2>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Trained contributors building practical project readiness.</h2>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <p className="text-lg leading-8 text-slate-700">
-              Online Geek Hub Scholars complete training modules, practice tasks, review cycles, scoring, and feedback before joining real project opportunities.
+              Online Geek Hub Scholars complete training modules, practice tasks, review cycles, scoring, and feedback
+              before being considered for supervised project opportunities.
             </p>
             <p className="mt-4 text-sm font-semibold text-slate-500">
-              This public page uses safe sample cards only. It does not expose private user emails, phone numbers, or profile records.
+              Scholar details are shared only with permission and only where relevant to approved project discussions.
             </p>
           </div>
         </div>
@@ -87,7 +89,7 @@ export default function ScholarsPage() {
       <section className="bg-slate-50 px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Skills represented</p>
-          <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Practical skills for AI and remote operations.</h2>
+          <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Practical skills for AI data and remote operations.</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {skills.map((skill) => {
               const Icon = skill.icon;
@@ -152,12 +154,20 @@ export default function ScholarsPage() {
           <div>
             <h2 className="text-3xl font-extrabold">Join the Scholar Program</h2>
             <p className="mt-2 max-w-2xl leading-7 text-slate-800">
-              Build practical remote-work skills through structured training, feedback, and practice.
+              Build practical remote-work skills through structured training, review, feedback, and practice.
             </p>
           </div>
-          <Link href="/signup" className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white">
-            Join Training <ArrowRight className="ml-2 h-4 w-4 text-white" />
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/signup" className="cta-primary dark-cta focus-ring">
+              Join the Scholar Program <ArrowRight className="ml-2 h-4 w-4 text-white" />
+            </Link>
+            <Link href="/login" className="cta-secondary focus-ring">
+              Scholar Login
+            </Link>
+            <Link href="/login" className="cta-secondary focus-ring">
+              Training Portal
+            </Link>
+          </div>
         </div>
       </section>
 
