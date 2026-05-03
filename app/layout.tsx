@@ -1,5 +1,19 @@
 import type { Metadata } from "next";
+import { Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap"
+});
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas-neue",
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "Online Geek Hub",
@@ -8,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>
       <body>{children}</body>
     </html>
   );

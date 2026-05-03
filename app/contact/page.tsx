@@ -1,7 +1,7 @@
 import { BriefcaseBusiness, FileText, GraduationCap, HelpCircle, Mail, Send } from "lucide-react";
-import Link from "next/link";
 import { createContactInquiry } from "@/lib/actions";
 import { BrandLogo } from "@/components/logo";
+import { PublicNavbar } from "@/components/public-navbar";
 import { Card, Select, TextArea, TextInput } from "@/components/ui";
 
 const contactOptions = [
@@ -35,23 +35,8 @@ export default async function ContactPage({
   const params = await searchParams;
 
   return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm shadow-slate-950/[0.03] backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <BrandLogo href="/" size="sm" className="gap-2.5 [&>span:last-child]:text-[15px] [&>span:last-child]:font-extrabold" />
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/vendor-profile" className="focus-ring hidden min-h-10 items-center justify-center rounded-xl px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 sm:inline-flex">
-              Vendor Profile
-            </Link>
-            <Link href="/login" className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 sm:px-4">
-              Login
-            </Link>
-            <Link href="/signup" className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:px-5">
-              Join Training
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="public-page min-h-screen bg-white text-slate-950">
+      <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] px-4 py-20 text-white sm:px-6 sm:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_58%,#08111f_100%)]" />
@@ -129,8 +114,8 @@ export default async function ContactPage({
                 Message
                 <TextArea name="message" required placeholder="Share a few details about your inquiry." />
               </label>
-              <button className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 font-semibold text-white hover:bg-slate-800 sm:w-fit">
-                <Send className="h-4 w-4" />
+              <button className="dark-cta focus-ring inline-flex min-h-11 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 font-semibold text-white hover:bg-slate-800 hover:text-white focus:text-white active:text-white sm:w-fit">
+                <Send className="h-4 w-4 text-white" />
                 Submit inquiry
               </button>
             </form>

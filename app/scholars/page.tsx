@@ -1,6 +1,7 @@
 import { ArrowRight, BadgeCheck, Bot, BriefcaseBusiness, CheckCircle2, FileText, Headphones, Laptop, MessageSquareText, ShieldCheck, Sparkles, Tags, Users } from "lucide-react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/logo";
+import { PublicNavbar } from "@/components/public-navbar";
 
 const skills = [
   { title: "AI Training", icon: Bot },
@@ -47,20 +48,8 @@ const process = ["Learn", "Practice", "Review", "Improve", "Deploy"];
 
 export default function ScholarsPage() {
   return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm shadow-slate-950/[0.03] backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <BrandLogo href="/" size="sm" className="gap-2.5 [&>span:last-child]:text-[15px] [&>span:last-child]:font-extrabold" />
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/login" className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl px-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 sm:px-4">
-              Login
-            </Link>
-            <Link href="/signup" className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:px-5">
-              Join Training
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="public-page min-h-screen bg-white text-slate-950">
+      <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] px-4 py-20 text-white sm:px-6 sm:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_56%,#08111f_100%)]" />
@@ -166,8 +155,8 @@ export default function ScholarsPage() {
               Build practical remote-work skills through structured training, feedback, and practice.
             </p>
           </div>
-          <Link href="/signup" className="focus-ring inline-flex min-h-12 items-center justify-center rounded-xl bg-slate-900 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800">
-            Join Training <ArrowRight className="ml-2 h-4 w-4" />
+          <Link href="/signup" className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white">
+            Join Training <ArrowRight className="ml-2 h-4 w-4 text-white" />
           </Link>
         </div>
       </section>

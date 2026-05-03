@@ -23,15 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/logo";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "#solutions", label: "Solutions" },
-  { href: "#domains", label: "Domains" },
-  { href: "/scholars", label: "Scholars" },
-  { href: "#training", label: "Training" },
-  { href: "/contact", label: "Contact" }
-];
+import { PublicNavbar } from "@/components/public-navbar";
 
 const reasons = [
   {
@@ -126,37 +118,8 @@ const portalFeatures = [
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm shadow-slate-950/[0.03] backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:flex-nowrap">
-          <BrandLogo href="/" size="sm" className="gap-2.5 [&>span:last-child]:text-[15px] [&>span:last-child]:font-extrabold" />
-          <nav className="order-3 flex w-full items-center gap-1 overflow-x-auto rounded-xl bg-slate-50 p-1 text-sm font-semibold text-slate-600 md:order-2 md:w-auto md:justify-center md:bg-transparent md:p-0 lg:gap-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="focus-ring whitespace-nowrap rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-950 md:hover:bg-slate-50"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-          <div className="order-2 flex items-center gap-2 md:order-3 sm:gap-3">
-            <Link
-              href="/login"
-              className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl px-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 sm:px-4"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="focus-ring inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-900 bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-950/15 transition hover:border-slate-800 hover:bg-slate-800 hover:text-white sm:px-5"
-            >
-              Join Training
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="public-page min-h-screen bg-white text-slate-950">
+      <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
@@ -176,14 +139,14 @@ export default function LandingPage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a
-                href="#contact"
-                className="focus-ring inline-flex min-h-12 min-w-40 items-center justify-center rounded-xl bg-cyan-300 px-6 text-sm font-bold text-[#071527] shadow-lg shadow-cyan-950/30 transition hover:bg-cyan-200 hover:text-[#071527]"
+                href="/contact"
+                className="dark-cta focus-ring inline-flex min-h-12 min-w-40 whitespace-nowrap items-center justify-center rounded-xl border border-cyan-200/30 bg-slate-950 px-6 text-sm font-bold text-white shadow-lg shadow-slate-950/35 transition hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
               >
                 Request a Team
               </a>
               <Link
                 href="/signup"
-                className="focus-ring inline-flex min-h-12 min-w-40 items-center justify-center rounded-xl border border-white/25 bg-white/10 px-6 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:border-white/40 hover:bg-white/15 hover:text-white"
+                className="dark-cta focus-ring inline-flex min-h-12 min-w-40 whitespace-nowrap items-center justify-center rounded-xl border border-white/25 bg-slate-950 px-6 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:border-slate-800 hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
               >
                 Join Training
               </Link>
@@ -324,14 +287,14 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="#contact"
-                className="focus-ring inline-flex min-h-12 items-center justify-center rounded-xl bg-cyan-300 px-6 text-sm font-bold text-[#071527] hover:bg-cyan-200"
+                href="/scholars"
+                className="focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-cyan-300 px-6 text-sm font-bold text-[#071527] hover:bg-cyan-200 hover:text-[#071527] focus:text-[#071527] active:text-[#071527]"
               >
                 Meet Our Scholars
               </a>
               <Link
                 href="/signup"
-                className="focus-ring inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-6 text-sm font-bold text-white hover:bg-white/10"
+                className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl border border-cyan-200/25 bg-slate-950 px-6 text-sm font-bold text-white shadow-sm shadow-slate-950/25 hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
               >
                 Join the Scholar Program
               </Link>
@@ -386,9 +349,9 @@ export default function LandingPage() {
           </div>
             <Link
             href="/contact"
-            className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800"
+            className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
           >
-            <Mail className="h-4 w-4" />
+            <Mail className="h-4 w-4 text-white" />
             Contact Us
           </Link>
         </div>
@@ -404,7 +367,7 @@ export default function LandingPage() {
             </p>
             <Link
               href="/login"
-              className="focus-ring mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-slate-900 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800"
+              className="dark-cta focus-ring mt-8 inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
             >
               Login to Portal
             </Link>
@@ -449,7 +412,7 @@ export default function LandingPage() {
             <h3 className="font-bold text-white">Portal</h3>
             <div className="mt-4 grid gap-2 text-sm">
               <Link href="/login" className="hover:text-white">Login</Link>
-              <Link href="/signup" className="hover:text-white">Join Training</Link>
+              <Link href="/signup" className="text-white hover:text-white focus:text-white active:text-white">Join Training</Link>
               <Link href="/cv" className="hover:text-white">CV Generator</Link>
             </div>
           </div>
