@@ -1,4 +1,5 @@
 import { BriefcaseBusiness, FileText, GraduationCap, HelpCircle, Mail, Send } from "lucide-react";
+import Link from "next/link";
 import { createContactInquiry } from "@/lib/actions";
 import { BrandLogo } from "@/components/logo";
 import { PublicNavbar } from "@/components/public-navbar";
@@ -66,6 +67,20 @@ export default async function ContactPage({
                 </Card>
               );
             })}
+          </div>
+          <div className="mt-6 rounded-2xl border border-cyan-200 bg-cyan-50 p-5 shadow-sm sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <div>
+              <h2 className="text-2xl font-extrabold tracking-normal text-slate-950">View Vendor Profile</h2>
+              <p className="mt-2 max-w-3xl leading-7 text-slate-700">
+                See Online Geek Hub&apos;s capacity, services, quality process, and project readiness.
+              </p>
+            </div>
+            <Link
+              href="/vendor-profile"
+              className="focus-ring mt-4 inline-flex min-h-11 whitespace-nowrap items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-bold text-slate-950 shadow-sm transition hover:border-cyan-300 hover:bg-white hover:text-slate-950 focus:text-slate-950 active:text-slate-950 sm:mt-0"
+            >
+              View Vendor Profile
+            </Link>
           </div>
         </div>
       </section>

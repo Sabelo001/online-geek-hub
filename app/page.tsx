@@ -347,13 +347,21 @@ export default function LandingPage() {
               projects through a trained and managed team. We can start small, maintain quality control, and scale responsibly.
             </p>
           </div>
+          <div className="flex flex-wrap gap-3 lg:justify-end">
             <Link
-            href="/contact"
-            className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
-          >
-            <Mail className="h-4 w-4 text-white" />
-            Contact Us
-          </Link>
+              href="/contact"
+              className="dark-cta focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white shadow-sm hover:bg-slate-800 hover:text-white focus:text-white active:text-white"
+            >
+              <Mail className="h-4 w-4 text-white" />
+              Contact Us
+            </Link>
+            <Link
+              href="/vendor-profile"
+              className="focus-ring inline-flex min-h-12 whitespace-nowrap items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-sm font-bold text-slate-950 shadow-sm transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-slate-950 focus:text-slate-950 active:text-slate-950"
+            >
+              View Vendor Profile
+            </Link>
+          </div>
         </div>
       </section>
 
