@@ -124,13 +124,13 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-[#071527] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(56,189,248,0.22),transparent_30%),radial-gradient(circle_at_86%_12%,rgba(20,184,166,0.16),transparent_28%),linear-gradient(135deg,#071527_0%,#0a2238_54%,#08111f_100%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-18 sm:px-6 sm:py-22 lg:min-h-[720px] lg:grid-cols-[1.04fr_0.96fr] lg:items-center lg:py-24">
-          <div className="max-w-4xl">
+        <div className="relative mx-auto grid max-w-[1500px] gap-12 px-6 py-16 sm:px-8 sm:py-20 lg:min-h-[660px] lg:grid-cols-[0.96fr_0.88fr] lg:items-center lg:gap-16 lg:px-10 lg:py-20 xl:gap-20 xl:px-14 2xl:px-16">
+          <div className="max-w-[760px]">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-cyan-50 shadow-sm shadow-slate-950/20">
               <Sparkles className="h-4 w-4 text-cyan-300" />
               Emerging AI workforce and digital skills hub
             </div>
-            <h1 className="mt-7 max-w-5xl text-4xl font-extrabold leading-[1.08] tracking-normal sm:text-6xl lg:text-7xl">
+            <h1 className="mt-7 max-w-[780px] text-5xl font-extrabold leading-[1.04] tracking-normal sm:text-6xl lg:text-[68px] xl:text-[76px]">
               Trusted AI Data and Remote Work Talent, Trained for Quality
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100/95 sm:text-xl">
@@ -156,8 +156,8 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/12 bg-white/[0.08] p-3 shadow-2xl shadow-slate-950/35 backdrop-blur">
-            <div className="rounded-xl bg-white p-5 text-slate-950 shadow-xl">
+          <div className="w-full max-w-[680px] justify-self-center rounded-2xl border border-white/12 bg-white/[0.08] p-3 shadow-2xl shadow-slate-950/35 backdrop-blur lg:justify-self-end">
+            <div className="rounded-xl bg-white p-4 text-slate-950 shadow-xl sm:p-5">
               <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-sm font-semibold text-cyan-700">Scholar workforce</p>
