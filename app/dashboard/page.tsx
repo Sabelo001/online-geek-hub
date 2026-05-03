@@ -1,4 +1,5 @@
 import { Activity, AlertCircle, Banknote, CheckCircle2, Users } from "lucide-react";
+import { ClearAuthMessage } from "@/components/clear-auth-message";
 import { Card, MetricCard, PageHeader } from "@/components/ui";
 import { getDashboardMetrics } from "@/lib/data";
 
@@ -19,6 +20,7 @@ export default async function DashboardPage({
 
   return (
     <>
+      <ClearAuthMessage clear={Boolean(params.message)} />
       <PageHeader title="Dashboard" eyebrow="Team overview" />
       {params.error ? <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{params.error}</p> : null}
       {params.message ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{params.message}</p> : null}

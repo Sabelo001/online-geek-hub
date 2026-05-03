@@ -1,9 +1,10 @@
 import { AuthForm } from "@/components/auth-form";
+import { ClearAuthMessage } from "@/components/clear-auth-message";
 
 export default async function LoginPage({
   searchParams
 }: {
-  searchParams: Promise<{ error?: string; message?: string; next?: string; debug?: string }>;
+  searchParams: Promise<{ error?: string; message?: string; next?: string; debug?: string; signup?: string }>;
 }) {
   const params = await searchParams;
   const missingSupabaseEnv =
@@ -17,5 +18,12 @@ export default async function LoginPage({
     ? `Supabase is not configured. Missing ${missing.join(" and ")}. Add them to the project environment, then restart Next.js.`
     : undefined;
 
-  return <AuthForm mode="login" error={params.error ?? envError} message={params.message} debug={params.debug} nextPath={params.next} />;
+  const signupMessage = params.signup === "created" ? params.message : undefined;
+
+  return (
+    <>
+      <ClearAuthMessage clear={Boolean(signupMessage)} />
+      <AuthForm mode="login" error={params.error ?? envError} message={signupMessage} debug={params.debug} nextPath={params.next} />
+    </>
+  );
 }

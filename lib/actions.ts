@@ -64,14 +64,22 @@ export async function signUp(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const fullName = value(formData, "full_name");
   const email = value(formData, "email");
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password: value(formData, "password"),
     options: { data: { full_name: fullName } }
   });
 
-  if (error) redirect(`/signup?error=${encodeURIComponent(error.message)}`);
-  redirect("/login?message=Check your email to confirm your account.");
+  if (error) {
+    const message = loginErrorMessage(error.message);
+    redirect(`/signup?error=${encodeURIComponent(message)}`);
+  }
+
+  if (data.session) {
+    redirect(`/dashboard?message=${encodeURIComponent("Account created successfully. You can now log in.")}`);
+  }
+
+  redirect(`/login?signup=created&message=${encodeURIComponent("Account created successfully. Please log in.")}`);
 }
 
 export async function signOut() {
