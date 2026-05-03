@@ -120,6 +120,26 @@ create table if not exists public.cv_profiles (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.contact_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  organization text,
+  inquiry_type text not null check (inquiry_type in ('vendor_partnership', 'pilot_project', 'scholar_program', 'cv_support', 'training', 'general_inquiry')),
+  message text not null,
+  status text not null default 'new' check (status in ('new', 'reviewing', 'closed')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.contact_inquiries
+  add column if not exists full_name text,
+  add column if not exists email text,
+  add column if not exists organization text,
+  add column if not exists inquiry_type text,
+  add column if not exists message text,
+  add column if not exists status text not null default 'new',
+  add column if not exists created_at timestamptz not null default now();
+
 alter table public.cv_profiles
   add column if not exists user_id uuid references public.profiles(id) on delete cascade,
   add column if not exists full_name text,
@@ -226,6 +246,8 @@ create index if not exists training_modules_category_idx on public.training_modu
 create index if not exists training_modules_status_idx on public.training_modules(status);
 create index if not exists cv_profiles_user_idx on public.cv_profiles(user_id);
 create index if not exists cv_profiles_created_at_idx on public.cv_profiles(created_at);
+create index if not exists contact_inquiries_created_at_idx on public.contact_inquiries(created_at);
+create index if not exists contact_inquiries_status_idx on public.contact_inquiries(status);
 create index if not exists practice_tasks_status_idx on public.practice_tasks(status);
 create index if not exists task_assignments_task_idx on public.task_assignments(task_id);
 create index if not exists task_assignments_trainee_idx on public.task_assignments(trainee_id);

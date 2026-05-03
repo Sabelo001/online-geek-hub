@@ -102,6 +102,23 @@ function safeCvTemplate(formData: FormData): CvTemplate {
   return "professional";
 }
 
+function safeInquiryType(formData: FormData) {
+  const inquiryType = value(formData, "inquiry_type");
+  if (
+    [
+      "vendor_partnership",
+      "pilot_project",
+      "scholar_program",
+      "cv_support",
+      "training",
+      "general_inquiry"
+    ].includes(inquiryType)
+  ) {
+    return inquiryType;
+  }
+  return "general_inquiry";
+}
+
 function cvPayload(formData: FormData, userId: string) {
   return {
     user_id: userId,
@@ -295,6 +312,22 @@ export async function deleteCvProfile(cvId: string) {
 
   revalidatePath("/cv");
   redirect("/cv?message=CV deleted.");
+}
+
+export async function createContactInquiry(formData: FormData) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("contact_inquiries").insert({
+    full_name: value(formData, "full_name"),
+    email: value(formData, "email"),
+    organization: optionalValue(formData, "organization"),
+    inquiry_type: safeInquiryType(formData),
+    message: value(formData, "message"),
+    status: "new"
+  });
+
+  if (error) actionError("/contact", `Your inquiry was not saved: ${error.message}`);
+
+  redirect("/contact?message=Thank you. Your inquiry has been received.");
 }
 
 export async function createPracticeTask(formData: FormData) {

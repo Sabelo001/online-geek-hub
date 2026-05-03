@@ -6,6 +6,7 @@
 alter table public.profiles enable row level security;
 alter table public.training_modules enable row level security;
 alter table public.cv_profiles enable row level security;
+alter table public.contact_inquiries enable row level security;
 alter table public.practice_tasks enable row level security;
 alter table public.task_assignments enable row level security;
 alter table public.submissions enable row level security;
@@ -17,6 +18,8 @@ grant usage on schema public to anon, authenticated;
 grant select, insert, update on public.profiles to authenticated;
 grant select, insert, update, delete on public.training_modules to authenticated;
 grant select, insert, update, delete on public.cv_profiles to authenticated;
+grant insert on public.contact_inquiries to anon, authenticated;
+grant select, update on public.contact_inquiries to authenticated;
 grant select, insert, update on public.practice_tasks to authenticated;
 grant select, insert, update on public.task_assignments to authenticated;
 grant select, insert, update on public.submissions to authenticated;
@@ -32,7 +35,7 @@ security definer
 set search_path = public
 stable
 as $$
-  select role from public.profiles where id = auth.uid()
+  select role from public.profiles where id = auth.uid();
 $$;
 
 -- Helper: true when the current user is an admin.
@@ -43,7 +46,7 @@ security definer
 set search_path = public
 stable
 as $$
-  select coalesce(public.current_role() = 'admin', false)
+  select coalesce(public.current_role() = 'admin', false);
 $$;
 
 -- Helper: true when the current user is a reviewer.
@@ -54,7 +57,7 @@ security definer
 set search_path = public
 stable
 as $$
-  select coalesce(public.current_role() = 'reviewer', false)
+  select coalesce(public.current_role() = 'reviewer', false);
 $$;
 
 -- Helper: true when the current user is a trainee.
@@ -65,7 +68,7 @@ security definer
 set search_path = public
 stable
 as $$
-  select coalesce(public.current_role() = 'trainee', false)
+  select coalesce(public.current_role() = 'trainee', false);
 $$;
 
 -- Helper: true when the current user is an admin or reviewer.
@@ -76,7 +79,7 @@ security definer
 set search_path = public
 stable
 as $$
-  select coalesce(public.current_role() in ('admin', 'reviewer'), false)
+  select coalesce(public.current_role() in ('admin', 'reviewer'), false);
 $$;
 
 -- Drop old policies first so this file can be run again while learning.
@@ -101,6 +104,10 @@ drop policy if exists "cv_profiles_self_read" on public.cv_profiles;
 drop policy if exists "cv_profiles_self_insert" on public.cv_profiles;
 drop policy if exists "cv_profiles_self_update" on public.cv_profiles;
 drop policy if exists "cv_profiles_self_delete" on public.cv_profiles;
+
+drop policy if exists "public_create_contact_inquiries" on public.contact_inquiries;
+drop policy if exists "admin_read_contact_inquiries" on public.contact_inquiries;
+drop policy if exists "admin_update_contact_inquiries" on public.contact_inquiries;
 
 drop policy if exists "admin_all_practice_tasks" on public.practice_tasks;
 drop policy if exists "tasks_read_authenticated" on public.practice_tasks;
@@ -209,6 +216,24 @@ create policy "cv_profiles_self_delete"
 on public.cv_profiles for delete
 to authenticated
 using (user_id = auth.uid());
+
+-- Contact inquiries
+-- Public visitors can submit inquiries. Admins can read and update inquiry status.
+create policy "public_create_contact_inquiries"
+on public.contact_inquiries for insert
+to anon, authenticated
+with check (true);
+
+create policy "admin_read_contact_inquiries"
+on public.contact_inquiries for select
+to authenticated
+using (public.is_admin());
+
+create policy "admin_update_contact_inquiries"
+on public.contact_inquiries for update
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
 
 -- Practice tasks
 -- Admin can manage all tasks. Reviewers can read tasks.
