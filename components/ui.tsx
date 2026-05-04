@@ -16,7 +16,7 @@ export function ButtonLink({
       href={href}
       className={clsx(
         "focus-ring",
-        variant === "primary" && "border border-cyan-300 bg-cyan-400 text-slate-950 hover:bg-cyan-300",
+        variant === "primary" && "cta-primary dark-cta",
         variant === "dark" && "cta-primary dark-cta",
         variant === "secondary" && "cta-secondary",
         variant === "ghost" && "inline-flex min-h-11 min-w-32 items-center justify-center rounded-[4px] px-5 text-sm font-bold text-sky-100 shadow-sm transition hover:bg-white/10 hover:text-white"

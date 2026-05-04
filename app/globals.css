@@ -90,15 +90,16 @@ select {
   border: 1px solid #020617;
   border-radius: 4px;
   background-color: #020617;
-  padding: 0 3.75rem 0 1.5rem;
+  padding: 0 3.75rem 0 1.45rem;
   color: #ffffff !important;
-  font-size: 0.875rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.07em;
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.2);
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
@@ -111,11 +112,16 @@ select {
   position: absolute;
   inset-block: 0;
   right: 0;
-  width: 2.75rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.45);
+  width: 2.85rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.38);
   background:
-    linear-gradient(125deg, transparent 47%, rgba(255, 255, 255, 0.92) 49%, rgba(255, 255, 255, 0.92) 52%, transparent 54%);
+    linear-gradient(125deg, transparent 46%, rgba(255, 255, 255, 0.92) 48%, rgba(255, 255, 255, 0.92) 52%, transparent 54%),
+    rgba(255, 255, 255, 0.06);
   opacity: 0.95;
+  transition:
+    width 180ms ease,
+    background-position 180ms ease,
+    opacity 180ms ease;
 }
 
 .cta-primary:hover,
@@ -126,6 +132,14 @@ select {
   background-color: #1e293b;
   color: #ffffff !important;
   box-shadow: 0 14px 28px rgba(2, 6, 23, 0.24);
+}
+
+.cta-primary:hover::after,
+.cta-primary:focus::after,
+.cta-primary:focus-visible::after,
+.cta-primary:active::after {
+  width: 3.15rem;
+  opacity: 1;
 }
 
 .cta-primary:active {
@@ -148,33 +162,43 @@ select {
 
 .cta-nav,
 .cta-nav:visited {
-  min-height: 2.4rem;
-  padding: 0 1rem;
-  font-size: 1.4rem;
+  min-height: 2.9rem;
+  padding: 0 3rem 0 1.15rem;
+  font-size: 1.32rem;
   font-weight: 400;
-  letter-spacing: 0.055em;
-  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.14);
+  letter-spacing: 0.065em;
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.14);
 }
 
 .cta-nav::after {
-  content: none;
+  width: 2.25rem;
+}
+
+.cta-nav:hover::after,
+.cta-nav:focus::after,
+.cta-nav:focus-visible::after,
+.cta-nav:active::after {
+  width: 2.4rem;
 }
 
 .cta-secondary,
 .cta-secondary:visited {
+  position: relative;
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  overflow: hidden;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   background-color: #ffffff;
-  padding: 0 1.5rem;
+  padding: 0 3.35rem 0 1.35rem;
   color: #020617 !important;
-  font-size: 0.875rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.07em;
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -186,6 +210,23 @@ select {
     color 160ms ease;
 }
 
+.cta-secondary::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 2.55rem;
+  border-left: 1px solid #cbd5e1;
+  background:
+    linear-gradient(125deg, transparent 46%, #020617 48%, #020617 52%, transparent 54%),
+    #f8fafc;
+  opacity: 0.75;
+  transition:
+    width 180ms ease,
+    opacity 180ms ease,
+    background-color 180ms ease;
+}
+
 .cta-secondary:hover,
 .cta-secondary:focus,
 .cta-secondary:focus-visible,
@@ -194,6 +235,25 @@ select {
   background-color: #ecfeff;
   color: #020617 !important;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+}
+
+.cta-secondary:hover::after,
+.cta-secondary:focus::after,
+.cta-secondary:focus-visible::after,
+.cta-secondary:active::after {
+  width: 2.85rem;
+  opacity: 1;
+  background-color: #ecfeff;
+}
+
+@media (max-width: 767px) {
+  .public-page .cta-primary,
+  .public-page .cta-secondary {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+  }
 }
 
 @media print {

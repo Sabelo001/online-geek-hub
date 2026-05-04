@@ -25,8 +25,8 @@ const mobileNavLinks = [
 export function PublicNavbar() {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-[76px] flex-nowrap items-center justify-between gap-5 xl:min-h-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex min-h-[76px] flex-nowrap items-center justify-between gap-5 xl:min-h-[82px]">
           <div className="flex min-w-0 shrink-0 items-center">
             <BrandLogo
               href="/"
@@ -36,7 +36,7 @@ export function PublicNavbar() {
             />
           </div>
 
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-6 xl:flex 2xl:gap-8">
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-7 xl:flex 2xl:gap-9">
             {desktopNavLinks.map((link) => (
               <Link
                 key={link.label}
@@ -62,7 +62,7 @@ export function PublicNavbar() {
               <Menu className="h-5 w-5 text-slate-950" />
               Menu
             </summary>
-            <div className="absolute right-0 top-full mt-3 w-[min(88vw,360px)] rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl shadow-slate-950/15">
+            <div className="absolute right-0 top-full mt-3 w-[min(calc(100vw-2rem),360px)] rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl shadow-slate-950/15">
               <nav className="grid gap-1">
                 {mobileNavLinks.map((link) => (
                   <Link
@@ -77,7 +77,7 @@ export function PublicNavbar() {
               <div className="mt-3 grid gap-2 border-t border-slate-100 pt-3">
                 <Link
                   href="/contact"
-                  className="cta-primary cta-nav dark-cta focus-ring font-display"
+                  className="cta-primary cta-nav dark-cta focus-ring w-full font-display"
                 >
                   Request a Team
                 </Link>

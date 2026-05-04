@@ -4,17 +4,41 @@ import { BrandLogo } from "@/components/logo";
 import { PublicNavbar } from "@/components/public-navbar";
 
 const work = [
-  { title: "Data Annotation", icon: Tags },
-  { title: "AI Model Evaluation", icon: BadgeCheck },
-  { title: "Audio Transcription", icon: Headphones },
-  { title: "Prompt and Response Review", icon: MessageSquareText },
-  { title: "Remote Operations Support", icon: BriefcaseBusiness },
-  { title: "Training and Talent Preparation", icon: Layers3 }
+  {
+    title: "Data Annotation",
+    description: "Text and task-level annotation, reviewed before submission.",
+    icon: Tags
+  },
+  {
+    title: "AI Model Evaluation",
+    description: "Human review of AI outputs for quality, accuracy, and instruction-following.",
+    icon: BadgeCheck
+  },
+  {
+    title: "Audio Transcription",
+    description: "English and Swahili transcription with formatting to client specifications.",
+    icon: Headphones
+  },
+  {
+    title: "Prompt and Response Review",
+    description: "Structured review flagging errors, tone issues, and guideline violations.",
+    icon: MessageSquareText
+  },
+  {
+    title: "Remote Operations Support",
+    description: "Flexible contributor support for digital tasks and document processing.",
+    icon: BriefcaseBusiness
+  },
+  {
+    title: "Training and Talent Preparation",
+    description: "Internal tracks that build task-ready contributors for focused AI work.",
+    icon: Layers3
+  }
 ];
 
 const overview = [
   ["Name", "Online Geek Hub"],
-  ["Tagline", "Turn skills into income"],
+  ["Tagline", "Trained contributors. Structured process. Remote-first delivery."],
   ["Type", "Emerging AI workforce and digital skills hub"],
   ["Current capacity", "12 trained Scholars in the starter team"],
   ["Delivery model", "Remote-first, review-based, and quality-focused"]
@@ -31,12 +55,30 @@ const skills = [
 ];
 
 const quality = [
-  "Clear instructions",
-  "Practice tasks",
-  "Rubric-based review",
-  "Feedback and revision",
-  "Score tracking",
-  "Admin/reviewer oversight"
+  {
+    title: "Clear instructions",
+    description: "Every task comes with written guidelines before work begins."
+  },
+  {
+    title: "Practice tasks",
+    description: "Scholars complete supervised practice before any live assignment."
+  },
+  {
+    title: "Rubric-based review",
+    description: "Output is checked against a defined rubric, not subjective judgment."
+  },
+  {
+    title: "Feedback and revision",
+    description: "Reviewers provide specific feedback tied to each task submission."
+  },
+  {
+    title: "Score tracking",
+    description: "Accuracy and consistency scores are recorded for every Scholar."
+  },
+  {
+    title: "Admin/reviewer oversight",
+    description: "A team lead monitors active work and flags issues in real time."
+  }
 ];
 
 const readiness = [
@@ -56,7 +98,7 @@ export default function VendorProfilePage() {
     <main className="public-page min-h-screen bg-white text-slate-950">
       <PublicNavbar />
 
-      <section className="relative overflow-hidden bg-[#071527] px-4 py-20 text-white sm:px-6 sm:py-24">
+      <section className="relative overflow-hidden bg-[#071527] px-4 pb-12 pt-20 text-white sm:px-6 sm:pb-12 sm:pt-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_58%,#08111f_100%)]" />
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-4xl">
@@ -73,7 +115,7 @@ export default function VendorProfilePage() {
       <section className="px-4 py-16 sm:px-6">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Company overview</p>
+            <p className="overflow-visible whitespace-nowrap text-sm font-bold uppercase tracking-wide text-cyan-700">Company overview</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A small team preparing for responsible pilot delivery.</h2>
           </div>
           <div className="grid gap-3">
@@ -100,6 +142,7 @@ export default function VendorProfilePage() {
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="mt-5 text-xl font-bold text-slate-950">{item.title}</h3>
+                  <p className="mt-2 text-[13px] font-normal leading-6 text-[#475569]">{item.description}</p>
                 </article>
               );
             })}
@@ -138,12 +181,13 @@ export default function VendorProfilePage() {
           <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Quality review process</h2>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {quality.map((step, index) => (
-              <div key={step} className="rounded-xl border border-white/10 bg-white/10 p-5">
+              <div key={step.title} className="rounded-xl border border-white/10 bg-white/10 p-5">
                 <div className="flex items-center justify-between">
                   <ShieldCheck className="h-5 w-5 text-cyan-300" />
                   <span className="text-sm font-bold text-slate-400">0{index + 1}</span>
                 </div>
-                <h3 className="mt-5 text-lg font-bold">{step}</h3>
+                <h3 className="mt-5 text-lg font-bold">{step.title}</h3>
+                <p className="mt-2 text-sm font-normal leading-6 text-slate-300">{step.description}</p>
               </div>
             ))}
           </div>
@@ -166,9 +210,9 @@ export default function VendorProfilePage() {
       </section>
 
       <section className="bg-slate-50 px-4 py-16 sm:px-6">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <ShieldCheck className="h-8 w-8 text-cyan-700" />
-          <h2 className="mt-4 text-3xl font-extrabold text-slate-950">Data privacy and compliance statement</h2>
+        <div className="mx-auto max-w-7xl rounded-lg border border-l-4 border-slate-200 border-l-[#0A6EFF] bg-[#F8FAFC] p-8">
+          <ShieldCheck className="h-7 w-7 text-[#0A6EFF]" />
+          <h2 className="mt-4 text-4xl font-extrabold tracking-normal text-slate-950">Data privacy and compliance statement</h2>
           <p className="mt-4 max-w-4xl leading-8 text-slate-600">
             Online Geek Hub is committed to responsible data handling, confidentiality, role-based access, and avoiding
             unauthorized sharing of third-party platform accounts or client data. We only accept work under permitted terms,
@@ -178,10 +222,10 @@ export default function VendorProfilePage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6">
-        <div className="mx-auto grid max-w-7xl gap-8 rounded-2xl bg-cyan-300 p-8 text-[#071527] lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-2xl bg-[#0F172A] p-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <h2 className="text-3xl font-extrabold">Interested in a Pilot Project?</h2>
-            <p className="mt-3 max-w-3xl leading-7 text-slate-800">
+            <h2 className="text-3xl font-extrabold text-white">Interested in a Pilot Project?</h2>
+            <p className="mt-3 max-w-3xl leading-7 text-white/75">
               Online Geek Hub is open to vendor, subcontracting, and pilot project discussions for AI data work,
               transcription, evaluation, prompt review, and remote operations.
             </p>

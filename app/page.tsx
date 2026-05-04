@@ -27,93 +27,140 @@ import { PublicNavbar } from "@/components/public-navbar";
 
 const reasons = [
   {
-    title: "Trained Scholars",
-    description: "A starter team of 12 contributors prepared through modules, practice tasks, and guided feedback.",
+    title: "Managed Internally",
+    description: "Our team operates under direct internal coordination. Tasks are assigned, tracked, and reviewed by team leads, so clients do not have to manage individual contributors themselves.",
     icon: Users
   },
   {
-    title: "Review-Based Quality",
-    description: "Work is reviewed against clear instructions, scoring rubrics, comments, and revision steps.",
-    icon: ShieldCheck
-  },
-  {
-    title: "Remote-First Workforce",
-    description: "Scholars are trained for online coordination, documented workflows, and responsible remote delivery.",
+    title: "Skills That Match Real Work",
+    description: "Our training tracks are built around tasks AI projects actually need: annotation, evaluation, transcription, prompt review, and data support.",
     icon: Laptop
   },
   {
-    title: "Practical AI Project Skills",
-    description: "Training covers data annotation, transcription, AI output review, and digital operations support.",
-    icon: Bot
+    title: "Every Output Is Reviewed",
+    description: "Every submission passes through a structured review process before delivery, with scores tracked at Scholar level.",
+    icon: ShieldCheck
   }
 ];
 
 const solutions = [
   {
     title: "Data Annotation",
-    description: "Structured text, image, audio, video, and document labeling support for pilot AI data projects.",
+    description: "Text, image, and task-level annotation delivered by trained contributors following structured guidelines and reviewed for accuracy before submission.",
     icon: Tags
   },
   {
     title: "AI Model Evaluation",
-    description: "Human review of AI outputs for accuracy, relevance, clarity, usefulness, and guideline alignment.",
+    description: "Human evaluation of AI-generated outputs, including response quality, instruction-following, tone, and factual accuracy, using task-specific rubrics.",
     icon: BadgeCheck
   },
   {
-    title: "Audio Transcription",
-    description: "Transcription support with clean formatting, speaker clarity, and review before delivery.",
+    title: "Transcription",
+    description: "Audio-to-text transcription in English and Swahili, with support for code-switching, speaker labeling, and formatting to client specifications.",
     icon: Headphones
   },
   {
     title: "Prompt and Response Review",
-    description: "Prompt and response review using defined rubrics, notes, and feedback standards.",
+    description: "Structured review of prompts, model responses, and conversation flows to identify errors, inconsistencies, and guideline violations.",
     icon: MessageSquareText
   },
   {
-    title: "CV and Remote Work Support",
-    description: "Helping trainees improve CVs, profiles, and applications for credible online work opportunities.",
-    icon: FileText
+    title: "Remote Operations Support",
+    description: "Flexible remote contributor support for data processing, document review, form handling, and structured digital tasks, coordinated and tracked internally.",
+    icon: BriefcaseBusiness
   },
   {
     title: "Training and Talent Preparation",
-    description: "Structured modules, practice tasks, scoring, and reviewer feedback for project readiness.",
+    description: "We build task-ready contributors through structured internal tracks and can prepare contributors for clearly defined project needs.",
     icon: BookOpen
   }
 ];
 
 const domains = [
-  { title: "General AI Data", icon: Bot },
-  { title: "Language and Transcription", icon: Headphones },
-  { title: "Remote Work Operations", icon: BriefcaseBusiness },
-  { title: "Agriculture and Community Data", icon: MapPinned },
-  { title: "Business and Customer Support", icon: Laptop },
-  { title: "Research and Document Review", icon: FileText }
+  {
+    title: "General AI Data",
+    description: "Classification, labeling, ranking, and structured output review across common AI development tasks.",
+    icon: Bot
+  },
+  {
+    title: "Language and Transcription",
+    description: "English and Swahili text and audio work, including transcription, translation support, and language data collection.",
+    icon: Headphones
+  },
+  {
+    title: "Business and Customer Support",
+    description: "Response evaluation, conversation review, and document handling for operations-facing AI applications.",
+    icon: Laptop
+  },
+  {
+    title: "Agriculture and Community Data",
+    description: "Structured data collection and review tasks rooted in rural and community contexts.",
+    icon: MapPinned
+  },
+  {
+    title: "Research and Document Review",
+    description: "Reading, extracting, and organizing information from documents, forms, and research materials.",
+    icon: FileText
+  },
+  {
+    title: "Remote Work Operations",
+    description: "Ongoing digital task support including data entry, record management, scheduling assistance, and structured process execution.",
+    icon: BriefcaseBusiness
+  }
 ];
 
 const scholarStats = [
-  { value: "12", label: "Scholars in Starter Team" },
+  { value: "12", label: "Scholars" },
   { value: "7", label: "Training Tracks" },
-  { value: "100", label: "Point Review Rubric" },
-  { value: "Remote", label: "First Delivery" }
+  { value: "Review-Based", label: "Quality" },
+  { value: "Remote-First", label: "Delivery" }
 ];
 
 const qualityLoop = [
-  { title: "Train", icon: BookOpen },
-  { title: "Practice", icon: ClipboardCheck },
-  { title: "Review", icon: ShieldCheck },
-  { title: "Score", icon: BarChart3 },
-  { title: "Improve", icon: LineChart },
-  { title: "Deploy", icon: ArrowRight }
+  {
+    title: "Train",
+    description: "Every Scholar starts with structured training covering task types, domain knowledge, and quality standards.",
+    heroDescription: "Each Scholar completes structured training covering AI data fundamentals, task-specific skills, and quality standards before taking on live work.",
+    icon: BookOpen
+  },
+  {
+    title: "Practice",
+    description: "Scholars complete supervised practice tasks that mirror real client work.",
+    heroDescription: "Scholars complete supervised practice tasks under real conditions, building speed and accuracy before moving to active assignments.",
+    icon: ClipboardCheck
+  },
+  {
+    title: "Review",
+    description: "Completed work is checked against task-specific guidelines before it moves forward.",
+    heroDescription: "Every output goes through review against task guidelines and quality benchmarks.",
+    icon: ShieldCheck
+  },
+  {
+    title: "Score",
+    description: "Scholars receive accuracy and consistency scores to guide task readiness and improvement.",
+    heroDescription: "Scholars are scored on accuracy, consistency, and guideline adherence. Scores guide task assignment and improvement.",
+    icon: BarChart3
+  },
+  {
+    title: "Improve",
+    description: "Feedback from review and scoring feeds back into targeted practice and guidance.",
+    icon: LineChart
+  },
+  {
+    title: "Deploy",
+    description: "Scholars who meet the required standard are cleared for supervised project work with ongoing review.",
+    icon: ArrowRight
+  }
 ];
 
 const portalFeatures = [
-  "Training modules",
-  "Practice tasks",
-  "CV generator",
-  "Scholar profiles",
-  "Availability tracking",
-  "Submissions and reviews",
-  "Payment records"
+  "Training Modules",
+  "Practice Tasks",
+  "CV Generator",
+  "Scholar Profiles",
+  "Availability Tracking",
+  "Submissions and Reviews",
+  "Payment Records"
 ];
 
 export default function LandingPage() {
@@ -124,20 +171,20 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-[#071527] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(56,189,248,0.22),transparent_30%),radial-gradient(circle_at_86%_12%,rgba(20,184,166,0.16),transparent_28%),linear-gradient(135deg,#071527_0%,#0a2238_54%,#08111f_100%)]" />
-        <div className="relative mx-auto grid max-w-[1500px] gap-12 px-6 py-16 sm:px-8 sm:py-20 lg:min-h-[660px] lg:grid-cols-[0.96fr_0.88fr] lg:items-center lg:gap-16 lg:px-10 lg:py-20 xl:gap-20 xl:px-14 2xl:px-16">
+        <div className="relative mx-auto grid max-w-[1500px] gap-12 px-6 pb-12 pt-10 sm:px-8 sm:pb-14 sm:pt-12 lg:min-h-[640px] lg:grid-cols-[0.96fr_0.88fr] lg:items-center lg:gap-16 lg:px-10 lg:py-14 xl:gap-20 xl:px-14 2xl:px-16">
           <div className="max-w-[760px]">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-cyan-50 shadow-sm shadow-slate-950/20">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3 py-1 text-[11px] font-semibold text-cyan-50 shadow-sm shadow-slate-950/20">
               <Sparkles className="h-4 w-4 text-cyan-300" />
-              Emerging AI workforce and digital skills hub
+              Pilot-Ready AI Workforce
             </div>
             <h1 className="mt-7 max-w-[780px] text-5xl font-extrabold leading-[1.04] tracking-normal sm:text-6xl lg:text-[68px] xl:text-[76px]">
-              Reliable AI Data and Remote Work Support, Trained for Quality
+              Remote-Ready. Review-Backed. Built for AI Data Work.
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100/95 sm:text-xl">
-              Online Geek Hub trains and coordinates a small team of Scholars for AI data work, transcription,
-              model evaluation, prompt review, CV support, and remote operations.
+            <p className="mb-3 mt-6 max-w-3xl text-lg leading-8 text-sky-100/95 sm:text-xl">
+              Online Geek Hub is a trained remote workforce delivering annotation, evaluation, transcription, and
+              data support for AI teams that need reliable contributors, not guesswork.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3">
               <a
                 href="/contact"
                 className="cta-primary dark-cta focus-ring"
@@ -145,14 +192,14 @@ export default function LandingPage() {
                 Request a Team
               </a>
               <Link
-                href="/signup"
+                href="#solutions"
                 className="cta-primary dark-cta focus-ring"
               >
-                Join Training
+                View Our Solutions
               </Link>
             </div>
-            <p className="mt-7 max-w-2xl text-sm font-semibold leading-6 text-slate-300">
-              Built for pilot projects, structured training, review-based quality, and remote-first delivery.
+            <p className="mt-4 max-w-2xl text-[13px] font-semibold leading-5 text-white/50">
+              Small team. Managed process. Ready to work.
             </p>
           </div>
 
@@ -160,8 +207,11 @@ export default function LandingPage() {
             <div className="rounded-xl bg-white p-4 text-slate-950 shadow-xl sm:p-5">
               <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <p className="text-sm font-semibold text-cyan-700">Scholar workforce</p>
-                  <h2 className="mt-1 text-2xl font-extrabold">12 trained Scholars</h2>
+                  <p className="text-sm font-semibold text-cyan-700">Scholar Workforce</p>
+                  <h2 className="mt-1 text-2xl font-extrabold">12 Trained Scholars</h2>
+                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-600">
+                    A focused team built around structured training, consistent review, and domain-ready delivery.
+                  </p>
                 </div>
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-cyan-50">
                   <Users className="h-6 w-6 text-cyan-600" />
@@ -178,10 +228,7 @@ export default function LandingPage() {
                       <div>
                         <h3 className="font-bold">{item.title}</h3>
                         <p className="mt-1 text-sm leading-6 text-slate-600">
-                          {item.title === "Train" && "Structured modules prepare Scholars for common AI data and remote-work tasks."}
-                          {item.title === "Practice" && "Internal tasks help contributors build accuracy, consistency, and confidence."}
-                          {item.title === "Review" && "Reviewers check work against rubrics before feedback is shared."}
-                          {item.title === "Score" && "Scores and notes help identify readiness for supervised pilot work."}
+                          {item.heroDescription}
                         </p>
                       </div>
                     </div>
@@ -194,34 +241,47 @@ export default function LandingPage() {
       </section>
 
       <section className="border-b border-slate-200 bg-slate-50 px-4 py-10 sm:px-6">
-        <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 items-stretch gap-3 lg:grid-cols-4">
           {scholarStats.map((stat) => (
-            <div key={stat.label} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-4xl font-extrabold text-[#071527]">{stat.value}</p>
-              <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-slate-500">{stat.label}</p>
+            <div
+              key={stat.label}
+              className="h-full rounded-lg border border-t-[3px] border-slate-200 border-t-[#0A6EFF] bg-white p-5 shadow-sm shadow-slate-950/5"
+            >
+              <p
+                className={`whitespace-nowrap font-extrabold text-[#0F172A] ${
+                  stat.value === "Review-Based" ? "text-[36px]" : "text-4xl"
+                }`}
+              >
+                {stat.value}
+              </p>
+              <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#64748B]">
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="why" className="px-4 py-18 sm:px-6 sm:py-20">
+      <section id="why" className="scroll-mt-24 px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Why Online Geek Hub</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Small Team. Strong Skills. Quality-Focused Delivery.</h2>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Why Work With Us</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A Lean Team Built Around Quality, Not Volume</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              We are building a practical workforce model: train carefully, review consistently, and grow at a responsible pace.
+              We are not a large platform. We are a small, deliberately trained team built to take on focused AI data
+              tasks with structure, accountability, and consistent output. Every Scholar knows their role. Every task
+              goes through review.
             </p>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {reasons.map((reason) => {
               const Icon = reason.icon;
               return (
-                <article key={reason.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-cyan-300 hover:shadow-md">
-                  <div className="grid h-12 w-12 place-items-center rounded-xl bg-[#071527] text-cyan-300">
-                    <Icon className="h-6 w-6" />
+                <article key={reason.title} className="min-h-[200px] rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 transition hover:border-cyan-300 hover:shadow-md">
+                  <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-[#0F172A] text-[#0A6EFF]">
+                    <Icon className="h-[22px] w-[22px]" />
                   </div>
-                  <h3 className="mt-5 text-xl font-bold text-slate-950">{reason.title}</h3>
+                  <h3 className="mt-4 text-xl font-bold text-slate-950">{reason.title}</h3>
                   <p className="mt-3 leading-7 text-slate-600">{reason.description}</p>
                 </article>
               );
@@ -230,18 +290,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="solutions" className="bg-slate-50 px-4 py-18 sm:px-6 sm:py-20">
+      <section id="solutions" className="scroll-mt-24 bg-slate-50 px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Solutions</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">AI and Digital Workforce Solutions</h2>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">What We Deliver</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">AI Data Services Built for Practical Use</h2>
+            <p className="mt-4 text-lg leading-8 text-slate-600">
+              Our solutions cover the core data and operations tasks that AI development teams, research projects,
+              and digital operations require. We handle focused scopes reliably and on schedule.
+            </p>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {solutions.map((solution) => {
               const Icon = solution.icon;
               return (
-                <article key={solution.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-cyan-300 hover:shadow-md">
-                  <div className="grid h-12 w-12 place-items-center rounded-xl bg-cyan-50 text-cyan-700">
+                <article key={solution.title} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 transition hover:border-cyan-300 hover:shadow-md">
+                  <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-[#0F172A] text-[#0A6EFF]">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="mt-5 text-xl font-bold text-slate-950">{solution.title}</h3>
@@ -253,21 +317,24 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="domains" className="px-4 py-18 sm:px-6 sm:py-20">
+      <section id="domains" className="scroll-mt-24 px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Domains</p>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Domains</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Domains We Can Support</h2>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {domains.map((domain) => {
               const Icon = domain.icon;
               return (
-                <div key={domain.title} className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-cyan-300">
+                <div key={domain.title} className="flex items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/5">
+                  <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-[#0F172A] text-[#0A6EFF]">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <p className="font-bold text-slate-950">{domain.title}</p>
+                  <div>
+                    <p className="font-bold text-slate-950">{domain.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{domain.description}</p>
+                  </div>
                 </div>
               );
             })}
@@ -275,15 +342,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="scholars" className="bg-[#071527] px-4 py-18 text-white sm:px-6 sm:py-20">
+      <section id="scholars" className="scroll-mt-24 bg-[#071527] px-4 py-12 text-white sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Scholars</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Online Geek Hub Scholars</h2>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Our Team</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal">12 Scholars. One Standard.</h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">
-              Our Scholars are trained contributors with practical skills in AI data work, transcription, prompt review,
-              online operations, and digital support. Each Scholar goes through modules, practice tasks, review, scoring,
-              and continuous improvement before being considered for project work.
+              Every person on our team goes through the same internal training process covering task fundamentals,
+              domain skills, and quality expectations. Scholars are scored, reviewed, and continuously developed
+              before being considered for project work.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -302,8 +369,14 @@ export default function LandingPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {scholarStats.map((stat) => (
-              <div key={stat.label} className="rounded-xl border border-white/10 bg-white/10 p-6">
-                <p className="text-4xl font-extrabold text-cyan-200">{stat.value}</p>
+              <div key={stat.label} className="rounded-lg border border-white/10 bg-white/10 p-6">
+                <p
+                  className={`font-extrabold text-cyan-200 ${
+                    stat.value === "Review-Based" ? "whitespace-nowrap text-[2rem]" : "text-4xl"
+                  }`}
+                >
+                  {stat.value}
+                </p>
                 <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-slate-300">{stat.label}</p>
               </div>
             ))}
@@ -311,25 +384,26 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="px-4 py-18 sm:px-6 sm:py-20">
+      <section id="quality" className="scroll-mt-24 px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Quality process</p>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Quality process</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Our Quality Loop</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              Work is handled through clear instructions, rubric-based review, feedback, and revision where needed.
+              Work is handled through training, supervised practice, review, scoring, improvement, and supervised deployment.
             </p>
           </div>
           <div className="mt-10 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             {qualityLoop.map((step, index) => {
               const Icon = step.icon;
               return (
-                <div key={step.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div key={step.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/5">
                   <div className="flex items-center justify-between gap-3">
                     <Icon className="h-6 w-6 text-cyan-700" />
                     <span className="text-sm font-bold text-slate-400">0{index + 1}</span>
                   </div>
                   <h3 className="mt-5 text-lg font-bold text-slate-950">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
                 </div>
               );
             })}
@@ -337,15 +411,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="contact" className="bg-slate-50 px-4 py-18 sm:px-6 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+      <section id="contact" className="scroll-mt-24 bg-slate-50 px-4 py-12 sm:px-6 sm:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Vendor readiness</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Ready for Vendor and Project Partnerships</h2>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Work With Us</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Ready for Pilot Projects and Subcontracting Discussions</h2>
             <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
-              Online Geek Hub is preparing to support annotation, AI evaluation, transcription, and digital operations
-              through a trained and managed starter team. We are best suited for pilot projects, small batches, and
-              gradually scalable workflows after successful delivery.
+              We are open to vendor registrations, subcontracting arrangements, and pilot project opportunities with AI
+              companies, research teams, and digital operations platforms. Start with a small scope, review the process,
+              and scale responsibly after successful delivery.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
@@ -354,7 +428,7 @@ export default function LandingPage() {
               className="cta-primary dark-cta focus-ring"
             >
               <Mail className="h-4 w-4 text-white" />
-              Contact Us
+              Start a Pilot Conversation
             </Link>
             <Link
               href="/vendor-profile"
@@ -366,32 +440,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="training" className="px-4 py-18 sm:px-6 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <section id="training" className="scroll-mt-24 px-4 py-18 sm:px-6 sm:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Private portal</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">A Private Portal for Training and Team Management</h2>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Private portal</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Scholar Portal</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              The portal keeps training, coordination, reviews, availability, and operational records in one simple place.
+              The Scholar Portal is our internal hub for training, task readiness, submissions, reviews, availability,
+              and operational records.
             </p>
-            <Link
-              href="/login"
-              className="cta-primary dark-cta focus-ring mt-8"
-            >
-              Login to Portal
-            </Link>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <Link href="/signup" className="cta-secondary focus-ring">
+            <div className="mt-8 flex flex-wrap items-start gap-3">
+              <Link
+                href="/login"
+                className="cta-primary dark-cta focus-ring min-w-fit shrink-0 justify-center overflow-visible px-4 whitespace-nowrap"
+              >
+                Login to Portal
+              </Link>
+              <Link href="/signup" className="cta-secondary focus-ring min-w-fit shrink-0 justify-center whitespace-nowrap">
                 Join Training
               </Link>
-              <Link href="/cv" className="cta-secondary focus-ring">
+              <Link href="/cv" className="cta-secondary focus-ring min-w-fit shrink-0 justify-center whitespace-nowrap">
                 CV Generator
               </Link>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {portalFeatures.map((feature) => (
-              <div key={feature} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                key={feature}
+                className={`flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-4 shadow-sm shadow-slate-950/5 ${
+                  feature === "Payment Records" ? "sm:col-span-2 sm:justify-center" : ""
+                }`}
+              >
                 <CheckCircle2 className="h-5 w-5 text-cyan-700" />
                 <span className="font-semibold text-slate-800">{feature}</span>
               </div>
@@ -404,25 +484,32 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <BrandLogo href="/" dark size="sm" />
-            <p className="mt-4 max-w-sm text-sm leading-6">Turn skills into income.</p>
+            <h3 className="mt-5 text-xl font-bold text-white">Ready to discuss a pilot project?</h3>
+            <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">
+              Tell us what kind of AI data, transcription, evaluation, or remote operations support you need. We will
+              review the scope and respond through the contact form.
+            </p>
+            <Link href="/contact" className="cta-secondary focus-ring mt-5">
+              Start a Pilot Conversation
+            </Link>
           </div>
           <div>
             <h3 className="font-bold text-white">Solutions</h3>
             <div className="mt-4 grid gap-2 text-sm">
-              <a href="#solutions" className="hover:text-white">Data Annotation</a>
-              <a href="#solutions" className="hover:text-white">AI Evaluation</a>
-              <a href="#solutions" className="hover:text-white">Transcription</a>
-              <a href="#solutions" className="hover:text-white">Prompt Review</a>
+              <a href="/#solutions" className="hover:text-white">Data Annotation</a>
+              <a href="/#solutions" className="hover:text-white">AI Model Evaluation</a>
+              <a href="/#solutions" className="hover:text-white">Transcription</a>
+              <a href="/#solutions" className="hover:text-white">Prompt and Response Review</a>
+              <a href="/#solutions" className="hover:text-white">Remote Operations Support</a>
             </div>
           </div>
           <div>
             <h3 className="font-bold text-white">Company</h3>
             <div className="mt-4 grid gap-2 text-sm">
-              <a href="#why" className="hover:text-white">About</a>
-              <a href="#domains" className="hover:text-white">Domains</a>
-              <Link href="/scholars" className="hover:text-white">Scholars</Link>
-              <a href="#training" className="hover:text-white">Training</a>
               <Link href="/vendor-profile" className="hover:text-white">Vendor Profile</Link>
+              <Link href="/scholars" className="hover:text-white">Scholars</Link>
+              <a href="/#training" className="hover:text-white">Training</a>
+              <a href="/#domains" className="hover:text-white">Domains</a>
               <Link href="/contact" className="hover:text-white">Contact</Link>
             </div>
           </div>
