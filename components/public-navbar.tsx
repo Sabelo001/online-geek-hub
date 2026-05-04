@@ -6,6 +6,7 @@ const desktopNavLinks = [
   { href: "/#solutions", label: "Solutions" },
   { href: "/scholars", label: "Scholars" },
   { href: "/#training", label: "Training" },
+  { href: "/insights", label: "Insights" },
   { href: "/vendor-profile", label: "Vendor Profile" }
 ];
 
