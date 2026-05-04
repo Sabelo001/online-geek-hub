@@ -17,7 +17,10 @@ const bebasNeue = Bebas_Neue({
 
 export const metadata: Metadata = {
   title: "Online Geek Hub",
-  description: "Turn skills into income. Making remote work less confusing. Learn, build, earn."
+  description: "Online Geek Hub is a trained remote AI workforce delivering annotation, evaluation, transcription, and data support. Pilot-ready. Review-based. Remote-first.",
+  icons: {
+    icon: "/favicon.png"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

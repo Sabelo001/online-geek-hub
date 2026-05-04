@@ -15,6 +15,7 @@ const mobileNavLinks = [
   { href: "/#domains", label: "Domains" },
   { href: "/scholars", label: "Scholars" },
   { href: "/#training", label: "Training" },
+  { href: "/insights", label: "Insights" },
   { href: "/vendor-profile", label: "Vendor Profile" },
   { href: "/contact", label: "Contact" },
   { href: "/login", label: "Login" },

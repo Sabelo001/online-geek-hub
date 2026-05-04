@@ -1,7 +1,12 @@
 import { BadgeCheck, Bot, BriefcaseBusiness, CheckCircle2, ClipboardCheck, FileText, Headphones, Laptop, Layers3, Mail, MessageSquareText, ShieldCheck, Tags, Users } from "lucide-react";
 import Link from "next/link";
-import { BrandLogo } from "@/components/logo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicNavbar } from "@/components/public-navbar";
+
+export const metadata = {
+  title: "Vendor Profile — Online Geek Hub",
+  description: "Online Geek Hub vendor profile. Trained remote AI workforce offering annotation, evaluation, transcription, and data support for pilot projects."
+};
 
 const work = [
   {
@@ -138,7 +143,7 @@ export default function VendorProfilePage() {
               const Icon = item.icon;
               return (
                 <article key={item.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="grid h-12 w-12 place-items-center rounded-xl bg-cyan-50 text-cyan-700">
+                  <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-[#0F172A] text-[#0A6EFF]">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="mt-5 text-xl font-bold text-slate-950">{item.title}</h3>
@@ -237,12 +242,7 @@ export default function VendorProfilePage() {
         </div>
       </section>
 
-      <footer className="bg-[#071527] px-4 py-8 text-slate-300 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <BrandLogo href="/" dark size="sm" />
-          <span className="text-sm">Online Geek Hub &copy; 2026. All rights reserved.</span>
-        </div>
-      </footer>
+      <PublicFooter />
     </main>
   );
 }

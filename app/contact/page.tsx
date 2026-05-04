@@ -1,9 +1,14 @@
 import { BriefcaseBusiness, FileText, GraduationCap, HelpCircle, Mail, Send } from "lucide-react";
 import Link from "next/link";
 import { createContactInquiry } from "@/lib/actions";
-import { BrandLogo } from "@/components/logo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicNavbar } from "@/components/public-navbar";
 import { Card, Select, TextArea, TextInput } from "@/components/ui";
+
+export const metadata = {
+  title: "Contact — Online Geek Hub",
+  description: "Get in touch with Online Geek Hub for pilot projects, vendor discussions, Scholar program inquiries, and AI data work support."
+};
 
 const contactOptions = [
   {
@@ -138,12 +143,7 @@ export default async function ContactPage({
         </div>
       </section>
 
-      <footer className="bg-[#071527] px-4 py-8 text-slate-300 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <BrandLogo href="/" dark size="sm" />
-          <span className="text-sm">Online Geek Hub &copy; 2026. All rights reserved.</span>
-        </div>
-      </footer>
+      <PublicFooter />
     </main>
   );
 }

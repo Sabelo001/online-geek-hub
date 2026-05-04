@@ -1,7 +1,12 @@
 import { ArrowRight, BadgeCheck, Bot, BriefcaseBusiness, CheckCircle2, FileText, Headphones, Laptop, Lock, MessageSquareText, ShieldCheck, Sparkles, Tags, Users } from "lucide-react";
 import Link from "next/link";
-import { BrandLogo } from "@/components/logo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicNavbar } from "@/components/public-navbar";
+
+export const metadata = {
+  title: "Scholars — Online Geek Hub",
+  description: "Meet the Online Geek Hub Scholar team. Trained contributors prepared for AI data work, transcription, evaluation, and remote operations."
+};
 
 const skills = [
   {
@@ -253,12 +258,7 @@ export default function ScholarsPage() {
         </div>
       </section>
 
-      <footer className="bg-[#071527] px-4 py-8 text-slate-300 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <BrandLogo href="/" dark size="sm" />
-          <span className="text-sm">Online Geek Hub &copy; 2026. All rights reserved.</span>
-        </div>
-      </footer>
+      <PublicFooter />
     </main>
   );
 }
