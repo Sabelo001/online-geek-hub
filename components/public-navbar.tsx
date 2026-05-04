@@ -3,7 +3,6 @@ import { Menu } from "lucide-react";
 import { BrandLogo } from "@/components/logo";
 
 const desktopNavLinks = [
-  { href: "/", label: "Home" },
   { href: "/#solutions", label: "Solutions" },
   { href: "/scholars", label: "Scholars" },
   { href: "/#training", label: "Training" },
@@ -11,7 +10,6 @@ const desktopNavLinks = [
 ];
 
 const mobileNavLinks = [
-  { href: "/", label: "Home" },
   { href: "/#solutions", label: "Solutions" },
   { href: "/#domains", label: "Domains" },
   { href: "/scholars", label: "Scholars" },
