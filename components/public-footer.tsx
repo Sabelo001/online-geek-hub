@@ -31,6 +31,7 @@ export function PublicFooter() {
           <div className="mt-4 grid gap-2 text-sm">
             <Link href="/vendor-profile" className="hover:text-white">Vendor Profile</Link>
             <Link href="/scholars" className="hover:text-white">Scholars</Link>
+            <Link href="/insights" className="hover:text-white">Insights</Link>
             <a href="/#training" className="hover:text-white">Training</a>
             <a href="/#domains" className="hover:text-white">Domains</a>
             <Link href="/contact" className="hover:text-white">Contact</Link>
