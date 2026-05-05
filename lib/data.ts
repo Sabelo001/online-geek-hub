@@ -1,6 +1,20 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireProfile } from "@/lib/auth";
-import type { CvProfile, Payment, PracticeTask, Profile, Submission, TrainingModule } from "@/lib/types";
+import type {
+  CvProfile,
+  Invoice,
+  InvoiceStatus,
+  Payment,
+  PracticeTask,
+  Profile,
+  Project,
+  ProjectInvitation,
+  ProjectWithInvitations,
+  ScholarDocument,
+  Submission,
+  TrainingModule,
+  TrainingProgress
+} from "@/lib/types";
 
 export async function getDashboardMetrics() {
   const supabase = await createSupabaseServerClient();
@@ -37,9 +51,17 @@ export async function getPublishedModules(): Promise<TrainingModule[]> {
     .from("training_modules")
     .select("*")
     .eq("status", "published")
+    .order("track", { ascending: true })
+    .order("step_number", { ascending: true })
     .order("category", { ascending: true })
     .order("created_at", { ascending: false });
   return (data ?? []) as TrainingModule[];
+}
+
+export async function getTrainingProgress(userId: string): Promise<TrainingProgress[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.from("training_progress").select("*").eq("user_id", userId);
+  return (data ?? []) as TrainingProgress[];
 }
 
 export async function getModule(id: string): Promise<TrainingModule | null> {
@@ -69,6 +91,31 @@ export async function getTasks(): Promise<PracticeTask[]> {
   return (data ?? []) as PracticeTask[];
 }
 
+export async function getProjectInvitations(profileId: string): Promise<ProjectInvitation[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("project_invitations")
+    .select("*")
+    .eq("scholar_id", profileId)
+    .order("invited_at", { ascending: false });
+  return (data ?? []) as ProjectInvitation[];
+}
+
+export async function getProjects(): Promise<Project[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+  return (data ?? []) as Project[];
+}
+
+export async function getProjectsWithInvitations(): Promise<ProjectWithInvitations[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("projects")
+    .select("*, invitations:project_invitations(id,status,responded_at,scholar_id,profiles(full_name,email))")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as ProjectWithInvitations[];
+}
+
 export async function getTask(id: string): Promise<PracticeTask | null> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from("practice_tasks").select("*").eq("id", id).single();
@@ -90,6 +137,60 @@ export async function getPayments(profileId?: string): Promise<Payment[]> {
   if (profileId) query = query.eq("trainee_id", profileId);
   const { data } = await query;
   return (data ?? []) as Payment[];
+}
+
+export type InvoiceFilters = {
+  scholarId?: string;
+  status?: InvoiceStatus;
+  dateFrom?: string;
+  dateTo?: string;
+};
+
+export async function getInvoices(profile: Profile, filters: InvoiceFilters = {}): Promise<Invoice[]> {
+  const supabase = await createSupabaseServerClient();
+  let query = supabase
+    .from("invoices")
+    .select("*, profiles(full_name,email), projects(title,project_type)")
+    .order("issued_at", { ascending: false });
+
+  if (profile.role !== "admin") {
+    query = query.eq("scholar_id", profile.id);
+  } else {
+    if (filters.scholarId) query = query.eq("scholar_id", filters.scholarId);
+    if (filters.status) query = query.eq("status", filters.status);
+    if (filters.dateFrom) query = query.gte("issued_at", filters.dateFrom);
+    if (filters.dateTo) query = query.lte("issued_at", `${filters.dateTo}T23:59:59.999Z`);
+  }
+
+  const { data } = await query;
+  return (data ?? []) as Invoice[];
+}
+
+export async function getScholarDocuments(profile: Profile): Promise<ScholarDocument[]> {
+  const supabase = await createSupabaseServerClient();
+  let query = supabase
+    .from("scholar_documents")
+    .select("*, profiles!scholar_documents_scholar_id_fkey(full_name,email), sender:profiles!scholar_documents_uploaded_by_fkey(full_name,email)")
+    .order("created_at", { ascending: false });
+
+  if (profile.role !== "admin") query = query.eq("scholar_id", profile.id);
+
+  const { data } = await query;
+  return (data ?? []) as ScholarDocument[];
+}
+
+export async function getScholarDocumentSignedUrl(document: Pick<ScholarDocument, "file_url" | "filename">) {
+  await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.storage.from("scholar-docs").createSignedUrl(document.file_url, 60 * 15, {
+    download: document.filename
+  });
+
+  if (error) {
+    return { url: null, error: error.message };
+  }
+
+  return { url: data.signedUrl, error: null };
 }
 
 export async function getProfiles(): Promise<Profile[]> {

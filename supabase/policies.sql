@@ -5,26 +5,36 @@
 -- Turn on RLS for every public app table.
 alter table public.profiles enable row level security;
 alter table public.training_modules enable row level security;
+alter table public.training_progress enable row level security;
 alter table public.cv_profiles enable row level security;
 alter table public.contact_inquiries enable row level security;
 alter table public.practice_tasks enable row level security;
 alter table public.task_assignments enable row level security;
+alter table public.projects enable row level security;
+alter table public.project_invitations enable row level security;
 alter table public.submissions enable row level security;
 alter table public.availability enable row level security;
 alter table public.payments enable row level security;
+alter table public.invoices enable row level security;
+alter table public.scholar_documents enable row level security;
 alter table public.announcements enable row level security;
 
 grant usage on schema public to anon, authenticated;
 grant select, insert, update on public.profiles to authenticated;
 grant select, insert, update, delete on public.training_modules to authenticated;
+grant select, insert, update on public.training_progress to authenticated;
 grant select, insert, update, delete on public.cv_profiles to authenticated;
 grant insert on public.contact_inquiries to anon, authenticated;
 grant select, update on public.contact_inquiries to authenticated;
 grant select, insert, update on public.practice_tasks to authenticated;
 grant select, insert, update on public.task_assignments to authenticated;
+grant select, insert, update on public.projects to authenticated;
+grant select, insert, update on public.project_invitations to authenticated;
 grant select, insert, update on public.submissions to authenticated;
 grant select, insert, update on public.availability to authenticated;
 grant select, insert, update on public.payments to authenticated;
+grant select, insert, update on public.invoices to authenticated;
+grant select, insert, update on public.scholar_documents to authenticated;
 grant select, insert, update on public.announcements to authenticated;
 
 -- Helper: return the role for the currently signed-in user.
@@ -89,6 +99,7 @@ drop policy if exists "profiles_update_self_or_admin" on public.profiles;
 drop policy if exists "profiles_self_insert" on public.profiles;
 drop policy if exists "profiles_self_read" on public.profiles;
 drop policy if exists "profiles_self_update" on public.profiles;
+drop policy if exists "admin_read_profiles" on public.profiles;
 drop policy if exists "reviewer_read_profiles" on public.profiles;
 
 drop policy if exists "admin_all_training_modules" on public.training_modules;
@@ -97,6 +108,10 @@ drop policy if exists "modules_admin_write" on public.training_modules;
 drop policy if exists "published_training_modules_read" on public.training_modules;
 drop policy if exists "trainee_read_training_modules" on public.training_modules;
 drop policy if exists "reviewer_read_training_modules" on public.training_modules;
+
+drop policy if exists "admin_all_training_progress" on public.training_progress;
+drop policy if exists "training_progress_self_read" on public.training_progress;
+drop policy if exists "training_progress_self_insert" on public.training_progress;
 
 drop policy if exists "admin_read_cv_profiles" on public.cv_profiles;
 drop policy if exists "reviewer_read_cv_profiles" on public.cv_profiles;
@@ -121,6 +136,14 @@ drop policy if exists "assignments_admin_write" on public.task_assignments;
 drop policy if exists "reviewer_read_task_assignments" on public.task_assignments;
 drop policy if exists "trainee_read_own_task_assignments" on public.task_assignments;
 
+drop policy if exists "admin_all_projects" on public.projects;
+drop policy if exists "reviewer_read_projects" on public.projects;
+
+drop policy if exists "admin_all_project_invitations" on public.project_invitations;
+drop policy if exists "reviewer_read_project_invitations" on public.project_invitations;
+drop policy if exists "scholar_read_own_project_invitations" on public.project_invitations;
+drop policy if exists "scholar_update_own_project_invitations" on public.project_invitations;
+
 drop policy if exists "admin_all_submissions" on public.submissions;
 drop policy if exists "submissions_scoped_read" on public.submissions;
 drop policy if exists "submissions_trainee_insert" on public.submissions;
@@ -143,6 +166,14 @@ drop policy if exists "admin_all_payments" on public.payments;
 drop policy if exists "payments_scoped_read" on public.payments;
 drop policy if exists "payments_admin_write" on public.payments;
 drop policy if exists "trainee_read_own_payments" on public.payments;
+
+drop policy if exists "admin_all_invoices" on public.invoices;
+drop policy if exists "scholar_read_own_invoices" on public.invoices;
+
+drop policy if exists "admin_all_scholar_documents" on public.scholar_documents;
+drop policy if exists "scholar_read_own_documents" on public.scholar_documents;
+drop policy if exists "scholar_upload_own_documents" on public.scholar_documents;
+drop policy if exists "scholar_acknowledge_own_admin_documents" on public.scholar_documents;
 
 drop policy if exists "admin_all_announcements" on public.announcements;
 drop policy if exists "announcements_read_authenticated" on public.announcements;
@@ -170,6 +201,11 @@ to authenticated
 using (id = auth.uid())
 with check (id = auth.uid());
 
+create policy "admin_read_profiles"
+on public.profiles for select
+to authenticated
+using (public.is_admin());
+
 -- Training modules
 -- Admin can manage all modules. Other signed-in users can read published modules.
 create policy "admin_all_training_modules"
@@ -182,6 +218,24 @@ create policy "published_training_modules_read"
 on public.training_modules for select
 to authenticated
 using (status = 'published');
+
+-- Training progress
+-- Admins can review progress. Scholars can read and complete their own modules.
+create policy "admin_all_training_progress"
+on public.training_progress for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "training_progress_self_read"
+on public.training_progress for select
+to authenticated
+using (user_id = auth.uid());
+
+create policy "training_progress_self_insert"
+on public.training_progress for insert
+to authenticated
+with check (user_id = auth.uid());
 
 -- CV profiles
 -- Free for all signed-in users. Users manage their own CVs; admins and
@@ -277,6 +331,44 @@ on public.task_assignments for select
 to authenticated
 using (trainee_id = auth.uid());
 
+-- Projects
+-- Admins manage projects. Reviewers can read project setup details.
+create policy "admin_all_projects"
+on public.projects for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "reviewer_read_projects"
+on public.projects for select
+to authenticated
+using (public.is_reviewer());
+
+-- Project invitations
+-- Admin can manage invitations. Reviewers can read them. Scholars can read and
+-- respond to only their own invitations.
+create policy "admin_all_project_invitations"
+on public.project_invitations for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "reviewer_read_project_invitations"
+on public.project_invitations for select
+to authenticated
+using (public.is_reviewer());
+
+create policy "scholar_read_own_project_invitations"
+on public.project_invitations for select
+to authenticated
+using (scholar_id = auth.uid());
+
+create policy "scholar_update_own_project_invitations"
+on public.project_invitations for update
+to authenticated
+using (scholar_id = auth.uid())
+with check (scholar_id = auth.uid());
+
 -- Submissions
 -- Admin can manage all submissions. Reviewers can read and update submissions for scoring.
 -- Trainees can create and read only their own submissions.
@@ -353,6 +445,48 @@ create policy "trainee_read_own_payments"
 on public.payments for select
 to authenticated
 using (trainee_id = auth.uid());
+
+-- Invoices
+-- Admin can manage all invoices. Scholars can read their own invoices only.
+create policy "admin_all_invoices"
+on public.invoices for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "scholar_read_own_invoices"
+on public.invoices for select
+to authenticated
+using (scholar_id = auth.uid());
+
+-- Scholar documents
+-- Admin can manage all document records. Scholars can upload, read, and
+-- acknowledge only their own documents.
+create policy "admin_all_scholar_documents"
+on public.scholar_documents for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "scholar_read_own_documents"
+on public.scholar_documents for select
+to authenticated
+using (scholar_id = auth.uid());
+
+create policy "scholar_upload_own_documents"
+on public.scholar_documents for insert
+to authenticated
+with check (
+  scholar_id = auth.uid()
+  and uploaded_by = auth.uid()
+  and sent_by_admin = false
+);
+
+create policy "scholar_acknowledge_own_admin_documents"
+on public.scholar_documents for update
+to authenticated
+using (scholar_id = auth.uid() and sent_by_admin = true)
+with check (scholar_id = auth.uid() and sent_by_admin = true);
 
 -- Announcements
 -- Admin can manage announcements. Any signed-in user can read announcements.

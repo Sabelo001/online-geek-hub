@@ -1,24 +1,32 @@
 import Link from "next/link";
-import { BarChart3, BookOpen, ClipboardCheck, Clock3, CreditCard, FileText, Home, Trophy, Users } from "lucide-react";
+import { BarChart3, BookOpen, BriefcaseBusiness, ClipboardCheck, Clock3, CreditCard, FileText, FolderOpen, Home, ReceiptText, Trophy, UserCircle, Users } from "lucide-react";
 import { signOut } from "@/lib/actions";
 import { canManage, canReview } from "@/lib/auth";
 import { BrandLogo } from "@/components/logo";
 import type { Profile } from "@/lib/types";
 
-const baseLinks = [
+const primaryLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/cv", label: "CV Generator", icon: FileText },
+  { href: "/profile", label: "Profile", icon: UserCircle },
   { href: "/training", label: "Training", icon: BookOpen },
-  { href: "/tasks", label: "Practice", icon: ClipboardCheck },
+  { href: "/cv", label: "CV Generator", icon: FileText },
+  { href: "/invoices", label: "Invoices", icon: ReceiptText },
+  { href: "/documents", label: "Documents", icon: FolderOpen },
+  { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/practice", label: "Practice", icon: ClipboardCheck },
+  { href: "/tasks", label: "Tasks & Projects", icon: BriefcaseBusiness }
+];
+
+const secondaryLinks = [
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
-  { href: "/availability", label: "Availability", icon: Clock3 },
-  { href: "/payments", label: "Payments", icon: CreditCard }
+  { href: "/availability", label: "Availability", icon: Clock3 }
 ];
 
 export function AppShell({ profile, children }: { profile: Profile; children: React.ReactNode }) {
   const links = [
-    ...baseLinks,
+    ...primaryLinks,
     ...(canReview(profile.role) ? [{ href: "/reviews", label: "Reviews", icon: BarChart3 }] : []),
+    ...secondaryLinks,
     ...(canManage(profile.role) ? [{ href: "/admin", label: "Admin", icon: Users }] : [])
   ];
 

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireProfile, requireRole } from "@/lib/auth";
-import { TRAINING_CATEGORIES, type CvTemplate } from "@/lib/types";
+import { TRAINING_CATEGORIES, TRAINING_TRACKS, type CvTemplate, type InvoiceStatus, type ScholarDocumentType } from "@/lib/types";
 
 function value(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -119,6 +119,30 @@ function safeInquiryType(formData: FormData) {
   return "general_inquiry";
 }
 
+function safeProjectType(formData: FormData) {
+  const projectType = value(formData, "project_type");
+  if (
+    [
+      "Data Annotation",
+      "Transcription",
+      "AI Evaluation",
+      "Prompt Review",
+      "Remote Operations"
+    ].includes(projectType)
+  ) {
+    return projectType;
+  }
+  return "Data Annotation";
+}
+
+function safeDocumentType(formData: FormData): ScholarDocumentType {
+  const documentType = value(formData, "type");
+  if (["ID Document", "Certificate", "Portfolio", "Other"].includes(documentType)) {
+    return documentType as ScholarDocumentType;
+  }
+  return "Other";
+}
+
 function cvPayload(formData: FormData, userId: string) {
   return {
     user_id: userId,
@@ -160,6 +184,18 @@ function safeCategory(formData: FormData) {
 
 function safeModuleStatus(formData: FormData) {
   return value(formData, "status") === "published" ? "published" : "draft";
+}
+
+function safeTrainingTrack(formData: FormData) {
+  const track = value(formData, "track");
+  if (TRAINING_TRACKS.includes(track as (typeof TRAINING_TRACKS)[number])) return track;
+  return "Week 1 Onboarding";
+}
+
+function safeStepNumber(formData: FormData) {
+  const step = Number(value(formData, "step_number"));
+  if (Number.isInteger(step) && step > 0 && step <= 50) return step;
+  return null;
 }
 
 function safeFileName(name: string) {
@@ -204,10 +240,13 @@ export async function createTrainingModule(formData: FormData) {
   const { error } = await supabase.from("training_modules").insert({
     id: moduleId,
     title: value(formData, "title"),
-    description: value(formData, "description"),
+    description: value(formData, "description") || value(formData, "content").slice(0, 180) || "Training material for Online Geek Hub Scholars.",
     content: value(formData, "content"),
     video_url: value(formData, "video_url") || null,
     category: safeCategory(formData),
+    track: safeTrainingTrack(formData),
+    step_number: safeStepNumber(formData),
+    estimated_time: optionalValue(formData, "estimated_time"),
     status: safeModuleStatus(formData),
     ...(upload.data ?? {}),
     created_by: profile.id
@@ -236,10 +275,13 @@ export async function updateTrainingModule(moduleId: string, formData: FormData)
     .from("training_modules")
     .update({
       title: value(formData, "title"),
-      description: value(formData, "description"),
+      description: value(formData, "description") || value(formData, "content").slice(0, 180) || "Training material for Online Geek Hub Scholars.",
       content: value(formData, "content"),
       video_url: value(formData, "video_url") || null,
       category: safeCategory(formData),
+      track: safeTrainingTrack(formData),
+      step_number: safeStepNumber(formData),
+      estimated_time: optionalValue(formData, "estimated_time"),
       status: safeModuleStatus(formData),
       ...(upload.data ?? {})
     })
@@ -260,6 +302,59 @@ export async function updateTrainingModule(moduleId: string, formData: FormData)
   revalidatePath("/training");
   revalidatePath(`/training/${moduleId}`);
   redirect("/admin?message=Training module updated.");
+}
+
+export async function publishTrainingMaterial(formData: FormData) {
+  const profile = await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const moduleId = randomUUID();
+  const upload = await uploadTrainingMaterial(formData, moduleId);
+  if (upload.error) actionError("/training", `Training material was not uploaded: ${upload.error}`);
+
+  const content = value(formData, "content");
+  const { error } = await supabase.from("training_modules").insert({
+    id: moduleId,
+    title: value(formData, "title"),
+    description: content.slice(0, 180) || "Published training material for Online Geek Hub Scholars.",
+    content,
+    video_url: /^https?:\/\//i.test(content) ? content : null,
+    category: safeTrainingTrack(formData),
+    track: safeTrainingTrack(formData),
+    step_number: safeStepNumber(formData),
+    estimated_time: optionalValue(formData, "estimated_time"),
+    status: "published",
+    ...(upload.data ?? {}),
+    created_by: profile.id
+  });
+
+  if (error) {
+    if (upload.data?.material_path) {
+      await supabase.storage.from("training-files").remove([upload.data.material_path]);
+    }
+    actionError("/training", `Training material was not published: ${error.message}`);
+  }
+
+  revalidatePath("/training");
+  redirect("/training?message=Training material published.");
+}
+
+export async function completeTrainingModule(moduleId: string) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("training_progress").upsert(
+    {
+      user_id: profile.id,
+      module_id: moduleId,
+      completed_at: new Date().toISOString()
+    },
+    { onConflict: "user_id,module_id" }
+  );
+
+  if (error) actionError(`/training/${moduleId}`, `Module completion was not saved: ${error.message}`);
+
+  revalidatePath("/training");
+  revalidatePath(`/training/${moduleId}`);
+  redirect(`/training/${moduleId}?message=Module marked complete.`);
 }
 
 export async function deleteTrainingModule(moduleId: string, materialPath: string | null) {
@@ -401,4 +496,331 @@ export async function updateAvailability(formData: FormData) {
   if (error) actionError("/availability", `Availability was not saved: ${error.message}`);
   revalidatePath("/availability");
   redirect("/availability?message=Availability saved.");
+}
+
+export async function updateProfileInfo(formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const firstName = value(formData, "first_name");
+  const lastName = value(formData, "last_name");
+  const fullName = [firstName, lastName].filter(Boolean).join(" ") || profile.full_name;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      first_name: firstName || null,
+      last_name: lastName || null,
+      full_name: fullName,
+      phone: optionalValue(formData, "phone"),
+      location: optionalValue(formData, "location")
+    })
+    .eq("id", profile.id);
+
+  if (error) actionError("/profile", `Profile was not updated: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Profile updated.");
+}
+
+function parseSkills(formData: FormData) {
+  const raw = value(formData, "skills");
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((skill) => String(skill).trim())
+      .filter(Boolean)
+      .slice(0, 30);
+  } catch {
+    return [];
+  }
+}
+
+export async function updateProfileSkills(formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("profiles").update({ skills: parseSkills(formData) }).eq("id", profile.id);
+
+  if (error) actionError("/profile", `Skills were not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Skills saved.");
+}
+
+export async function updateProfileBio(formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const bio = value(formData, "bio").slice(0, 400);
+  const { error } = await supabase.from("profiles").update({ bio: bio || null }).eq("id", profile.id);
+
+  if (error) actionError("/profile", `Bio was not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Bio saved.");
+}
+
+const allowedProfilePhotoTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+const allowedScholarDocumentTypes = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+]);
+
+function extensionForImageType(type: string) {
+  if (type === "image/png") return "png";
+  if (type === "image/webp") return "webp";
+  return "jpg";
+}
+
+export async function uploadProfilePhoto(formData: FormData) {
+  const profile = await requireProfile();
+  const file = formData.get("photo");
+
+  if (!(file instanceof File) || file.size === 0) actionError("/profile", "Choose a profile photo to upload.");
+  if (!allowedProfilePhotoTypes.has(file.type)) actionError("/profile", "Profile photo must be a JPG, PNG, or WebP image.");
+  if (file.size > 2 * 1024 * 1024) actionError("/profile", "Profile photo must be 2MB or smaller.");
+
+  const supabase = await createSupabaseServerClient();
+  const path = `${profile.id}_avatar.${extensionForImageType(file.type)}`;
+  const { error: uploadError } = await supabase.storage.from("scholar-photos").upload(path, file, {
+    contentType: file.type,
+    upsert: true
+  });
+
+  if (uploadError) actionError("/profile", `Profile photo was not uploaded: ${uploadError.message}`);
+
+  const { error } = await supabase.from("profiles").update({ avatar_path: path }).eq("id", profile.id);
+  if (error) actionError("/profile", `Profile photo was uploaded but not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Profile photo updated.");
+}
+
+export async function uploadScholarCv(formData: FormData) {
+  const profile = await requireProfile();
+  const file = formData.get("cv");
+
+  if (!(file instanceof File) || file.size === 0) actionError("/profile", "Choose a PDF CV to upload.");
+  if (file.type !== "application/pdf") actionError("/profile", "CV must be a PDF file.");
+  if (file.size > 5 * 1024 * 1024) actionError("/profile", "CV must be 5MB or smaller.");
+
+  const supabase = await createSupabaseServerClient();
+  const path = `${profile.id}_cv.pdf`;
+  const { error: uploadError } = await supabase.storage.from("scholar-cvs").upload(path, file, {
+    contentType: "application/pdf",
+    upsert: true
+  });
+
+  if (uploadError) actionError("/profile", `CV was not uploaded: ${uploadError.message}`);
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      cv_path: path,
+      cv_name: file.name,
+      cv_size: file.size,
+      cv_uploaded_at: new Date().toISOString()
+    })
+    .eq("id", profile.id);
+
+  if (error) actionError("/profile", `CV was uploaded but not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=CV uploaded.");
+}
+
+async function uploadScholarDocFile(file: File, folder: string) {
+  if (!allowedScholarDocumentTypes.has(file.type)) {
+    return { path: null, error: "Document must be a PDF, DOC, or DOCX file." };
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    return { path: null, error: "Document must be 10MB or smaller." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const path = `${folder}/${randomUUID()}-${safeFileName(file.name)}`;
+  const { error } = await supabase.storage.from("scholar-docs").upload(path, file, {
+    contentType: file.type,
+    upsert: false
+  });
+
+  if (error) return { path: null, error: error.message };
+  return { path, error: null };
+}
+
+export async function uploadScholarDocument(formData: FormData) {
+  const profile = await requireProfile();
+  const file = formData.get("document");
+
+  if (!(file instanceof File) || file.size === 0) actionError("/documents", "Choose a document to upload.");
+
+  const upload = await uploadScholarDocFile(file, profile.id);
+  if (upload.error || !upload.path) actionError("/documents", `Document was not uploaded: ${upload.error ?? "No storage path returned."}`);
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("scholar_documents").insert({
+    scholar_id: profile.id,
+    filename: file.name,
+    file_url: upload.path,
+    type: safeDocumentType(formData),
+    uploaded_by: profile.id,
+    sent_by_admin: false
+  });
+
+  if (error) {
+    await supabase.storage.from("scholar-docs").remove([upload.path]);
+    actionError("/documents", `Document was uploaded but not saved: ${error.message}`);
+  }
+
+  revalidatePath("/documents");
+  redirect("/documents?message=Document uploaded.");
+}
+
+export async function acknowledgeScholarDocument(documentId: string) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("scholar_documents")
+    .update({ acknowledged_at: new Date().toISOString() })
+    .eq("id", documentId)
+    .eq("scholar_id", profile.id)
+    .eq("sent_by_admin", true);
+
+  if (error) actionError("/documents", `Document was not acknowledged: ${error.message}`);
+
+  revalidatePath("/documents");
+  redirect("/documents?message=Document acknowledged.");
+}
+
+export async function sendScholarDocument(formData: FormData) {
+  const profile = await requireRole(["admin"]);
+  const file = formData.get("document");
+
+  if (!(file instanceof File) || file.size === 0) actionError("/documents", "Choose a document to send.");
+
+  const supabase = await createSupabaseServerClient();
+  const recipientMode = value(formData, "recipient_mode") === "all" ? "all" : "specific";
+  let scholarIds = formData.getAll("scholar_ids").map((id) => String(id)).filter(Boolean);
+
+  if (recipientMode === "all") {
+    const { data, error } = await supabase.from("profiles").select("id").eq("role", "trainee");
+    if (error) actionError("/documents", `Scholar list could not be loaded: ${error.message}`);
+    scholarIds = (data ?? []).map((item) => item.id);
+  }
+
+  if (!scholarIds.length) actionError("/documents", "Choose at least one Scholar recipient.");
+
+  const upload = await uploadScholarDocFile(file, `admin/${profile.id}`);
+  if (upload.error || !upload.path) actionError("/documents", `Document was not uploaded: ${upload.error ?? "No storage path returned."}`);
+
+  const title = value(formData, "title") || file.name;
+  const rows = scholarIds.map((scholarId) => ({
+    scholar_id: scholarId,
+    filename: title,
+    file_url: upload.path,
+    type: "Agreement",
+    uploaded_by: profile.id,
+    sent_by_admin: true
+  }));
+
+  const { error } = await supabase.from("scholar_documents").insert(rows);
+  if (error) {
+    await supabase.storage.from("scholar-docs").remove([upload.path]);
+    actionError("/documents", `Document was uploaded but not sent: ${error.message}`);
+  }
+
+  revalidatePath("/documents");
+  redirect(`/documents?message=${encodeURIComponent(`Document sent to ${scholarIds.length} scholars.`)}`);
+}
+
+export async function respondToProjectInvitation(invitationId: string, response: "accepted" | "declined") {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("project_invitations")
+    .update({
+      status: response,
+      responded_at: new Date().toISOString(),
+      ...(response === "accepted" ? { start_date: new Date().toISOString().slice(0, 10) } : {})
+    })
+    .eq("id", invitationId)
+    .eq("scholar_id", profile.id)
+    .eq("status", "pending");
+
+  if (error) actionError("/tasks", `Project invitation was not updated: ${error.message}`);
+
+  revalidatePath("/tasks");
+  redirect(`/tasks?tab=${response === "accepted" ? "active" : "pending"}&message=${encodeURIComponent(response === "accepted" ? "Project accepted." : "Project declined.")}`);
+}
+
+export async function createProject(formData: FormData) {
+  const profile = await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("projects").insert({
+    title: value(formData, "title"),
+    project_type: safeProjectType(formData),
+    description: value(formData, "description"),
+    deadline: optionalValue(formData, "deadline"),
+    status: "active",
+    created_by: profile.id
+  });
+
+  if (error) actionError("/tasks", `Project was not created: ${error.message}`);
+
+  revalidatePath("/tasks");
+  redirect("/tasks?message=Project created.");
+}
+
+export async function sendProjectInvitations(formData: FormData) {
+  await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const projectId = value(formData, "project_id");
+  const scholarIds = formData.getAll("scholar_ids").map((id) => String(id)).filter(Boolean);
+
+  if (!projectId) actionError("/tasks", "Choose a project before sending invitations.");
+  if (!scholarIds.length) actionError("/tasks", "Choose at least one Scholar to invite.");
+
+  const { data: project, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
+  if (projectError || !project) actionError("/tasks", `Project was not found: ${projectError?.message ?? "No project row returned."}`);
+
+  const rows = scholarIds.map((scholarId) => ({
+    project_id: project.id,
+    scholar_id: scholarId,
+    status: "pending",
+    project_title: project.title,
+    project_type: project.project_type,
+    short_description: project.description,
+    instructions: project.description,
+    invitation_message: optionalValue(formData, "message"),
+    deadline: project.deadline
+  }));
+
+  const { error } = await supabase.from("project_invitations").upsert(rows, {
+    onConflict: "project_id,scholar_id",
+    ignoreDuplicates: false
+  });
+
+  if (error) actionError("/tasks", `Invitations were not sent: ${error.message}`);
+
+  revalidatePath("/tasks");
+  redirect(`/tasks?message=${encodeURIComponent(`Invitations sent to ${scholarIds.length} scholars`)}`);
+}
+
+export async function updateInvoiceStatus(invoiceId: string, status: Extract<InvoiceStatus, "approved" | "rejected" | "paid">) {
+  await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("invoices")
+    .update({
+      status,
+      paid_at: status === "paid" ? new Date().toISOString() : null
+    })
+    .eq("id", invoiceId);
+
+  if (error) actionError("/invoices", `Invoice was not updated: ${error.message}`);
+
+  revalidatePath("/invoices");
+  redirect("/invoices?message=Invoice updated.");
 }

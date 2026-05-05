@@ -51,6 +51,20 @@ end $$;
 
 do $$
 begin
+  create type public.project_invitation_status as enum ('pending', 'accepted', 'declined', 'completed');
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  create type public.project_status as enum ('draft', 'active', 'closed');
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
   create type public.submission_status as enum ('submitted', 'approved', 'rejected', 'revision_requested');
 exception
   when duplicate_object then null;
@@ -70,6 +84,13 @@ exception
   when duplicate_object then null;
 end $$;
 
+do $$
+begin
+  create type public.invoice_status as enum ('pending', 'approved', 'paid', 'rejected');
+exception
+  when duplicate_object then null;
+end $$;
+
 -- User profiles are linked 1:1 with Supabase Auth users.
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -81,6 +102,18 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
+alter table public.profiles
+  add column if not exists first_name text,
+  add column if not exists last_name text,
+  add column if not exists location text,
+  add column if not exists skills text[],
+  add column if not exists bio text,
+  add column if not exists avatar_path text,
+  add column if not exists cv_path text,
+  add column if not exists cv_name text,
+  add column if not exists cv_size bigint,
+  add column if not exists cv_uploaded_at timestamptz;
+
 -- Training modules hold beginner-friendly lessons and resources.
 create table if not exists public.training_modules (
   id uuid primary key default gen_random_uuid(),
@@ -89,6 +122,9 @@ create table if not exists public.training_modules (
   content text not null,
   video_url text,
   category text not null,
+  track text not null default 'General',
+  step_number int,
+  estimated_time text,
   status public.training_module_status not null default 'draft',
   material_path text,
   material_name text,
@@ -160,10 +196,22 @@ alter table public.cv_profiles
 
 alter table public.training_modules
   add column if not exists status public.training_module_status not null default 'draft',
+  add column if not exists track text not null default 'General',
+  add column if not exists step_number int,
+  add column if not exists estimated_time text,
   add column if not exists material_path text,
   add column if not exists material_name text,
   add column if not exists material_type text,
   add column if not exists material_size bigint;
+
+-- Training progress unlocks onboarding steps and later domain tracks.
+create table if not exists public.training_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  module_id uuid not null references public.training_modules(id) on delete cascade,
+  completed_at timestamptz not null default now(),
+  unique (user_id, module_id)
+);
 
 -- Practice tasks are internal exercises only. They must not connect to external work platforms.
 create table if not exists public.practice_tasks (
@@ -189,6 +237,39 @@ create table if not exists public.task_assignments (
   status public.assignment_status not null default 'assigned',
   created_at timestamptz not null default now(),
   unique (task_id, trainee_id)
+);
+
+-- Projects are managed by admins and sent to Scholars as invitations.
+create table if not exists public.projects (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  project_type text not null,
+  description text not null,
+  deadline date,
+  status public.project_status not null default 'active',
+  created_by uuid references public.profiles(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+-- Project invitations connect Scholars to real or pilot project opportunities.
+create table if not exists public.project_invitations (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid not null references public.projects(id) on delete cascade,
+  scholar_id uuid not null references public.profiles(id) on delete cascade,
+  status public.project_invitation_status not null default 'pending',
+  project_title text not null,
+  project_type text not null,
+  short_description text not null,
+  instructions text,
+  invitation_message text,
+  invited_at timestamptz not null default now(),
+  responded_at timestamptz,
+  start_date date,
+  deadline date,
+  completed_at timestamptz,
+  score int check (score between 0 and 100),
+  feedback text,
+  unique (project_id, scholar_id)
 );
 
 -- Submissions store trainee answers and reviewer feedback.
@@ -230,6 +311,33 @@ create table if not exists public.payments (
   paid_at timestamptz
 );
 
+-- Invoices track project-based earnings and approval status. Scholars see
+-- their own invoices; admins can review and update all invoice rows.
+create table if not exists public.invoices (
+  id uuid primary key default gen_random_uuid(),
+  scholar_id uuid not null references public.profiles(id) on delete cascade,
+  project_id uuid references public.projects(id) on delete set null,
+  amount numeric(12, 2) not null check (amount >= 0),
+  currency text not null default 'KES' check (currency in ('KES', 'USD')),
+  status public.invoice_status not null default 'pending',
+  issued_at timestamptz not null default now(),
+  paid_at timestamptz,
+  notes text
+);
+
+-- Scholar documents include self-uploaded files and admin-sent agreements.
+create table if not exists public.scholar_documents (
+  id uuid primary key default gen_random_uuid(),
+  scholar_id uuid not null references public.profiles(id) on delete cascade,
+  filename text not null,
+  file_url text not null,
+  type text not null check (type in ('ID Document', 'Certificate', 'Portfolio', 'Other', 'Agreement')),
+  uploaded_by uuid references public.profiles(id) on delete set null,
+  sent_by_admin boolean not null default false,
+  acknowledged_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
 -- Announcements are internal messages for the training group.
 create table if not exists public.announcements (
   id uuid primary key default gen_random_uuid(),
@@ -244,6 +352,10 @@ create index if not exists profiles_role_idx on public.profiles(role);
 create index if not exists profiles_email_idx on public.profiles(email);
 create index if not exists training_modules_category_idx on public.training_modules(category);
 create index if not exists training_modules_status_idx on public.training_modules(status);
+create index if not exists training_modules_track_idx on public.training_modules(track);
+create index if not exists training_modules_step_idx on public.training_modules(step_number);
+create index if not exists training_progress_user_idx on public.training_progress(user_id);
+create index if not exists training_progress_module_idx on public.training_progress(module_id);
 create index if not exists cv_profiles_user_idx on public.cv_profiles(user_id);
 create index if not exists cv_profiles_created_at_idx on public.cv_profiles(created_at);
 create index if not exists contact_inquiries_created_at_idx on public.contact_inquiries(created_at);
@@ -251,6 +363,10 @@ create index if not exists contact_inquiries_status_idx on public.contact_inquir
 create index if not exists practice_tasks_status_idx on public.practice_tasks(status);
 create index if not exists task_assignments_task_idx on public.task_assignments(task_id);
 create index if not exists task_assignments_trainee_idx on public.task_assignments(trainee_id);
+create index if not exists projects_status_idx on public.projects(status);
+create index if not exists project_invitations_scholar_idx on public.project_invitations(scholar_id);
+create index if not exists project_invitations_project_idx on public.project_invitations(project_id);
+create index if not exists project_invitations_status_idx on public.project_invitations(status);
 create index if not exists submissions_status_idx on public.submissions(status);
 create index if not exists submissions_task_idx on public.submissions(task_id);
 create index if not exists submissions_trainee_idx on public.submissions(trainee_id);
@@ -258,6 +374,14 @@ create index if not exists availability_trainee_date_idx on public.availability(
 create index if not exists availability_date_idx on public.availability(date);
 create index if not exists payments_trainee_idx on public.payments(trainee_id);
 create index if not exists payments_status_idx on public.payments(status);
+create index if not exists invoices_scholar_idx on public.invoices(scholar_id);
+create index if not exists invoices_project_idx on public.invoices(project_id);
+create index if not exists invoices_status_idx on public.invoices(status);
+create index if not exists invoices_issued_at_idx on public.invoices(issued_at);
+create index if not exists scholar_documents_scholar_idx on public.scholar_documents(scholar_id);
+create index if not exists scholar_documents_uploaded_by_idx on public.scholar_documents(uploaded_by);
+create index if not exists scholar_documents_sent_by_admin_idx on public.scholar_documents(sent_by_admin);
+create index if not exists scholar_documents_created_at_idx on public.scholar_documents(created_at);
 
 -- Create a profile automatically whenever someone signs up through Supabase Auth.
 create or replace function public.handle_new_user()

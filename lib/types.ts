@@ -5,6 +5,17 @@ export type CvTemplate = "professional" | "remote_work" | "data_annotation";
 export type CvPlan = "free" | "premium" | "professional_review";
 export type SubmissionStatus = "submitted" | "approved" | "rejected" | "revision_requested";
 export type PaymentStatus = "pending" | "approved" | "paid" | "held";
+export type InvoiceStatus = "pending" | "approved" | "paid" | "rejected";
+export type ScholarDocumentType = "ID Document" | "Certificate" | "Portfolio" | "Other" | "Agreement";
+export type ProjectInvitationStatus = "pending" | "accepted" | "declined" | "completed";
+export type ProjectStatus = "draft" | "active" | "closed";
+export type TrainingTrack =
+  | "Week 1 Onboarding"
+  | "Data Annotation Track"
+  | "Transcription Track"
+  | "AI Evaluation Track"
+  | "Prompt Review Track"
+  | "Remote Operations Track";
 
 export type Profile = {
   id: string;
@@ -12,6 +23,16 @@ export type Profile = {
   email: string;
   role: Role;
   phone: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  location: string | null;
+  skills: string[] | null;
+  bio: string | null;
+  avatar_path: string | null;
+  cv_path: string | null;
+  cv_name: string | null;
+  cv_size: number | null;
+  cv_uploaded_at: string | null;
   status: Status;
   created_at: string;
 };
@@ -23,6 +44,9 @@ export type TrainingModule = {
   content: string;
   video_url: string | null;
   category: string;
+  track: string;
+  step_number: number | null;
+  estimated_time: string | null;
   status: TrainingModuleStatus;
   material_path: string | null;
   material_name: string | null;
@@ -41,6 +65,22 @@ export const TRAINING_CATEGORIES = [
   "Online Hustles",
   "Freelancing Skills"
 ] as const;
+
+export const TRAINING_TRACKS = [
+  "Week 1 Onboarding",
+  "Data Annotation Track",
+  "Transcription Track",
+  "AI Evaluation Track",
+  "Prompt Review Track",
+  "Remote Operations Track"
+] as const;
+
+export type TrainingProgress = {
+  id: string;
+  user_id: string;
+  module_id: string;
+  completed_at: string;
+};
 
 export type CvProfile = {
   id: string;
@@ -101,4 +141,70 @@ export type Payment = {
   payment_method: string | null;
   created_at: string;
   paid_at: string | null;
+};
+
+export type Invoice = {
+  id: string;
+  scholar_id: string;
+  project_id: string | null;
+  amount: number;
+  currency: "KES" | "USD";
+  status: InvoiceStatus;
+  issued_at: string;
+  paid_at: string | null;
+  notes: string | null;
+  profiles?: Pick<Profile, "full_name" | "email"> | null;
+  projects?: Pick<Project, "title" | "project_type"> | null;
+};
+
+export type ScholarDocument = {
+  id: string;
+  scholar_id: string;
+  filename: string;
+  file_url: string;
+  type: ScholarDocumentType;
+  uploaded_by: string | null;
+  sent_by_admin: boolean;
+  acknowledged_at: string | null;
+  created_at: string;
+  profiles?: Pick<Profile, "full_name" | "email"> | null;
+  sender?: Pick<Profile, "full_name" | "email"> | null;
+};
+
+export type ProjectInvitation = {
+  id: string;
+  project_id: string;
+  scholar_id: string;
+  status: ProjectInvitationStatus;
+  project_title: string;
+  project_type: string;
+  short_description: string;
+  instructions: string | null;
+  invitation_message: string | null;
+  invited_at: string;
+  responded_at: string | null;
+  start_date: string | null;
+  deadline: string | null;
+  completed_at: string | null;
+  score: number | null;
+  feedback: string | null;
+};
+
+export type Project = {
+  id: string;
+  title: string;
+  project_type: string;
+  description: string;
+  deadline: string | null;
+  status: ProjectStatus;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type ProjectWithInvitations = Project & {
+  invitations: Array<
+    Pick<ProjectInvitation, "id" | "status" | "responded_at" | "scholar_id"> & {
+      profiles?: Pick<Profile, "full_name" | "email"> | null;
+    }
+  >;
 };

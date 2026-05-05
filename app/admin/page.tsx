@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { getModules, getProfiles } from "@/lib/data";
 import { ProtectedPage } from "@/components/protected-page";
 import { Badge, Card, PageHeader, Select, TextArea, TextInput } from "@/components/ui";
-import { TRAINING_CATEGORIES } from "@/lib/types";
+import { TRAINING_CATEGORIES, TRAINING_TRACKS } from "@/lib/types";
 
 export default async function AdminPage({
   searchParams
@@ -37,6 +37,26 @@ export default async function AdminPage({
                 ))}
               </Select>
             </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700">
+              Track
+              <Select name="track" required defaultValue="Week 1 Onboarding">
+                {TRAINING_TRACKS.map((track) => (
+                  <option key={track} value={track}>
+                    {track}
+                  </option>
+                ))}
+              </Select>
+            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                Step number
+                <TextInput name="step_number" type="number" min="1" max="50" />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                Estimated time
+                <TextInput name="estimated_time" placeholder="30 mins" />
+              </label>
+            </div>
             <label className="grid gap-2 text-sm font-semibold text-slate-700">
               Status
               <Select name="status" required defaultValue="draft">
@@ -136,7 +156,7 @@ export default async function AdminPage({
                       <p className="font-semibold text-slate-900">{module.title}</p>
                       <p className="mt-1 max-w-md text-slate-500">{module.description}</p>
                     </td>
-                    <td className="py-3 pr-4">{module.category}</td>
+                    <td className="py-3 pr-4">{module.track ?? module.category}</td>
                     <td className="py-3 pr-4">
                       <Badge tone={module.status === "published" ? "green" : "amber"}>{module.status}</Badge>
                     </td>
@@ -154,6 +174,15 @@ export default async function AdminPage({
                               </option>
                             ))}
                           </Select>
+                          <Select name="track" required defaultValue={module.track ?? "Week 1 Onboarding"}>
+                            {TRAINING_TRACKS.map((track) => (
+                              <option key={track} value={track}>
+                                {track}
+                              </option>
+                            ))}
+                          </Select>
+                          <TextInput name="step_number" type="number" min="1" max="50" defaultValue={module.step_number ?? ""} />
+                          <TextInput name="estimated_time" defaultValue={module.estimated_time ?? ""} placeholder="30 mins" />
                           <Select name="status" required defaultValue={module.status}>
                             <option value="draft">Draft</option>
                             <option value="published">Published</option>
