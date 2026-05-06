@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, Bot, BriefcaseBusiness, CheckCircle2, FileText, Headphones, Laptop, Lock, MessageSquareText, ShieldCheck, Sparkles, Tags, Users } from "lucide-react";
+import { BadgeCheck, Bot, Briefcase, CheckCircle2, FileText, GraduationCap, Headphones, Laptop, Lock, MessageSquareText, Sparkles, Star, Tags, Users } from "lucide-react";
 import Link from "next/link";
 import { PublicFooter } from "@/components/public-footer";
 import { PublicNavbar } from "@/components/public-navbar";
@@ -111,6 +111,68 @@ const scholarStats = [
   { number: "1", label: "Week to Ready" }
 ];
 
+const scholarDifferentiators = [
+  {
+    title: "Structured Before Deployed",
+    description: "Every Scholar completes a full onboarding track before taking on any project work. No guesswork, no shortcuts."
+  },
+  {
+    title: "Review at Every Stage",
+    description:
+      "Work is not self-assessed. Every submission goes through a review cycle with scores tracked and feedback given at the Scholar level."
+  },
+  {
+    title: "Small Team, Direct Coordination",
+    description:
+      "We are not a crowd platform. Tasks are assigned, tracked, and coordinated by internal team leads - giving clients direct accountability."
+  }
+];
+
+const scholarRoles = [
+  {
+    title: "Data Annotator",
+    description: "Labels text, images, and structured data following task-specific guidelines."
+  },
+  {
+    title: "AI Evaluator",
+    description: "Reviews AI-generated outputs for quality, accuracy, tone, and instruction-following."
+  },
+  {
+    title: "Transcriptionist",
+    description: "Converts audio to text in English and Swahili with speaker and format accuracy."
+  },
+  {
+    title: "Prompt Reviewer",
+    description: "Checks prompts and responses for errors, safety, and guideline compliance."
+  },
+  {
+    title: "Remote Operations",
+    description: "Handles structured digital tasks including data entry, document review, and process execution."
+  },
+  {
+    title: "Research Contributor",
+    description: "Reads, extracts, and organizes information from documents, forms, and research materials."
+  }
+];
+
+const scholarProgramBenefits = [
+  {
+    title: "Structured Training",
+    description: "Complete a guided onboarding track before any live work.",
+    icon: GraduationCap
+  },
+  {
+    title: "Scored and Reviewed",
+    description: "Get feedback on every submission and track your progress.",
+    icon: Star
+  },
+  {
+    title: "Project Placement",
+    description: "Top Scholars get first access to incoming project invitations.",
+    icon: Briefcase
+  }
+];
+
 export default function ScholarsPage() {
   return (
     <main className="public-page min-h-screen bg-white text-slate-950">
@@ -190,6 +252,44 @@ export default function ScholarsPage() {
         </div>
       </section>
 
+      <section className="px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Scholar Roles</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">What Our Scholars Work On</h2>
+            <p className="mt-4 text-lg leading-8 text-slate-600">
+              Our Scholars are matched to tasks based on their training track and review scores.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {scholarRoles.map((role) => (
+              <article key={role.title} className="rounded-lg border border-t-[3px] border-[#e2e8f0] border-t-[#06b6d4] bg-white p-5">
+                <h3 className="text-[14px] font-semibold text-slate-950">{role.title}</h3>
+                <p className="mt-2 text-[13px] font-normal leading-6 text-[#64748b]">{role.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Why OGH Scholars</p>
+          <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">What Sets Our Scholars Apart</h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {scholarDifferentiators.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 transition hover:border-cyan-300 hover:shadow-md"
+              >
+                <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">{item.title}</h3>
+                <p className="mt-4 leading-7 text-slate-600">{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-slate-50 px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Skills represented</p>
@@ -247,6 +347,17 @@ export default function ScholarsPage() {
         </div>
       </section>
 
+      <section className="bg-[#071527] px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-[680px] text-center">
+          <p className="text-[80px] leading-[0.5] text-[#06b6d4]">"</p>
+          <p className="mt-6 text-center text-[20px] font-normal leading-[1.8] text-white">
+            Being part of Online Geek Hub has given me a structured path into AI data work. The training process is clear,
+            the feedback is direct, and the team actually cares about your development.
+          </p>
+          <p className="mt-6 text-center text-[13px] font-medium text-[#06b6d4]">— Scholar 01, Data Annotation Track</p>
+        </div>
+      </section>
+
       <section className="bg-[#071527] px-4 py-16 text-white sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Quality process</p>
@@ -269,22 +380,36 @@ export default function ScholarsPage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-2xl bg-[#0F172A] p-8 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-3xl font-extrabold text-white">Join the Scholar Program</h2>
-            <p className="mt-2 max-w-2xl leading-7 text-white/75">
-              Build practical remote-work skills through structured training, review, feedback, and practice.
+        <div className="mx-auto max-w-7xl rounded-2xl bg-[#0F172A] p-8">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-[#06b6d4]">Become a Scholar</p>
+            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-white">Build Real Skills. Do Real Work.</h2>
+            <p className="mt-4 max-w-2xl leading-7 text-white/75">
+              The Online Geek Hub Scholar Program is open to motivated contributors ready to train, practice, and take on
+              structured AI data work. We prepare you before we place you.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {scholarProgramBenefits.map((benefit) => {
+              const Icon = benefit.icon;
+              return (
+                <article key={benefit.title} className="rounded-lg border border-[#1e3a5f] bg-[#0f2035] p-5">
+                  <Icon className="h-6 w-6 text-[#06b6d4]" />
+                  <h3 className="mt-4 text-base font-bold text-white">{benefit.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/70">{benefit.description}</p>
+                </article>
+              );
+            })}
+          </div>
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/signup" className="cta-primary dark-cta focus-ring">
-              Join the Scholar Program <ArrowRight className="ml-2 h-4 w-4 text-white" />
+              Join the Scholar Program
             </Link>
-            <Link href="/login" className="cta-secondary focus-ring">
-              Scholar Login
-            </Link>
-            <Link href="/login" className="cta-secondary focus-ring">
-              Training Portal
+            <Link
+              href="/scholars#quality-process"
+              className="focus-ring inline-flex min-h-12 items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.3rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+            >
+              Learn How It Works
             </Link>
           </div>
         </div>
