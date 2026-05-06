@@ -83,7 +83,7 @@ function DocumentRows({ documents }: { documents: DocumentWithUrl[] }) {
             ))}
           </tbody>
         </table>
-        {!documents.length ? <p className="py-4 text-sm text-slate-500">No uploaded or acknowledged documents yet.</p> : null}
+        {!documents.length ? <p className="py-4 text-sm text-slate-500">No documents uploaded yet.</p> : null}
       </div>
     </Card>
   );
@@ -175,7 +175,7 @@ function SendDocumentCard({ scholars }: { scholars: Profile[] }) {
     <Card>
       <div className="flex items-center gap-3">
         <Send className="h-5 w-5 text-cyan-700" />
-        <h2 className="text-xl font-bold text-slate-950">Send Document</h2>
+        <h2 className="text-xl font-bold text-slate-950">Send a Document</h2>
       </div>
       <form action={sendScholarDocument} encType="multipart/form-data" className="mt-4 grid gap-4">
         <label className="grid gap-2 text-sm font-semibold text-slate-700">
@@ -184,15 +184,21 @@ function SendDocumentCard({ scholars }: { scholars: Profile[] }) {
         </label>
         <label className="grid gap-2 text-sm font-semibold text-slate-700">
           Upload file
-          <TextInput name="document" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+          <TextInput name="document" type="file" accept=".pdf,application/pdf" required />
         </label>
-        <label className="grid gap-2 text-sm font-semibold text-slate-700">
-          Recipients
-          <Select name="recipient_mode" defaultValue="all">
-            <option value="all">All scholars</option>
-            <option value="specific">Specific scholars selected below</option>
-          </Select>
-        </label>
+        <fieldset className="grid gap-2">
+          <legend className="text-sm font-semibold text-slate-700">Send to</legend>
+          <div className="flex flex-wrap gap-4 rounded-md border border-slate-200 bg-slate-50 p-3">
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+              <input type="radio" name="recipient_mode" value="all" defaultChecked className="h-4 w-4 accent-cyan-500" />
+              All Scholars
+            </label>
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+              <input type="radio" name="recipient_mode" value="specific" className="h-4 w-4 accent-cyan-500" />
+              Select Specific Scholars
+            </label>
+          </div>
+        </fieldset>
         <fieldset className="grid gap-2">
           <legend className="text-sm font-semibold text-slate-700">Specific scholars</legend>
           <div className="grid gap-2 rounded-md border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -205,19 +211,26 @@ function SendDocumentCard({ scholars }: { scholars: Profile[] }) {
             {!scholars.length ? <p className="text-sm text-slate-500">No scholars are available yet.</p> : null}
           </div>
         </fieldset>
+        <p className="text-sm text-slate-500">PDF only. Max 10MB.</p>
         <button className="focus-ring inline-flex items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-fit">
           <Send className="h-4 w-4" />
-          Send to Scholars
+          Send Document
         </button>
       </form>
     </Card>
   );
 }
 
-function AdminUploadedDocumentsTable({ documents }: { documents: DocumentWithUrl[] }) {
+function AdminUploadedDocumentsTable({ documents, scholarFilter }: { documents: DocumentWithUrl[]; scholarFilter?: string }) {
   return (
     <Card>
       <h2 className="text-xl font-bold text-slate-950">Scholar Uploaded Documents</h2>
+      <form className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <TextInput name="scholar" placeholder="Filter by scholar name" defaultValue={scholarFilter ?? ""} />
+        <button className="focus-ring rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+          Filter
+        </button>
+      </form>
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
@@ -259,11 +272,17 @@ export default async function DocumentsPage({
   const documents = await withDownloadUrls(await getScholarDocuments(profile));
   const message = firstParam(params.message);
   const error = firstParam(params.error);
+  const scholarFilter = firstParam(params.scholar)?.toLowerCase().trim();
 
   if (profile.role === "admin") {
     const profiles = await getProfiles();
-    const scholars = profiles.filter((item) => item.role === "trainee");
-    const scholarUploads = documents.filter((document) => !document.sent_by_admin);
+    const scholars = profiles.filter((item) => item.role === "trainee" || String(item.role) === "scholar");
+    const scholarUploads = documents
+      .filter((document) => !document.sent_by_admin)
+      .filter((document) => {
+        if (!scholarFilter) return true;
+        return scholarName(document).toLowerCase().includes(scholarFilter);
+      });
 
     return (
       <ProtectedPage>
@@ -272,13 +291,13 @@ export default async function DocumentsPage({
         {message ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{message}</p> : null}
         <div className="grid gap-6">
           <SendDocumentCard scholars={scholars} />
-          <AdminUploadedDocumentsTable documents={scholarUploads} />
+          <AdminUploadedDocumentsTable documents={scholarUploads} scholarFilter={firstParam(params.scholar)} />
         </div>
       </ProtectedPage>
     );
   }
 
-  const myDocuments = documents.filter((document) => !document.sent_by_admin || document.acknowledged_at);
+  const myDocuments = documents.filter((document) => !document.sent_by_admin);
   const agreements = documents.filter((document) => document.sent_by_admin);
 
   return (
@@ -287,8 +306,8 @@ export default async function DocumentsPage({
       {error ? <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
       {message ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{message}</p> : null}
       <div className="grid gap-6">
-        <DocumentRows documents={myDocuments} />
         <Agreements documents={agreements} />
+        <DocumentRows documents={myDocuments} />
         <UploadDocumentCard />
       </div>
     </ProtectedPage>

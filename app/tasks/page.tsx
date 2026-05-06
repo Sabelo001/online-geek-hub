@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { BriefcaseBusiness, CheckCircle2, Clock3, MessageSquareText, Send } from "lucide-react";
 import { createProject, respondToProjectInvitation, sendProjectInvitations } from "@/lib/actions";
 import { requireProfile } from "@/lib/auth";
@@ -41,13 +42,15 @@ function PendingCard({ invitation }: { invitation: ProjectInvitation }) {
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950">{invitation.project_title}</h2>
-          <Badge tone="cyan">{invitation.project_type}</Badge>
+          <h2 className="text-lg font-bold text-slate-950">{invitation.project_title}</h2>
+          <div className="mt-2">
+            <Badge tone="cyan">{invitation.project_type}</Badge>
+          </div>
         </div>
         <Clock3 className="h-6 w-6 text-cyan-600" />
       </div>
       <p className="mt-4 leading-7 text-slate-600">{invitation.short_description}</p>
-      <p className="mt-4 text-sm font-semibold text-slate-500">Respond by {formatDate(invitation.deadline)}</p>
+      <p className="mt-4 text-sm font-semibold text-amber-600">Respond by {formatDate(invitation.deadline)}</p>
       <div className="mt-5 flex flex-wrap gap-3">
         <form action={acceptAction}>
           <button className="cta-primary dark-cta focus-ring">Accept Project</button>
@@ -65,7 +68,7 @@ function ActiveCard({ invitation }: { invitation: ProjectInvitation }) {
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950">{invitation.project_title}</h2>
+          <h2 className="text-lg font-bold text-slate-950">{invitation.project_title}</h2>
           <Badge tone="green">In Progress</Badge>
         </div>
         <BriefcaseBusiness className="h-6 w-6 text-cyan-600" />
@@ -87,7 +90,7 @@ function CompletedCard({ invitation }: { invitation: ProjectInvitation }) {
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950">{invitation.project_title}</h2>
+          <h2 className="text-lg font-bold text-slate-950">{invitation.project_title}</h2>
           <p className="mt-2 text-sm text-slate-600">Completed {formatDate(invitation.completed_at)}</p>
         </div>
         <CheckCircle2 className="h-6 w-6 text-emerald-600" />
@@ -126,17 +129,17 @@ function AdminTasksPage({
   projectsWithInvitations: ProjectWithInvitations[];
   scholars: Profile[];
 }) {
-  const activeProjects = projectsWithInvitations.filter((project) => project.status === "active");
+  const statusMessage = params.message === "Project created." ? "Project created" : params.message;
 
   return (
     <ProtectedPage>
       <PageHeader title="Tasks and Projects" eyebrow="Project Management" />
       {params.error ? <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{params.error}</p> : null}
-      {params.message ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{params.message}</p> : null}
+      {statusMessage ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{statusMessage}</p> : null}
 
       <div className="grid gap-6">
         <Card>
-          <h2 className="text-xl font-bold text-slate-950">Create Project</h2>
+          <h2 className="text-xl font-bold text-slate-950">Create a Project</h2>
           <form action={createProject} className="mt-4 grid gap-4">
             <label className="grid gap-2 text-sm font-semibold text-slate-700">
               Project title
@@ -148,7 +151,7 @@ function AdminTasksPage({
                 <option>Data Annotation</option>
                 <option>Transcription</option>
                 <option>AI Evaluation</option>
-                <option>Prompt Review</option>
+                <option>Prompt and Response Review</option>
                 <option>Remote Operations</option>
               </Select>
             </label>
@@ -167,13 +170,13 @@ function AdminTasksPage({
         </Card>
 
         <Card>
-          <h2 className="text-xl font-bold text-slate-950">Generate Invitation Link</h2>
+          <h2 className="text-xl font-bold text-slate-950">Invite Scholars</h2>
           <form action={sendProjectInvitations} className="mt-4 grid gap-4">
             <label className="grid gap-2 text-sm font-semibold text-slate-700">
               Select project
               <Select name="project_id" required defaultValue="">
-                <option value="" disabled>Choose an active project</option>
-                {activeProjects.map((project) => (
+                <option value="" disabled>Choose a project</option>
+                {projectsWithInvitations.map((project) => (
                   <option key={project.id} value={project.id}>{project.title}</option>
                 ))}
               </Select>
@@ -202,12 +205,12 @@ function AdminTasksPage({
         </Card>
 
         <Card>
-          <h2 className="text-xl font-bold text-slate-950">Project Overview</h2>
+          <h2 className="text-xl font-bold text-slate-950">All Projects</h2>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
-                  <th className="py-3 pr-4">Project</th>
+                  <th className="py-3 pr-4">Project title</th>
                   <th className="py-3 pr-4">Type</th>
                   <th className="py-3 pr-4">Deadline</th>
                   <th className="py-3 pr-4">Invited</th>
@@ -220,41 +223,50 @@ function AdminTasksPage({
                 {projectsWithInvitations.map((project) => {
                   const counts = invitationCounts(project);
                   return (
-                    <tr key={project.id}>
-                      <td className="py-3 pr-4 font-semibold text-slate-950">{project.title}</td>
-                      <td className="py-3 pr-4 text-slate-600">{project.project_type}</td>
-                      <td className="py-3 pr-4 text-slate-600">{formatDate(project.deadline)}</td>
-                      <td className="py-3 pr-4 text-slate-600">{counts.invited}</td>
-                      <td className="py-3 pr-4 text-slate-600">{counts.accepted}</td>
-                      <td className="py-3 pr-4 text-slate-600">{counts.declined}</td>
-                      <td className="py-3 pr-4"><Badge tone={statusTone(project.status)}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</Badge></td>
-                    </tr>
+                    <Fragment key={project.id}>
+                      <tr>
+                        <td className="py-3 pr-4 font-semibold text-slate-950">{project.title}</td>
+                        <td className="py-3 pr-4 text-slate-600">{project.project_type}</td>
+                        <td className="py-3 pr-4 text-slate-600">{formatDate(project.deadline)}</td>
+                        <td className="py-3 pr-4 text-slate-600">{counts.invited}</td>
+                        <td className="py-3 pr-4 text-slate-600">{counts.accepted}</td>
+                        <td className="py-3 pr-4 text-slate-600">{counts.declined}</td>
+                        <td className="py-3 pr-4"><Badge tone={statusTone(project.status)}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</Badge></td>
+                      </tr>
+                      <tr>
+                        <td colSpan={7} className="pb-4 pr-4">
+                          <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                            <summary className="cursor-pointer text-sm font-semibold text-slate-700">Scholar responses</summary>
+                            <div className="mt-3 overflow-x-auto">
+                              <table className="w-full min-w-[520px] text-left text-sm">
+                                <thead className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
+                                  <tr>
+                                    <th className="py-2 pr-4">Scholar name</th>
+                                    <th className="py-2 pr-4">Response</th>
+                                    <th className="py-2 pr-4">Date</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                  {project.invitations.map((invitation) => (
+                                    <tr key={invitation.id}>
+                                      <td className="py-2 pr-4 font-semibold text-slate-950">{invitation.profiles?.full_name ?? "Scholar"}</td>
+                                      <td className="py-2 pr-4"><Badge tone={statusTone(invitation.status)}>{invitation.status}</Badge></td>
+                                      <td className="py-2 pr-4 text-slate-500">{invitation.responded_at ? formatDate(invitation.responded_at) : "No response yet"}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                              {!project.invitations.length ? <p className="py-3 text-sm text-slate-500">No invitations sent for this project yet.</p> : null}
+                            </div>
+                          </details>
+                        </td>
+                      </tr>
+                    </Fragment>
                   );
                 })}
               </tbody>
             </table>
             {!projectsWithInvitations.length ? <p className="py-4 text-sm text-slate-500">No projects created yet.</p> : null}
-          </div>
-        </Card>
-
-        <Card>
-          <h2 className="text-xl font-bold text-slate-950">Scholar Responses</h2>
-          <div className="mt-4 grid gap-3">
-            {projectsWithInvitations.map((project) => (
-              <details key={project.id} className="rounded-md border border-slate-200 bg-slate-50 p-4">
-                <summary className="cursor-pointer font-semibold text-slate-950">{project.title}</summary>
-                <div className="mt-4 grid gap-2">
-                  {project.invitations.map((invitation) => (
-                    <div key={invitation.id} className="grid gap-2 rounded-md bg-white p-3 text-sm sm:grid-cols-[1fr_auto_auto] sm:items-center">
-                      <span className="font-semibold text-slate-950">{invitation.profiles?.full_name ?? "Scholar"}</span>
-                      <Badge tone={statusTone(invitation.status)}>{invitation.status}</Badge>
-                      <span className="text-slate-500">{invitation.responded_at ? formatDate(invitation.responded_at) : "No response yet"}</span>
-                    </div>
-                  ))}
-                  {!project.invitations.length ? <p className="text-sm text-slate-500">No invitations sent for this project yet.</p> : null}
-                </div>
-              </details>
-            ))}
           </div>
         </Card>
       </div>
@@ -274,7 +286,7 @@ export default async function TasksAndProjectsPage({
       getProjectsWithInvitations(),
       getProfiles()
     ]);
-    const scholars = profiles.filter((item) => item.role === "trainee");
+    const scholars = profiles.filter((item) => item.role === "trainee" || String(item.role) === "scholar");
     return <AdminTasksPage params={params} projectsWithInvitations={projectsWithInvitations} scholars={scholars} />;
   }
 

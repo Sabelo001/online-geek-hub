@@ -21,7 +21,7 @@ export function SkillsForm({ initialSkills }: { initialSkills: string[] }) {
 
   return (
     <form action={updateProfileSkills} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" htmlFor="skill-input">
+      <label className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700" htmlFor="skill-input">
         Skills
       </label>
       <div className="mt-3 flex flex-wrap gap-2 rounded-md border border-slate-300 bg-white p-2">
@@ -65,7 +65,7 @@ export function BioForm({ initialBio }: { initialBio: string }) {
 
   return (
     <form action={updateProfileBio} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" htmlFor="bio">
+      <label className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700" htmlFor="bio">
         About Me
       </label>
       <textarea
@@ -77,7 +77,7 @@ export function BioForm({ initialBio }: { initialBio: string }) {
         className="focus-ring mt-3 min-h-36 w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-slate-950"
         placeholder="Write a short professional bio for project teams and reviewers."
       />
-      <p className="mt-2 text-sm text-slate-500">{bio.length}/400 characters</p>
+      <p className="mt-2 text-sm text-slate-500">{bio.length}/400</p>
       <button type="submit" className="focus-ring mt-4 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
         Save Bio
       </button>

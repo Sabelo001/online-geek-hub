@@ -568,12 +568,6 @@ const allowedScholarDocumentTypes = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ]);
 
-function extensionForImageType(type: string) {
-  if (type === "image/png") return "png";
-  if (type === "image/webp") return "webp";
-  return "jpg";
-}
-
 export async function uploadProfilePhoto(formData: FormData) {
   const profile = await requireProfile();
   const file = formData.get("photo");
@@ -583,8 +577,8 @@ export async function uploadProfilePhoto(formData: FormData) {
   if (file.size > 2 * 1024 * 1024) actionError("/profile", "Profile photo must be 2MB or smaller.");
 
   const supabase = await createSupabaseServerClient();
-  const path = `${profile.id}_avatar.${extensionForImageType(file.type)}`;
-  const { error: uploadError } = await supabase.storage.from("scholar-photos").upload(path, file, {
+  const path = `${profile.id}_avatar`;
+  const { error: uploadError } = await supabase.storage.from("scholar-avatars").upload(path, file, {
     contentType: file.type,
     upsert: true
   });
@@ -662,10 +656,12 @@ export async function uploadScholarDocument(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("scholar_documents").insert({
     scholar_id: profile.id,
+    recipient_id: profile.id,
     filename: file.name,
     file_url: upload.path,
     type: safeDocumentType(formData),
     uploaded_by: profile.id,
+    admin_id: null,
     sent_by_admin: false
   });
 
@@ -699,6 +695,7 @@ export async function sendScholarDocument(formData: FormData) {
   const file = formData.get("document");
 
   if (!(file instanceof File) || file.size === 0) actionError("/documents", "Choose a document to send.");
+  if (file.type !== "application/pdf") actionError("/documents", "Admin documents must be PDF files.");
 
   const supabase = await createSupabaseServerClient();
   const recipientMode = value(formData, "recipient_mode") === "all" ? "all" : "specific";
@@ -718,10 +715,12 @@ export async function sendScholarDocument(formData: FormData) {
   const title = value(formData, "title") || file.name;
   const rows = scholarIds.map((scholarId) => ({
     scholar_id: scholarId,
+    recipient_id: scholarId,
     filename: title,
     file_url: upload.path,
     type: "Agreement",
     uploaded_by: profile.id,
+    admin_id: profile.id,
     sent_by_admin: true
   }));
 
@@ -752,7 +751,7 @@ export async function respondToProjectInvitation(invitationId: string, response:
   if (error) actionError("/tasks", `Project invitation was not updated: ${error.message}`);
 
   revalidatePath("/tasks");
-  redirect(`/tasks?tab=${response === "accepted" ? "active" : "pending"}&message=${encodeURIComponent(response === "accepted" ? "Project accepted." : "Project declined.")}`);
+  redirect(`/tasks?tab=${response === "accepted" ? "active" : "pending"}&message=${encodeURIComponent(response === "accepted" ? "Project accepted" : "Project declined")}`);
 }
 
 export async function createProject(formData: FormData) {

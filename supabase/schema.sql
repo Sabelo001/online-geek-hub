@@ -329,14 +329,28 @@ create table if not exists public.invoices (
 create table if not exists public.scholar_documents (
   id uuid primary key default gen_random_uuid(),
   scholar_id uuid not null references public.profiles(id) on delete cascade,
+  recipient_id uuid references public.profiles(id) on delete cascade,
   filename text not null,
   file_url text not null,
   type text not null check (type in ('ID Document', 'Certificate', 'Portfolio', 'Other', 'Agreement')),
   uploaded_by uuid references public.profiles(id) on delete set null,
+  admin_id uuid references public.profiles(id) on delete set null,
   sent_by_admin boolean not null default false,
   acknowledged_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table public.scholar_documents
+  add column if not exists recipient_id uuid references public.profiles(id) on delete cascade,
+  add column if not exists admin_id uuid references public.profiles(id) on delete set null;
+
+update public.scholar_documents
+set recipient_id = scholar_id
+where recipient_id is null;
+
+update public.scholar_documents
+set admin_id = uploaded_by
+where admin_id is null and sent_by_admin = true;
 
 -- Announcements are internal messages for the training group.
 create table if not exists public.announcements (
@@ -379,7 +393,9 @@ create index if not exists invoices_project_idx on public.invoices(project_id);
 create index if not exists invoices_status_idx on public.invoices(status);
 create index if not exists invoices_issued_at_idx on public.invoices(issued_at);
 create index if not exists scholar_documents_scholar_idx on public.scholar_documents(scholar_id);
+create index if not exists scholar_documents_recipient_idx on public.scholar_documents(recipient_id);
 create index if not exists scholar_documents_uploaded_by_idx on public.scholar_documents(uploaded_by);
+create index if not exists scholar_documents_admin_idx on public.scholar_documents(admin_id);
 create index if not exists scholar_documents_sent_by_admin_idx on public.scholar_documents(sent_by_admin);
 create index if not exists scholar_documents_created_at_idx on public.scholar_documents(created_at);
 

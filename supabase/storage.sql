@@ -9,6 +9,7 @@ values
   ('training-files', 'training-files', false),
   ('submission-files', 'submission-files', false),
   ('scholar-photos', 'scholar-photos', false),
+  ('scholar-avatars', 'scholar-avatars', false),
   ('scholar-cvs', 'scholar-cvs', false),
   ('scholar-docs', 'scholar-docs', false)
 on conflict (id) do update set public = excluded.public;
@@ -27,6 +28,8 @@ drop policy if exists "submission_files_owner_read" on storage.objects;
 drop policy if exists "submission_files_owner_write" on storage.objects;
 drop policy if exists "scholar_photos_owner_read" on storage.objects;
 drop policy if exists "scholar_photos_owner_write" on storage.objects;
+drop policy if exists "scholar_avatars_owner_read" on storage.objects;
+drop policy if exists "scholar_avatars_owner_write" on storage.objects;
 drop policy if exists "scholar_cvs_owner_read" on storage.objects;
 drop policy if exists "scholar_cvs_owner_write" on storage.objects;
 drop policy if exists "admin_all_scholar_docs" on storage.objects;
@@ -83,6 +86,18 @@ on storage.objects for all
 to authenticated
 using (bucket_id = 'scholar-photos' and owner = auth.uid())
 with check (bucket_id = 'scholar-photos' and owner = auth.uid());
+
+-- Scholars can manage their own avatar uploads.
+create policy "scholar_avatars_owner_read"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'scholar-avatars' and owner = auth.uid());
+
+create policy "scholar_avatars_owner_write"
+on storage.objects for all
+to authenticated
+using (bucket_id = 'scholar-avatars' and owner = auth.uid())
+with check (bucket_id = 'scholar-avatars' and owner = auth.uid());
 
 -- Scholars can manage their own CV uploads.
 create policy "scholar_cvs_owner_read"

@@ -471,13 +471,14 @@ with check (public.is_admin());
 create policy "scholar_read_own_documents"
 on public.scholar_documents for select
 to authenticated
-using (scholar_id = auth.uid());
+using (coalesce(recipient_id, scholar_id) = auth.uid());
 
 create policy "scholar_upload_own_documents"
 on public.scholar_documents for insert
 to authenticated
 with check (
   scholar_id = auth.uid()
+  and coalesce(recipient_id, scholar_id) = auth.uid()
   and uploaded_by = auth.uid()
   and sent_by_admin = false
 );
@@ -485,8 +486,8 @@ with check (
 create policy "scholar_acknowledge_own_admin_documents"
 on public.scholar_documents for update
 to authenticated
-using (scholar_id = auth.uid() and sent_by_admin = true)
-with check (scholar_id = auth.uid() and sent_by_admin = true);
+using (coalesce(recipient_id, scholar_id) = auth.uid() and sent_by_admin = true)
+with check (coalesce(recipient_id, scholar_id) = auth.uid() and sent_by_admin = true);
 
 -- Announcements
 -- Admin can manage announcements. Any signed-in user can read announcements.
