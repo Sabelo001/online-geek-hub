@@ -1,5 +1,4 @@
-import { BriefcaseBusiness, FileText, GraduationCap, HelpCircle, Mail, Send } from "lucide-react";
-import Link from "next/link";
+import { Mail, Send } from "lucide-react";
 import { createContactInquiry } from "@/lib/actions";
 import { PublicFooter } from "@/components/public-footer";
 import { PublicNavbar } from "@/components/public-navbar";
@@ -9,29 +8,6 @@ export const metadata = {
   title: "Contact — Online Geek Hub",
   description: "Get in touch with Online Geek Hub for pilot projects, vendor discussions, Scholar program inquiries, and AI data work support."
 };
-
-const contactOptions = [
-  {
-    title: "Vendor and Project Partnerships",
-    description: "Discuss pilot work for annotation, evaluation, transcription, prompt review, or remote operations.",
-    icon: BriefcaseBusiness
-  },
-  {
-    title: "Scholar Program",
-    description: "Ask about joining, supporting, or learning more about the Online Geek Hub Scholar program.",
-    icon: GraduationCap
-  },
-  {
-    title: "CV and Remote Work Support",
-    description: "Ask about CV preparation, training readiness, and practical remote-work support.",
-    icon: FileText
-  },
-  {
-    title: "General Inquiry",
-    description: "Send a general question, collaboration note, or follow-up request to the team.",
-    icon: HelpCircle
-  }
-];
 
 export default async function ContactPage({
   searchParams
@@ -44,66 +20,28 @@ export default async function ContactPage({
     <main className="public-page min-h-screen bg-white text-slate-950">
       <PublicNavbar />
 
-      <section className="relative overflow-hidden bg-[#071527] px-4 py-20 text-white sm:px-6 sm:py-24">
+      <section className="relative overflow-hidden bg-[#071527] px-4 pb-24 pt-20 text-white sm:px-6">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_58%,#08111f_100%)]" />
-        <div className="relative mx-auto max-w-7xl">
-          <div className="max-w-4xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Contact</p>
-            <h1 className="mt-4 text-5xl font-extrabold leading-tight tracking-normal sm:text-6xl">Contact Online Geek Hub</h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
-              Reach out for training, Scholar program inquiries, pilot projects, vendor discussions, or AI workforce support.
+        <div className="relative mx-auto max-w-7xl lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
+          <div className="max-w-xl">
+            <p className="text-sm font-bold uppercase tracking-widest text-cyan-300">Get In Touch</p>
+            <h1 className="mt-4 text-6xl font-extrabold leading-none tracking-tight text-white sm:text-7xl">LET&apos;S WORK TOGETHER.</h1>
+            <p className="mt-6 max-w-md text-lg leading-8 text-sky-100">
+              Reach out for pilot projects, vendor discussions, Scholar program inquiries, or AI workforce support. We read every
+              message and respond directly.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-16 sm:px-6">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {contactOptions.map((option) => {
-              const Icon = option.icon;
-              return (
-                <Card key={option.title}>
-                  <div className="grid h-12 w-12 place-items-center rounded-xl bg-cyan-50 text-cyan-700">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h2 className="mt-5 text-xl font-bold text-slate-950">{option.title}</h2>
-                  <p className="mt-3 leading-7 text-slate-600">{option.description}</p>
-                </Card>
-              );
-            })}
-          </div>
-          <div className="mt-6 rounded-2xl border border-cyan-200 bg-cyan-50 p-5 shadow-sm sm:flex sm:items-center sm:justify-between sm:gap-6">
-            <div>
-              <h2 className="text-2xl font-extrabold tracking-normal text-slate-950">View Vendor Profile</h2>
-              <p className="mt-2 max-w-3xl leading-7 text-slate-700">
-                See Online Geek Hub&apos;s current capacity, services, quality review process, and project readiness.
-              </p>
-            </div>
-            <Link
-              href="/vendor-profile"
-              className="cta-secondary focus-ring mt-4 sm:mt-0"
-            >
-              View Vendor Profile
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-50 px-4 py-16 sm:px-6">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">Send an inquiry</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Tell us how we can help.</h2>
-            <p className="mt-4 text-lg leading-8 text-slate-600">
-              Your inquiry will be saved for the Online Geek Hub team to review and follow up through an appropriate channel.
-            </p>
-            <div className="mt-6 flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-700">
-              <Mail className="h-5 w-5 text-cyan-700" />
-              Contact details are collected through this form so private email addresses do not need to be published.
+            <div className="mt-8 space-y-4 text-sm text-sky-200">
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-cyan-400" />
+                hello@onlinegeekhub.com
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-cyan-400">📍</span>
+                Nairobi, Kenya — Remote-First
+              </div>
             </div>
           </div>
-          <Card>
+          <Card className="mt-10 lg:mt-0">
             {params.error ? <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{params.error}</p> : null}
             {params.message ? <p className="mb-4 rounded-md bg-cyan-50 p-3 text-sm text-cyan-800">{params.message}</p> : null}
             <form action={createContactInquiry} className="grid gap-4">
