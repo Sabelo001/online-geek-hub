@@ -82,7 +82,7 @@ select {
 .cta-primary:visited {
   position: relative;
   display: inline-flex;
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -90,10 +90,10 @@ select {
   border: 1px solid #020617;
   border-radius: 4px;
   background-color: #020617;
-  padding: 0 3rem 0 1.1rem;
+  padding: 0 3.2rem 0 1.25rem;
   color: #ffffff !important;
   font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
-  font-size: 0.8rem;
+  font-size: 1.05rem;
   font-weight: 400;
   letter-spacing: 0.09em;
   line-height: 1;
@@ -112,7 +112,7 @@ select {
   position: absolute;
   inset-block: 0;
   right: 0;
-  width: 2.4rem;
+  width: 2.6rem;
   border-left: 1px solid rgba(255, 255, 255, 0.38);
   background:
     linear-gradient(125deg, transparent 46%, rgba(255, 255, 255, 0.92) 48%, rgba(255, 255, 255, 0.92) 52%, transparent 54%),
@@ -164,14 +164,14 @@ select {
 .cta-nav:visited {
   min-height: 2.9rem;
   padding: 0 3rem 0 1.15rem;
-  font-size: 1.32rem;
+  font-size: 1.1rem;
   font-weight: 400;
   letter-spacing: 0.065em;
   box-shadow: 0 8px 18px rgba(2, 6, 23, 0.14);
 }
 
 .cta-nav::after {
-  width: 2.25rem;
+  width: 2.4rem;
 }
 
 .cta-nav:hover::after,
@@ -185,7 +185,7 @@ select {
 .cta-secondary:visited {
   position: relative;
   display: inline-flex;
-  min-height: 3rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -193,10 +193,10 @@ select {
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   background-color: #ffffff;
-  padding: 0 3.35rem 0 1.35rem;
+  padding: 0 3.2rem 0 1.25rem;
   color: #020617 !important;
   font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   font-weight: 400;
   letter-spacing: 0.07em;
   line-height: 1;
@@ -215,7 +215,7 @@ select {
   position: absolute;
   inset-block: 0;
   right: 0;
-  width: 2.55rem;
+  width: 2.6rem;
   border-left: 1px solid #cbd5e1;
   background:
     linear-gradient(125deg, transparent 46%, #020617 48%, #020617 52%, transparent 54%),
