@@ -414,13 +414,13 @@ export default function ScholarsPage() {
               href="https://www.linkedin.com/company/online-geek-hub/jobs/"
               target="_blank"
               rel="noopener noreferrer"
-              className="focus-ring inline-flex min-h-12 items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.3rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+              className="focus-ring inline-flex min-h-[2.75rem] items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.05rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
             >
               View Jobs
             </a>
             <Link
               href="/contact"
-              className="focus-ring inline-flex min-h-12 items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.3rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+              className="focus-ring inline-flex min-h-[2.75rem] items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.05rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
             >
               Request a Team
             </Link>
