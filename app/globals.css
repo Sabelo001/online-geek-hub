@@ -82,7 +82,7 @@ select {
 .cta-primary:visited {
   position: relative;
   display: inline-flex;
-  min-height: 3rem;
+  min-height: 2.5rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -90,12 +90,12 @@ select {
   border: 1px solid #020617;
   border-radius: 4px;
   background-color: #020617;
-  padding: 0 3.75rem 0 1.45rem;
+  padding: 0 3rem 0 1.1rem;
   color: #ffffff !important;
   font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
-  font-size: 1.35rem;
+  font-size: 0.8rem;
   font-weight: 400;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.09em;
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -112,7 +112,7 @@ select {
   position: absolute;
   inset-block: 0;
   right: 0;
-  width: 2.85rem;
+  width: 2.4rem;
   border-left: 1px solid rgba(255, 255, 255, 0.38);
   background:
     linear-gradient(125deg, transparent 46%, rgba(255, 255, 255, 0.92) 48%, rgba(255, 255, 255, 0.92) 52%, transparent 54%),

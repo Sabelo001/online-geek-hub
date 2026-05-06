@@ -191,15 +191,20 @@ export default function ScholarsPage() {
               A small but growing network of trained contributors prepared for AI data work, transcription, evaluation,
               prompt review, and remote digital support.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-col flex-nowrap gap-3 sm:flex-row">
               <Link href="/signup" className="cta-primary dark-cta focus-ring">
-                Join the Scholar Program
+                Join Scholars
               </Link>
-              <Link href="/scholars#skills" className="cta-secondary focus-ring">
-                View Training Tracks
-              </Link>
-              <Link href="/scholars#profiles" className="cta-secondary focus-ring">
-                Meet Our Scholars
+              <a
+                href="https://www.linkedin.com/company/online-geek-hub/jobs/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cta-secondary focus-ring"
+              >
+                View Jobs
+              </a>
+              <Link href="/contact" className="cta-secondary focus-ring">
+                Request a Team
               </Link>
             </div>
           </div>
@@ -403,13 +408,21 @@ export default function ScholarsPage() {
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/signup" className="cta-primary dark-cta focus-ring">
-              Join the Scholar Program
+              Join Scholars
             </Link>
-            <Link
-              href="/scholars#quality-process"
+            <a
+              href="https://www.linkedin.com/company/online-geek-hub/jobs/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="focus-ring inline-flex min-h-12 items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.3rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
             >
-              Learn How It Works
+              View Jobs
+            </a>
+            <Link
+              href="/contact"
+              className="focus-ring inline-flex min-h-12 items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.3rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+            >
+              Request a Team
             </Link>
           </div>
         </div>
