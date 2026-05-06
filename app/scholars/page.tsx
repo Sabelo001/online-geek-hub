@@ -104,6 +104,13 @@ const process = [
   }
 ];
 
+const scholarStats = [
+  { number: "12", label: "Trained Scholars" },
+  { number: "7", label: "Training Tracks" },
+  { number: "6", label: "Skill Domains" },
+  { number: "1", label: "Week to Ready" }
+];
+
 export default function ScholarsPage() {
   return (
     <main className="public-page min-h-screen bg-white text-slate-950">
@@ -115,19 +122,44 @@ export default function ScholarsPage() {
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-cyan-50">
               <Sparkles className="h-4 w-4 text-cyan-300" />
-              Scholar program
+              Scholar Program
             </div>
             <h1 className="mt-7 text-5xl font-extrabold leading-tight tracking-normal sm:text-6xl">Online Geek Hub Scholars</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
               A small but growing network of trained contributors prepared for AI data work, transcription, evaluation,
               prompt review, and remote digital support.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/signup" className="cta-primary dark-cta focus-ring">
+                Join the Scholar Program
+              </Link>
+              <Link href="/scholars#skills" className="cta-secondary focus-ring">
+                View Training Tracks
+              </Link>
+              <Link href="/scholars#profiles" className="cta-secondary focus-ring">
+                Meet Our Scholars
+              </Link>
+            </div>
           </div>
           <img
             src="/images/scholars-hero.jpg"
             alt="Remote contributor working at a professional desk setup"
             className="h-[240px] w-full rounded-xl object-cover object-center md:h-[440px]"
           />
+        </div>
+      </section>
+
+      <section className="border-y border-[#e2e8f0] bg-white px-4 py-8 sm:px-6">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 lg:grid-cols-4">
+          {scholarStats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`px-4 text-center ${index % 2 === 1 ? "border-l border-[#e2e8f0]" : ""} lg:border-l lg:first:border-l-0`}
+            >
+              <p className="text-[48px] font-extrabold leading-none text-[#0f172a]">{stat.number}</p>
+              <p className="mt-3 text-[12px] font-medium uppercase tracking-[0.12em] text-[#64748b]">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </section>
 
