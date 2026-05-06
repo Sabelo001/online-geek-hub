@@ -1,9 +1,9 @@
-import { FileText, Upload, UserCircle } from "lucide-react";
-import { updateAvailability, uploadProfilePhoto, uploadScholarCv, updateProfileInfo } from "@/lib/actions";
+import { FileText, Upload } from "lucide-react";
+import { updateAvailability, uploadScholarCv, updateProfileInfo } from "@/lib/actions";
 import { requireProfile } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ProtectedPage } from "@/components/protected-page";
-import { BioForm, SkillsForm } from "@/components/profile-client-forms";
+import { BioForm, PhotoIdentityBlock, SkillsForm } from "@/components/profile-client-forms";
 import { Card, PageHeader, Select, TextArea, TextInput } from "@/components/ui";
 
 function splitName(fullName: string) {
@@ -57,31 +57,13 @@ export default async function ProfilePage({
       <div className="grid gap-6">
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">Photo and Identity</p>
-          <div className="mt-5 grid gap-6 md:grid-cols-[180px_1fr] md:items-center">
-            <div className="grid justify-items-center gap-4">
-              <div className="grid h-[120px] w-[120px] place-items-center overflow-hidden rounded-full bg-[#0f172a] text-3xl font-extrabold text-white">
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt={`${profile.full_name} profile photo`} className="h-full w-full object-cover" />
-                ) : (
-                  <span>{initials(profile.full_name) || <UserCircle className="h-12 w-12" />}</span>
-                )}
-              </div>
-              <form action={uploadProfilePhoto} className="grid justify-items-center gap-3">
-                <input id="profile-photo" name="photo" type="file" accept="image/png,image/jpeg,image/webp" className="max-w-full text-sm text-slate-600" />
-                <button className="focus-ring rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-                  Change Photo
-                </button>
-                <p className="text-xs text-slate-500">Image only. Maximum file size: 2MB.</p>
-              </form>
-            </div>
-            <div>
-              <h2 className="text-[20px] font-bold text-slate-950">{profile.full_name}</h2>
-              <span className="mt-3 inline-flex rounded-full bg-cyan-100 px-3 py-1 text-sm font-semibold text-cyan-800">
-                {roleLabel(profile.role)}
-              </span>
-              <p className="mt-3 text-[14px] text-slate-500">{profile.email}</p>
-            </div>
-          </div>
+          <PhotoIdentityBlock
+            avatarUrl={avatarUrl}
+            initials={initials(profile.full_name)}
+            fullName={profile.full_name}
+            roleLabel={roleLabel(profile.role)}
+            email={profile.email}
+          />
         </section>
 
         <form action={updateProfileInfo} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">

@@ -2,7 +2,62 @@
 
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { updateProfileBio, updateProfileSkills } from "@/lib/actions";
+import { updateProfileBio, updateProfileSkills, uploadProfilePhoto } from "@/lib/actions";
+
+export function PhotoIdentityBlock({
+  avatarUrl,
+  initials,
+  fullName,
+  roleLabel,
+  email
+}: {
+  avatarUrl: string | null;
+  initials: string;
+  fullName: string;
+  roleLabel: string;
+  email: string;
+}) {
+  function openPhotoUpload() {
+    document.getElementById("photo-upload")?.click();
+  }
+
+  return (
+    <>
+      <div className="mt-5 flex flex-col items-center gap-8 sm:flex-row sm:items-center">
+        <form action={uploadProfilePhoto} className="flex flex-col items-center gap-3">
+          <div className="grid h-[120px] w-[120px] place-items-center overflow-hidden rounded-full bg-[#0f172a] text-3xl font-extrabold text-white">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={`${fullName} profile photo`} className="h-full w-full object-cover" />
+            ) : (
+              <span>{initials || "OG"}</span>
+            )}
+          </div>
+          <input
+            id="photo-upload"
+            name="photo"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            style={{ display: "none" }}
+            onChange={(event) => event.currentTarget.form?.requestSubmit()}
+          />
+          <button
+            type="button"
+            className="focus-ring rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+            onClick={openPhotoUpload}
+          >
+            Change Photo
+          </button>
+        </form>
+        <div className="flex flex-col items-center gap-1 sm:items-start">
+          <h2 className="text-[22px] font-bold text-slate-950">{fullName}</h2>
+          <span className="inline-flex rounded-full bg-cyan-100 px-3 py-1 text-sm font-semibold text-cyan-800">{roleLabel}</span>
+          <p className="text-[14px] text-slate-500">{email}</p>
+        </div>
+      </div>
+      <p className="mt-3 text-center text-xs text-slate-500 sm:w-[120px]">Image only. Maximum file size: 2MB.</p>
+    </>
+  );
+}
 
 export function SkillsForm({ initialSkills }: { initialSkills: string[] }) {
   const [skills, setSkills] = useState(initialSkills);
