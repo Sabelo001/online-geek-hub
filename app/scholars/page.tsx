@@ -199,11 +199,11 @@ export default function ScholarsPage() {
                 href="https://www.linkedin.com/company/online-geek-hub/jobs/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cta-secondary focus-ring"
+                className="cta-outline focus-ring"
               >
                 View Jobs
               </a>
-              <Link href="/contact" className="cta-secondary focus-ring">
+              <Link href="/contact" className="cta-outline focus-ring">
                 Request a Team
               </Link>
             </div>
@@ -414,13 +414,13 @@ export default function ScholarsPage() {
               href="https://www.linkedin.com/company/online-geek-hub/jobs/"
               target="_blank"
               rel="noopener noreferrer"
-              className="focus-ring inline-flex min-h-[2.75rem] items-center justify-center rounded border border-white bg-white/10 px-5 font-display text-[1.05rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+              className="cta-outline focus-ring"
             >
               View Jobs
             </a>
             <Link
               href="/contact"
-              className="focus-ring inline-flex min-h-[2.75rem] items-center justify-center rounded border border-white bg-white/10 px-5 font-display text-[1.05rem] uppercase tracking-[0.07em] text-white transition hover:border-white hover:bg-white/10"
+              className="cta-outline focus-ring"
             >
               Request a Team
             </Link>

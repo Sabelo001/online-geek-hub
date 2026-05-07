@@ -355,7 +355,7 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="/scholars"
-                className="focus-ring inline-flex min-h-[2.75rem] items-center justify-center rounded border border-white/70 bg-transparent px-5 font-display text-[1.05rem] uppercase tracking-[0.09em] text-white transition hover:border-white hover:bg-white/10"
+                className="cta-outline focus-ring"
               >
                 Meet Our Scholars
               </a>

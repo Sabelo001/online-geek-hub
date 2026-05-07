@@ -12,7 +12,7 @@ export function PublicFooter() {
             Tell us what kind of AI data, transcription, evaluation, or remote operations support you need. We will
             review the scope and respond through the contact form.
           </p>
-          <Link href="/contact" className="cta-secondary focus-ring mt-5">
+          <Link href="/contact" className="cta-primary dark-cta focus-ring mt-5">
             Start a Pilot Conversation
           </Link>
         </div>
