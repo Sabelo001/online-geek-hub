@@ -418,12 +418,6 @@ export default function ScholarsPage() {
             >
               View Jobs
             </a>
-            <Link
-              href="/contact"
-              className="cta-outline focus-ring"
-            >
-              Request a Team
-            </Link>
           </div>
         </div>
       </section>
