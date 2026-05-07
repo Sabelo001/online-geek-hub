@@ -213,8 +213,8 @@ export default function LandingPage() {
                     A focused team built around structured training, consistent review, and domain-ready delivery.
                   </p>
                 </div>
-                <div className="grid h-11 w-11 place-items-center rounded-xl bg-cyan-50">
-                  <Users className="h-6 w-6 text-cyan-600" />
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#0F172A]">
+                  <Users className="h-6 w-6 text-[#0A6EFF]" />
                 </div>
               </div>
               <div className="mt-5 grid gap-3">
@@ -222,7 +222,7 @@ export default function LandingPage() {
                   const Icon = item.icon;
                   return (
                     <div key={item.title} className="grid grid-cols-[44px_1fr] gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                      <div className="grid h-11 w-11 place-items-center rounded-xl bg-white text-cyan-700 shadow-sm">
+                      <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#0F172A] text-[#0A6EFF]">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
@@ -259,6 +259,21 @@ export default function LandingPage() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="border-b border-slate-200 bg-white px-4 py-8 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">
+            Platforms and ecosystems our Scholars work with
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+            <span className="font-display text-xl font-bold uppercase tracking-wide text-slate-300">Scale AI</span>
+            <span className="font-display text-xl font-bold uppercase tracking-wide text-slate-300">Outlier</span>
+            <span className="font-display text-xl font-bold uppercase tracking-wide text-slate-300">Appen</span>
+            <span className="font-display text-xl font-bold uppercase tracking-wide text-slate-300">Remotasks</span>
+            <span className="font-display text-xl font-bold uppercase tracking-wide text-slate-300">Toloka</span>
+          </div>
         </div>
       </section>
 
@@ -327,15 +342,13 @@ export default function LandingPage() {
             {domains.map((domain) => {
               const Icon = domain.icon;
               return (
-                <div key={domain.title} className="flex items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/5">
+                <article key={domain.title} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 transition hover:border-cyan-300 hover:shadow-md">
                   <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-[#0F172A] text-[#0A6EFF]">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <div>
-                    <p className="font-bold text-slate-950">{domain.title}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{domain.description}</p>
-                  </div>
-                </div>
+                  <h3 className="mt-4 font-bold text-slate-950">{domain.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{domain.description}</p>
+                </article>
               );
             })}
           </div>
@@ -371,7 +384,7 @@ export default function LandingPage() {
             {scholarStats.map((stat) => (
               <div key={stat.label} className="rounded-lg border border-white/10 bg-white/10 p-6">
                 <p
-                  className={`font-extrabold text-cyan-200 ${
+                  className={`font-extrabold text-[#06b6d4] ${
                     stat.value === "Review-Based" ? "whitespace-nowrap text-[2rem]" : "text-4xl"
                   }`}
                 >
@@ -393,13 +406,13 @@ export default function LandingPage() {
               Work is handled through training, supervised practice, review, scoring, improvement, and supervised deployment.
             </p>
           </div>
-          <div className="mt-10 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
             {qualityLoop.map((step, index) => {
               const Icon = step.icon;
               return (
-                <div key={step.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/5">
+                <div key={step.title} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
                   <div className="flex items-center justify-between gap-3">
-                    <Icon className="h-6 w-6 text-cyan-700" />
+                    <Icon className="h-6 w-6 text-[#0A6EFF]" />
                     <span className="text-sm font-bold text-slate-400">0{index + 1}</span>
                   </div>
                   <h3 className="mt-5 text-lg font-bold text-slate-950">{step.title}</h3>
@@ -407,6 +420,27 @@ export default function LandingPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#071527] px-4 py-16 sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="font-display text-6xl leading-none text-[#0A6EFF]">"</p>
+          <blockquote className="mt-2 text-xl font-medium leading-9 text-white sm:text-2xl">
+            Being part of Online Geek Hub has given me a structured path into AI data work. The training process is clear,
+            the feedback is direct, and the team actually cares about your development.
+          </blockquote>
+          <p className="mt-8 text-sm font-semibold uppercase tracking-widest text-[#06b6d4]">
+            — Scholar 01, Data Annotation Track
+          </p>
+          <div className="mx-auto mt-10 flex flex-wrap justify-center gap-3">
+            <Link href="/scholars" className="cta-outline focus-ring">
+              Meet the Team
+            </Link>
+            <Link href="/signup" className="cta-primary dark-cta focus-ring ring-1 ring-white/30">
+              Join the Program
+            </Link>
           </div>
         </div>
       </section>
@@ -472,7 +506,7 @@ export default function LandingPage() {
                   feature === "Payment Records" ? "sm:col-span-2 sm:justify-center" : ""
                 }`}
               >
-                <CheckCircle2 className="h-5 w-5 text-cyan-700" />
+                <CheckCircle2 className="h-5 w-5 text-[#0A6EFF]" />
                 <span className="font-semibold text-slate-800">{feature}</span>
               </div>
             ))}
