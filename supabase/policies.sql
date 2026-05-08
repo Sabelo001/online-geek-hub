@@ -167,6 +167,7 @@ drop policy if exists "timesheets_admin_read_update" on public.timesheets;
 drop policy if exists "timesheets_admin_read" on public.timesheets;
 drop policy if exists "timesheets_admin_update" on public.timesheets;
 drop policy if exists "timesheets_reviewer_read" on public.timesheets;
+drop policy if exists "timesheets_reviewer_update" on public.timesheets;
 
 drop policy if exists "admin_all_submissions" on public.submissions;
 drop policy if exists "submissions_scoped_read" on public.submissions;
@@ -510,6 +511,12 @@ create policy "timesheets_reviewer_read"
 on public.timesheets for select
 to authenticated
 using (public.is_reviewer());
+
+create policy "timesheets_reviewer_update"
+on public.timesheets for update
+to authenticated
+using (public.is_reviewer())
+with check (public.is_reviewer());
 
 -- Submissions
 -- Admin can manage all submissions. Reviewers can read and update submissions for scoring.

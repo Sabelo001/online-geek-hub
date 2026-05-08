@@ -275,4 +275,5 @@ export type Timesheet = {
   created_at: string;
   updated_at: string;
   profiles?: Pick<Profile, "full_name" | "email"> | null;
+  projects?: Pick<Project, "title" | "project_type"> | null;
 };

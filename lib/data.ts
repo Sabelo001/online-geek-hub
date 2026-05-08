@@ -14,6 +14,7 @@ import type {
   ScholarDocument,
   Submission,
   Timesheet,
+  TimesheetStatus,
   TrainingModule,
   TrainingProgress
 } from "@/lib/types";
@@ -186,29 +187,52 @@ export async function getMyProjectSubmissions(profileId: string, projectId?: str
   return (data ?? []) as ProjectSubmission[];
 }
 
-export async function getTimesheets(projectId?: string): Promise<Timesheet[]> {
+async function attachTimesheetDisplayData(timesheets: Timesheet[]): Promise<Timesheet[]> {
+  if (!timesheets.length) return timesheets;
+
+  const supabase = await createSupabaseServerClient();
+  const scholarIds = Array.from(new Set(timesheets.map((timesheet) => timesheet.scholar_id).filter(Boolean))) as string[];
+  const projectIds = Array.from(new Set(timesheets.map((timesheet) => timesheet.project_id).filter(Boolean))) as string[];
+
+  const [profilesResponse, projectsResponse] = await Promise.all([
+    scholarIds.length ? supabase.from("profiles").select("id,full_name,email").in("id", scholarIds) : Promise.resolve({ data: [] }),
+    projectIds.length ? supabase.from("projects").select("id,title,project_type").in("id", projectIds) : Promise.resolve({ data: [] })
+  ]);
+
+  const profilesById = new Map((profilesResponse.data ?? []).map((profile) => [profile.id, profile]));
+  const projectsById = new Map((projectsResponse.data ?? []).map((project) => [project.id, project]));
+
+  return timesheets.map((timesheet) => ({
+    ...timesheet,
+    profiles: timesheet.scholar_id ? profilesById.get(timesheet.scholar_id) ?? null : null,
+    projects: timesheet.project_id ? projectsById.get(timesheet.project_id) ?? null : null
+  }));
+}
+
+export async function getTimesheets(projectId?: string, status?: TimesheetStatus): Promise<Timesheet[]> {
   const supabase = await createSupabaseServerClient();
   let query = supabase
     .from("timesheets")
-    .select("*, profiles(full_name,email)")
+    .select("*")
     .order("work_date", { ascending: false })
     .order("created_at", { ascending: false });
   if (projectId) query = query.eq("project_id", projectId);
+  if (status) query = query.eq("status", status);
   const { data } = await query;
-  return (data ?? []) as Timesheet[];
+  return attachTimesheetDisplayData((data ?? []) as Timesheet[]);
 }
 
 export async function getMyTimesheets(profileId: string, projectId?: string): Promise<Timesheet[]> {
   const supabase = await createSupabaseServerClient();
   let query = supabase
     .from("timesheets")
-    .select("*, profiles(full_name,email)")
+    .select("*")
     .eq("scholar_id", profileId)
     .order("work_date", { ascending: false })
     .order("created_at", { ascending: false });
   if (projectId) query = query.eq("project_id", projectId);
   const { data } = await query;
-  return (data ?? []) as Timesheet[];
+  return attachTimesheetDisplayData((data ?? []) as Timesheet[]);
 }
 
 export async function getSubmissions(): Promise<Submission[]> {

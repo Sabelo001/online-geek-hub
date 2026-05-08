@@ -93,7 +93,7 @@ export async function signUp(formData: FormData) {
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
-  redirect("/");
+  redirect("/login");
 }
 
 function actionError(path: string, message: string): never {
@@ -1004,6 +1004,46 @@ export async function updateTimesheet(timesheetId: string, formData: FormData) {
 
   revalidatePath(`/tasks/projects/${existing.project_id}`);
   redirect(`/tasks/projects/${existing.project_id}?message=Timesheet updated.`);
+}
+
+export async function updateTimesheetStatus(timesheetId: string, status: "approved" | "rejected", _formData?: FormData) {
+  const profile = await requireRole(["admin", "reviewer"]);
+  const supabase = await createSupabaseServerClient();
+
+  if (status !== "approved" && status !== "rejected") {
+    actionError("/reviews", "Choose a valid timesheet status.");
+  }
+
+  const { data: existing, error: existingError } = await supabase
+    .from("timesheets")
+    .select("id,project_id,status")
+    .eq("id", timesheetId)
+    .single();
+
+  if (existingError || !existing) {
+    actionError("/reviews", `Timesheet was not found: ${existingError?.message ?? "No timesheet row returned."}`);
+  }
+
+  if (existing.status !== "submitted") {
+    actionError("/reviews", "Only submitted timesheets can be approved or rejected.");
+  }
+
+  const { error } = await supabase
+    .from("timesheets")
+    .update({
+      status,
+      approved_by: status === "approved" ? profile.id : null,
+      approved_at: status === "approved" ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", timesheetId)
+    .eq("status", "submitted");
+
+  if (error) actionError("/reviews", `Timesheet was not updated: ${error.message}`);
+
+  revalidatePath("/reviews");
+  if (existing.project_id) revalidatePath(`/tasks/projects/${existing.project_id}`);
+  redirect(`/reviews?message=${encodeURIComponent(`Timesheet ${status}.`)}`);
 }
 
 export async function respondToProjectInvitation(invitationId: string, response: "accepted" | "declined") {
