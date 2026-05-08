@@ -1,6 +1,6 @@
 import { signIn, signUp } from "@/lib/actions";
 import { BrandLogo } from "@/components/logo";
-import { ButtonLink, Card, TextInput } from "@/components/ui";
+import { Card, TextInput } from "@/components/ui";
 
 export function AuthForm({
   mode,
@@ -51,9 +51,9 @@ export function AuthForm({
           </button>
         </form>
         <div className="mt-5 flex items-center justify-between text-sm">
-          <ButtonLink href="/" variant="secondary">
-            Home
-          </ButtonLink>
+          <a href="/" className="text-[13px] font-medium text-[#64748B] hover:underline">
+            &larr; Back to public site
+          </a>
           <a className="font-semibold text-cyan-700" href={isSignup ? "/login" : "/signup"}>
             {isSignup ? "Already have an account?" : "Need an account?"}
           </a>
