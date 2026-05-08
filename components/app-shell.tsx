@@ -1,29 +1,29 @@
 import Link from "next/link";
-import { BarChart3, BookOpen, BriefcaseBusiness, CreditCard, FileText, FolderOpen, Home, UserCircle, Users } from "lucide-react";
+import { BookOpen, ClipboardCheck, ClipboardList, FileText, FolderOpen, LayoutDashboard, ShieldCheck, UserCircle, Users, Wallet } from "lucide-react";
 import { signOut } from "@/lib/actions";
 import { BrandLogo } from "@/components/logo";
 import type { Profile } from "@/lib/types";
 
 const traineeLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/profile", label: "Profile", icon: UserCircle },
   { href: "/learn", label: "Learn", icon: BookOpen },
-  { href: "/tasks", label: "Tasks & Projects", icon: BriefcaseBusiness },
+  { href: "/tasks", label: "Tasks & Projects", icon: ClipboardList },
   { href: "/cv", label: "CV Generator", icon: FileText },
   { href: "/documents", label: "Documents", icon: FolderOpen },
-  { href: "/earnings", label: "Earnings", icon: CreditCard }
+  { href: "/earnings", label: "Earnings", icon: Wallet }
 ];
 
 const adminLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/profile", label: "Profile", icon: UserCircle },
   { href: "/admin/scholars", label: "Scholars", icon: Users },
   { href: "/learn", label: "Learn", icon: BookOpen },
-  { href: "/tasks", label: "Tasks & Projects", icon: BriefcaseBusiness },
+  { href: "/tasks", label: "Tasks & Projects", icon: ClipboardList },
   { href: "/documents", label: "Documents", icon: FolderOpen },
-  { href: "/reviews", label: "Reviews", icon: BarChart3 },
-  { href: "/earnings", label: "Earnings", icon: CreditCard },
-  { href: "/admin", label: "Admin", icon: Users }
+  { href: "/reviews", label: "Reviews", icon: ClipboardCheck },
+  { href: "/earnings", label: "Earnings", icon: Wallet },
+  { href: "/admin", label: "Admin", icon: ShieldCheck }
 ];
 
 export function AppShell({ profile, children }: { profile: Profile; children: React.ReactNode }) {

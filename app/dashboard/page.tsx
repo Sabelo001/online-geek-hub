@@ -1,6 +1,6 @@
 import { Activity, AlertCircle, Banknote, BookOpen, BriefcaseBusiness, CheckCircle2, Users, type LucideIcon } from "lucide-react";
 import { ClearAuthMessage } from "@/components/clear-auth-message";
-import { Card, MetricCard, PageHeader } from "@/components/ui";
+import { Card, PageHeader } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
 import { getDashboardMetrics } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -66,10 +66,14 @@ export default async function DashboardPage({
         {metricItems.map((item) => {
           const Icon = item.icon;
           return (
-            <div key={item.label} className="relative">
-              <MetricCard label={item.label} value={item.value} detail={item.detail} />
-              <Icon className="absolute right-5 top-5 h-5 w-5 text-cyan-500" />
-            </div>
+            <Card key={item.label}>
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-sm font-medium text-slate-500">{item.label}</p>
+                <Icon className="h-5 w-5 flex-shrink-0 text-cyan-500" />
+              </div>
+              <p className="mt-2 text-3xl font-bold text-slate-950">{item.value}</p>
+              <p className="mt-2 text-sm text-slate-500">{item.detail}</p>
+            </Card>
           );
         })}
       </div>
