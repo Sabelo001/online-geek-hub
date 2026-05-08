@@ -190,11 +190,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="w-full max-w-[680px] justify-self-center rounded-2xl border border-white/12 bg-white/[0.08] p-3 shadow-2xl shadow-slate-950/35 backdrop-blur lg:justify-self-end">
+          <div className="w-full max-w-[680px] justify-self-center rounded-2xl border border-white/12 bg-white/[0.08] p-3 shadow-2xl shadow-slate-950/35 lg:justify-self-end">
             <div className="rounded-xl bg-white p-4 text-slate-950 shadow-xl sm:p-5">
               <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <p className="text-sm font-semibold text-cyan-700">Scholar Workforce</p>
+                  <p className="text-sm font-semibold text-[#0A6EFF]">Scholar Workforce</p>
                   <h2 className="mt-1 text-2xl font-extrabold">12 Trained Scholars</h2>
                   <p className="mt-2 max-w-md text-sm leading-6 text-slate-600">
                     A focused team built around structured training, consistent review, and domain-ready delivery.
@@ -292,7 +292,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="solutions" className="scroll-mt-24 bg-slate-50 px-4 py-12 sm:px-6 sm:py-20">
+      <section id="solutions" className="scroll-mt-24 bg-white px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">What We Deliver</p>
@@ -425,8 +425,8 @@ export default function LandingPage() {
             <Link href="/scholars" className="cta-outline focus-ring">
               Meet the Team
             </Link>
-            <Link href="/signup" className="cta-primary dark-cta focus-ring ring-1 ring-white/30">
-              Join the Program
+            <Link href="/vendor-profile" className="cta-primary dark-cta focus-ring ring-1 ring-white/30">
+              View Vendor Profile
             </Link>
           </div>
         </div>

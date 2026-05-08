@@ -41,7 +41,7 @@ export function PublicNavbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="font-display focus-ring whitespace-nowrap rounded-md px-1 py-2 text-[23px] uppercase leading-none tracking-[0.055em] text-slate-950 transition hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800 2xl:text-[25px]"
+                className="font-display focus-ring whitespace-nowrap rounded-md px-1 py-2 text-[17px] uppercase leading-none tracking-[0.055em] text-slate-950 transition hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800 2xl:text-[18px]"
               >
                 {link.label}
               </Link>
@@ -68,7 +68,7 @@ export function PublicNavbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="font-display focus-ring whitespace-nowrap rounded-xl px-3 py-3 text-[25px] uppercase leading-none tracking-[0.06em] text-slate-950 transition hover:bg-cyan-50 hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800"
+                    className="font-display focus-ring whitespace-nowrap rounded-xl px-3 py-3 text-[18px] uppercase leading-none tracking-[0.06em] text-slate-950 transition hover:bg-cyan-50 hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800"
                   >
                     {link.label}
                   </Link>

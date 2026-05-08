@@ -32,7 +32,7 @@ export function PublicFooter() {
             <Link href="/vendor-profile" className="hover:text-white">Vendor Profile</Link>
             <Link href="/scholars" className="hover:text-white">Scholars</Link>
             <Link href="/insights" className="hover:text-white">Insights</Link>
-            <a href="/#training" className="hover:text-white">Training</a>
+            <Link href="/scholars#quality-process" className="hover:text-white">How We Work</Link>
             <a href="/#domains" className="hover:text-white">Domains</a>
             <Link href="/contact" className="hover:text-white">Contact</Link>
           </div>
@@ -40,7 +40,7 @@ export function PublicFooter() {
         <div>
           <h3 className="font-bold text-white">Portal</h3>
           <div className="mt-4 grid gap-2 text-sm">
-            <Link href="/login" className="hover:text-white">Training Portal</Link>
+            <Link href="/dashboard" className="hover:text-white">Scholar Portal</Link>
             <Link href="/login" className="hover:text-white">Login</Link>
             <Link href="/signup" className="text-white hover:text-white focus:text-white active:text-white">Join Training</Link>
             <Link href="/cv" className="hover:text-white">CV Generator</Link>
