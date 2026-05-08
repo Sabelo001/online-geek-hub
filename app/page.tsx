@@ -158,8 +158,6 @@ export default function LandingPage() {
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(56,189,248,0.22),transparent_30%),radial-gradient(circle_at_86%_12%,rgba(20,184,166,0.16),transparent_28%),linear-gradient(135deg,#071527_0%,#0a2238_54%,#08111f_100%)]" />
         <div className="relative mx-auto grid max-w-[1500px] gap-12 px-6 pb-12 pt-10 sm:px-8 sm:pb-14 sm:pt-12 lg:min-h-[640px] lg:grid-cols-[0.96fr_0.88fr] lg:items-center lg:gap-16 lg:px-10 lg:py-14 xl:gap-20 xl:px-14 2xl:px-16">
           <div className="max-w-[760px]">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3 py-1 text-[11px] font-semibold text-cyan-50 shadow-sm shadow-slate-950/20">
@@ -229,7 +227,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-slate-50 px-4 py-10 sm:px-6">
+      <section className="border-b border-slate-200 bg-white px-4 py-10 sm:px-6">
         <div className="mx-auto grid max-w-7xl grid-cols-2 items-stretch gap-3 lg:grid-cols-4">
           {scholarStats.map((stat) => (
             <div
@@ -266,7 +264,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="why" className="scroll-mt-24 px-4 py-12 sm:px-6 sm:py-20">
+      <section id="why" className="scroll-mt-24 bg-slate-50 px-4 py-12 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Why Work With Us</p>
@@ -413,7 +411,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-[#071527] px-4 py-16 sm:px-6 sm:py-20">
+      <section className="bg-slate-900 px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-display text-6xl leading-none text-[#0A6EFF]">"</p>
           <blockquote className="mt-2 text-xl font-medium leading-9 text-white sm:text-2xl">

@@ -5,7 +5,13 @@ import { PublicNavbar } from "@/components/public-navbar";
 
 export const metadata = {
   title: "Vendor Profile — Online Geek Hub",
-  description: "Online Geek Hub vendor profile. Trained remote AI workforce offering annotation, evaluation, transcription, and data support for pilot projects."
+  description:
+    "Online Geek Hub vendor profile. Trained remote AI workforce for annotation, evaluation, transcription, and data support. Available for pilot projects.",
+  openGraph: {
+    title: "Vendor Profile — Online Geek Hub",
+    description: "Trained remote AI workforce available for pilot projects and subcontracting.",
+    images: [{ url: "/images/scholars-hero.jpg", width: 1200, height: 630 }]
+  }
 };
 
 const work = [
@@ -104,7 +110,6 @@ export default function VendorProfilePage() {
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] px-4 pb-12 pt-20 text-white sm:px-6 sm:pb-12 sm:pt-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_58%,#08111f_100%)]" />
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-4xl">
             <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Online Geek Hub</p>

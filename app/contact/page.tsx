@@ -6,7 +6,13 @@ import { Card, Select, TextArea, TextInput } from "@/components/ui";
 
 export const metadata = {
   title: "Contact — Online Geek Hub",
-  description: "Get in touch with Online Geek Hub for pilot projects, vendor discussions, Scholar program inquiries, and AI data work support."
+  description:
+    "Get in touch with Online Geek Hub for pilot projects, vendor discussions, Scholar program inquiries, and AI data work support.",
+  openGraph: {
+    title: "Contact Online Geek Hub",
+    description: "Start a pilot conversation or ask about our Scholar program.",
+    images: [{ url: "/images/scholars-hero.jpg", width: 1200, height: 630 }]
+  }
 };
 
 export default async function ContactPage({
@@ -21,7 +27,6 @@ export default async function ContactPage({
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] px-4 pb-24 pt-20 text-white sm:px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_58%,#08111f_100%)]" />
         <div className="relative mx-auto max-w-7xl lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
           <div className="max-w-xl">
             <p className="text-sm font-bold uppercase tracking-widest text-cyan-300">Get In Touch</p>

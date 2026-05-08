@@ -5,7 +5,13 @@ import { PublicNavbar } from "@/components/public-navbar";
 
 export const metadata = {
   title: "Scholars — Online Geek Hub",
-  description: "Meet the Online Geek Hub Scholar team. Trained contributors prepared for AI data work, transcription, evaluation, and remote operations."
+  description:
+    "Meet the Online Geek Hub Scholar team. Trained contributors prepared for AI data annotation, transcription, evaluation, and remote operations.",
+  openGraph: {
+    title: "Our Scholars — Online Geek Hub",
+    description: "Trained remote contributors ready for AI data work. See our team, skills, and quality process.",
+    images: [{ url: "/images/scholars-hero.jpg", width: 1200, height: 630 }]
+  }
 };
 
 const skills = [
@@ -179,7 +185,6 @@ export default function ScholarsPage() {
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-[#071527] px-4 pb-12 pt-20 text-white sm:px-6 sm:pb-12 sm:pt-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.22),transparent_30%),linear-gradient(135deg,#071527_0%,#0a2238_56%,#08111f_100%)]" />
         <div className="relative mx-auto grid max-w-7xl gap-10 md:grid-cols-[minmax(0,55fr)_minmax(0,45fr)] md:items-center">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-cyan-50">
