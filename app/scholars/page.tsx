@@ -368,7 +368,7 @@ export default function ScholarsPage() {
         </div>
       </section>
 
-      <section className="bg-[#071527] px-4 py-16 text-white sm:px-6">
+      <section id="quality-process" className="scroll-mt-24 bg-[#071527] px-4 py-16 text-white sm:px-6">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-300">Quality process</p>
           <h2 className="mt-3 text-4xl font-extrabold tracking-normal">Scholar Quality Process</h2>
