@@ -9,6 +9,8 @@ export type InvoiceStatus = "pending" | "approved" | "paid" | "rejected";
 export type ScholarDocumentType = "ID Document" | "Certificate" | "Portfolio" | "Other" | "Agreement";
 export type ProjectInvitationStatus = "pending" | "accepted" | "declined" | "completed";
 export type ProjectStatus = "draft" | "active" | "closed";
+export type ProjectSubmissionStatus = "submitted" | "under_review" | "revision_requested" | "approved" | "rejected";
+export type TimesheetStatus = "draft" | "submitted" | "approved" | "rejected";
 export type AvailabilityStatus = "available" | "limited" | "unavailable" | "by_project";
 export type WorkPreference = "part_time" | "full_time" | "project_based" | "temporary" | "flexible";
 export type TrainingTrack =
@@ -238,4 +240,39 @@ export type ProjectWithInvitations = Project & {
       profiles?: Pick<Profile, "full_name" | "email"> | null;
     }
   >;
+};
+
+export type ProjectSubmission = {
+  id: string;
+  project_id: string | null;
+  project_invitation_id: string | null;
+  scholar_id: string | null;
+  title: string;
+  notes: string | null;
+  file_url: string | null;
+  file_path: string | null;
+  status: ProjectSubmissionStatus;
+  score: number | null;
+  feedback: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  profiles?: Pick<Profile, "full_name" | "email"> | null;
+};
+
+export type Timesheet = {
+  id: string;
+  project_id: string | null;
+  project_invitation_id: string | null;
+  scholar_id: string | null;
+  work_date: string;
+  hours: number;
+  work_summary: string;
+  status: TimesheetStatus;
+  approved_by: string | null;
+  approved_at: string | null;
+  created_at: string;
+  updated_at: string;
+  profiles?: Pick<Profile, "full_name" | "email"> | null;
 };

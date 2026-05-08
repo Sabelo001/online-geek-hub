@@ -78,9 +78,12 @@ function ActiveCard({ invitation }: { invitation: ProjectInvitation }) {
         <p><span className="font-semibold text-slate-950">Deadline:</span> {formatDate(invitation.deadline)}</p>
       </div>
       <p className="mt-4 leading-7 text-slate-600">{invitation.instructions ?? invitation.short_description}</p>
-      <button className="focus-ring mt-5 rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+      <Link
+        href={`/tasks/projects/${invitation.project_id}`}
+        className="focus-ring mt-5 inline-flex rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+      >
         View Details
-      </button>
+      </Link>
     </Card>
   );
 }

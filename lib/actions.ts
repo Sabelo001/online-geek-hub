@@ -134,6 +134,7 @@ function safeProjectType(formData: FormData) {
       "Data Annotation",
       "Transcription",
       "AI Evaluation",
+      "Prompt and Response Review",
       "Prompt Review",
       "Remote Operations"
     ].includes(projectType)
@@ -141,6 +142,10 @@ function safeProjectType(formData: FormData) {
     return projectType;
   }
   return "Data Annotation";
+}
+
+function supabaseErrorMessage(error: { message: string; details?: string | null; hint?: string | null; code?: string | null }) {
+  return [error.message, error.details, error.hint, error.code ? `Code: ${error.code}` : null].filter(Boolean).join(" ");
 }
 
 function safeDocumentType(formData: FormData): ScholarDocumentType {
@@ -634,6 +639,18 @@ const allowedScholarDocumentTypes = new Set([
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ]);
+const allowedProjectSubmissionFileTypes = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/csv",
+  "text/plain",
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+]);
 
 export async function uploadProfilePhoto(formData: FormData) {
   const profile = await requireProfile();
@@ -819,6 +836,176 @@ export async function sendScholarDocument(formData: FormData) {
   redirect(`/documents?message=${encodeURIComponent(`Document sent to ${scholarIds.length} scholars.`)}`);
 }
 
+async function getAcceptedProjectInvitation(invitationId: string, scholarId: string) {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("project_invitations")
+    .select("*")
+    .eq("id", invitationId)
+    .eq("scholar_id", scholarId)
+    .eq("status", "accepted")
+    .single();
+
+  if (error || !data) return null;
+  return data;
+}
+
+async function uploadProjectSubmissionFile(file: File, scholarId: string, projectId: string) {
+  if (!allowedProjectSubmissionFileTypes.has(file.type)) {
+    return { path: null, error: "Project file must be a PDF, DOC, DOCX, spreadsheet, CSV, TXT, JPG, PNG, or WebP file." };
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    return { path: null, error: "Project file must be 20MB or smaller." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const path = `${scholarId}/${projectId}/${randomUUID()}-${safeFileName(file.name)}`;
+  const { error } = await supabase.storage.from("project-submission-files").upload(path, file, {
+    contentType: file.type,
+    upsert: false
+  });
+
+  if (error) return { path: null, error: error.message };
+  return { path, error: null };
+}
+
+export async function createProjectSubmission(formData: FormData) {
+  const profile = await requireProfile();
+  const projectInvitationId = value(formData, "project_invitation_id");
+  const invitation = await getAcceptedProjectInvitation(projectInvitationId, profile.id);
+  if (!invitation) actionError("/tasks", "Accepted project invitation was not found.");
+
+  const file = formData.get("file");
+  let filePath: string | null = null;
+  if (file instanceof File && file.size > 0) {
+    const upload = await uploadProjectSubmissionFile(file, profile.id, invitation.project_id);
+    if (upload.error || !upload.path) actionError(`/tasks/projects/${invitation.project_id}`, `Project file was not uploaded: ${upload.error ?? "No storage path returned."}`);
+    filePath = upload.path;
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("project_submissions").insert({
+    project_id: invitation.project_id,
+    project_invitation_id: invitation.id,
+    scholar_id: profile.id,
+    title: value(formData, "title"),
+    notes: optionalValue(formData, "notes"),
+    file_url: filePath,
+    file_path: filePath,
+    status: "submitted"
+  });
+
+  if (error) {
+    if (filePath) await supabase.storage.from("project-submission-files").remove([filePath]);
+    actionError(`/tasks/projects/${invitation.project_id}`, `Project submission was not saved: ${error.message}`);
+  }
+
+  revalidatePath(`/tasks/projects/${invitation.project_id}`);
+  redirect(`/tasks/projects/${invitation.project_id}?message=Project work submitted.`);
+}
+
+export async function updateProjectSubmission(submissionId: string, formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { data: existing, error: existingError } = await supabase
+    .from("project_submissions")
+    .select("*")
+    .eq("id", submissionId)
+    .eq("scholar_id", profile.id)
+    .single();
+
+  if (existingError || !existing) actionError("/tasks", "Project submission was not found.");
+  if (!["submitted", "revision_requested"].includes(existing.status)) {
+    actionError(`/tasks/projects/${existing.project_id}`, "This project submission can no longer be edited.");
+  }
+
+  const file = formData.get("file");
+  let filePath: string | null = existing.file_path ?? null;
+  if (file instanceof File && file.size > 0) {
+    const upload = await uploadProjectSubmissionFile(file, profile.id, existing.project_id);
+    if (upload.error || !upload.path) actionError(`/tasks/projects/${existing.project_id}`, `Project file was not uploaded: ${upload.error ?? "No storage path returned."}`);
+    filePath = upload.path;
+  }
+
+  const { error } = await supabase
+    .from("project_submissions")
+    .update({
+      title: value(formData, "title"),
+      notes: optionalValue(formData, "notes"),
+      file_url: filePath,
+      file_path: filePath,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", submissionId)
+    .eq("scholar_id", profile.id);
+
+  if (error) actionError(`/tasks/projects/${existing.project_id}`, `Project submission was not updated: ${error.message}`);
+
+  revalidatePath(`/tasks/projects/${existing.project_id}`);
+  redirect(`/tasks/projects/${existing.project_id}?message=Project submission updated.`);
+}
+
+export async function createTimesheet(formData: FormData) {
+  const profile = await requireProfile();
+  const projectInvitationId = value(formData, "project_invitation_id");
+  const invitation = await getAcceptedProjectInvitation(projectInvitationId, profile.id);
+  if (!invitation) actionError("/tasks", "Accepted project invitation was not found.");
+
+  const hours = Number(value(formData, "hours"));
+  if (!Number.isFinite(hours) || hours <= 0) actionError(`/tasks/projects/${invitation.project_id}`, "Hours must be greater than zero.");
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("timesheets").insert({
+    project_id: invitation.project_id,
+    project_invitation_id: invitation.id,
+    scholar_id: profile.id,
+    work_date: value(formData, "work_date"),
+    hours,
+    work_summary: value(formData, "work_summary"),
+    status: "submitted"
+  });
+
+  if (error) actionError(`/tasks/projects/${invitation.project_id}`, `Timesheet was not saved: ${error.message}`);
+
+  revalidatePath(`/tasks/projects/${invitation.project_id}`);
+  redirect(`/tasks/projects/${invitation.project_id}?message=Timesheet submitted.`);
+}
+
+export async function updateTimesheet(timesheetId: string, formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { data: existing, error: existingError } = await supabase
+    .from("timesheets")
+    .select("*")
+    .eq("id", timesheetId)
+    .eq("scholar_id", profile.id)
+    .single();
+
+  if (existingError || !existing) actionError("/tasks", "Timesheet was not found.");
+  if (!["draft", "submitted", "rejected"].includes(existing.status)) {
+    actionError(`/tasks/projects/${existing.project_id}`, "This timesheet can no longer be edited.");
+  }
+
+  const hours = Number(value(formData, "hours"));
+  if (!Number.isFinite(hours) || hours <= 0) actionError(`/tasks/projects/${existing.project_id}`, "Hours must be greater than zero.");
+
+  const { error } = await supabase
+    .from("timesheets")
+    .update({
+      work_date: value(formData, "work_date"),
+      hours,
+      work_summary: value(formData, "work_summary"),
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", timesheetId)
+    .eq("scholar_id", profile.id);
+
+  if (error) actionError(`/tasks/projects/${existing.project_id}`, `Timesheet was not updated: ${error.message}`);
+
+  revalidatePath(`/tasks/projects/${existing.project_id}`);
+  redirect(`/tasks/projects/${existing.project_id}?message=Timesheet updated.`);
+}
+
 export async function respondToProjectInvitation(invitationId: string, response: "accepted" | "declined") {
   const profile = await requireProfile();
   const supabase = await createSupabaseServerClient();
@@ -842,19 +1029,26 @@ export async function respondToProjectInvitation(invitationId: string, response:
 export async function createProject(formData: FormData) {
   const profile = await requireRole(["admin"]);
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("projects").insert({
-    title: value(formData, "title"),
+  const title = value(formData, "title");
+  const description = value(formData, "description");
+
+  if (!title) actionError("/tasks", "Project title is required.");
+  if (!description) actionError("/tasks", "Project description is required.");
+
+  const { data, error } = await supabase.from("projects").insert({
+    title,
     project_type: safeProjectType(formData),
-    description: value(formData, "description"),
+    description,
     deadline: optionalValue(formData, "deadline"),
     status: "active",
     created_by: profile.id
-  });
+  }).select("id,title").single();
 
-  if (error) actionError("/tasks", `Project was not created: ${error.message}`);
+  if (error || !data) actionError("/tasks", `Project was not created: ${error ? supabaseErrorMessage(error) : "Supabase did not return the created project row."}`);
 
   revalidatePath("/tasks");
-  redirect("/tasks?message=Project created.");
+  revalidatePath(`/tasks/projects/${data.id}`);
+  redirect(`/tasks?message=${encodeURIComponent(`Project created: ${data.title}`)}`);
 }
 
 export async function sendProjectInvitations(formData: FormData) {

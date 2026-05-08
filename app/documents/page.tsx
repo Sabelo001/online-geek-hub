@@ -146,7 +146,7 @@ function UploadDocumentCard() {
         <UploadCloud className="h-5 w-5 text-cyan-700" />
         <h2 className="text-xl font-bold text-slate-950">Upload Document</h2>
       </div>
-      <form action={uploadScholarDocument} encType="multipart/form-data" className="mt-4 grid gap-4">
+      <form action={uploadScholarDocument} className="mt-4 grid gap-4">
         <label className="grid gap-2 text-sm font-semibold text-slate-700">
           Document
           <TextInput name="document" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />

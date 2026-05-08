@@ -286,6 +286,58 @@ create table if not exists public.project_invitations (
   unique (project_id, scholar_id)
 );
 
+alter table public.project_invitations
+  add column if not exists invitation_message text;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'project_invitations_project_id_fkey'
+      and conrelid = 'public.project_invitations'::regclass
+  ) then
+    alter table public.project_invitations
+      add constraint project_invitations_project_id_fkey
+      foreign key (project_id) references public.projects(id) on delete cascade;
+  end if;
+end $$;
+
+-- Project submissions store Scholar deliverables for active client/vendor projects.
+create table if not exists public.project_submissions (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid references public.projects(id) on delete cascade,
+  project_invitation_id uuid references public.project_invitations(id) on delete cascade,
+  scholar_id uuid references public.profiles(id) on delete cascade,
+  title text not null,
+  notes text,
+  file_url text,
+  file_path text,
+  status text not null default 'submitted' check (status in ('submitted', 'under_review', 'revision_requested', 'approved', 'rejected')),
+  score numeric,
+  feedback text,
+  reviewed_by uuid references public.profiles(id),
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Timesheets let Scholars log time against accepted project work.
+create table if not exists public.timesheets (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid references public.projects(id) on delete cascade,
+  project_invitation_id uuid references public.project_invitations(id) on delete cascade,
+  scholar_id uuid references public.profiles(id) on delete cascade,
+  work_date date not null,
+  hours numeric not null check (hours > 0),
+  work_summary text not null,
+  status text not null default 'submitted' check (status in ('draft', 'submitted', 'approved', 'rejected')),
+  approved_by uuid references public.profiles(id),
+  approved_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 -- Submissions store trainee answers and reviewer feedback.
 create table if not exists public.submissions (
   id uuid primary key default gen_random_uuid(),
@@ -398,6 +450,15 @@ create index if not exists projects_status_idx on public.projects(status);
 create index if not exists project_invitations_scholar_idx on public.project_invitations(scholar_id);
 create index if not exists project_invitations_project_idx on public.project_invitations(project_id);
 create index if not exists project_invitations_status_idx on public.project_invitations(status);
+create unique index if not exists project_invitations_project_scholar_unique
+  on public.project_invitations (project_id, scholar_id);
+create index if not exists project_submissions_project_idx on public.project_submissions(project_id);
+create index if not exists project_submissions_scholar_idx on public.project_submissions(scholar_id);
+create index if not exists project_submissions_status_idx on public.project_submissions(status);
+create index if not exists timesheets_project_idx on public.timesheets(project_id);
+create index if not exists timesheets_scholar_idx on public.timesheets(scholar_id);
+create index if not exists timesheets_status_idx on public.timesheets(status);
+create index if not exists timesheets_work_date_idx on public.timesheets(work_date);
 create index if not exists submissions_status_idx on public.submissions(status);
 create index if not exists submissions_task_idx on public.submissions(task_id);
 create index if not exists submissions_trainee_idx on public.submissions(trainee_id);

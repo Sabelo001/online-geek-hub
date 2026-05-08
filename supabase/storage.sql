@@ -11,7 +11,8 @@ values
   ('scholar-photos', 'scholar-photos', false),
   ('scholar-avatars', 'scholar-avatars', false),
   ('scholar-cvs', 'scholar-cvs', false),
-  ('scholar-docs', 'scholar-docs', false)
+  ('scholar-docs', 'scholar-docs', false),
+  ('project-submission-files', 'project-submission-files', false)
 on conflict (id) do update set public = excluded.public;
 
 -- Drop old storage policies first so this file can be rerun safely.
@@ -39,6 +40,10 @@ drop policy if exists "reviewer_read_scholar_cvs" on storage.objects;
 drop policy if exists "admin_all_scholar_docs" on storage.objects;
 drop policy if exists "scholar_docs_assigned_read" on storage.objects;
 drop policy if exists "scholar_docs_owner_write" on storage.objects;
+drop policy if exists "admin_all_project_submission_files" on storage.objects;
+drop policy if exists "reviewer_read_project_submission_files" on storage.objects;
+drop policy if exists "scholar_read_own_project_submission_files" on storage.objects;
+drop policy if exists "scholar_upload_own_project_submission_files" on storage.objects;
 
 -- Admin can upload, read, update, and delete training files.
 create policy "admin_all_training_files"
@@ -164,3 +169,25 @@ create policy "scholar_docs_owner_write"
 on storage.objects for insert
 to authenticated
 with check (bucket_id = 'scholar-docs' and owner = auth.uid());
+
+-- Project submission files are private deliverables attached to project work.
+create policy "admin_all_project_submission_files"
+on storage.objects for all
+to authenticated
+using (bucket_id = 'project-submission-files' and public.is_admin())
+with check (bucket_id = 'project-submission-files' and public.is_admin());
+
+create policy "reviewer_read_project_submission_files"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'project-submission-files' and public.is_reviewer());
+
+create policy "scholar_read_own_project_submission_files"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'project-submission-files' and owner = auth.uid());
+
+create policy "scholar_upload_own_project_submission_files"
+on storage.objects for insert
+to authenticated
+with check (bucket_id = 'project-submission-files' and owner = auth.uid());

@@ -12,6 +12,8 @@ alter table public.practice_tasks enable row level security;
 alter table public.task_assignments enable row level security;
 alter table public.projects enable row level security;
 alter table public.project_invitations enable row level security;
+alter table public.project_submissions enable row level security;
+alter table public.timesheets enable row level security;
 alter table public.submissions enable row level security;
 alter table public.availability enable row level security;
 alter table public.payments enable row level security;
@@ -30,6 +32,8 @@ grant select, insert, update on public.practice_tasks to authenticated;
 grant select, insert, update on public.task_assignments to authenticated;
 grant select, insert, update on public.projects to authenticated;
 grant select, insert, update on public.project_invitations to authenticated;
+grant select, insert, update on public.project_submissions to authenticated;
+grant select, insert, update on public.timesheets to authenticated;
 grant select, insert, update on public.submissions to authenticated;
 grant select, insert, update on public.availability to authenticated;
 grant select, insert, update on public.payments to authenticated;
@@ -139,11 +143,30 @@ drop policy if exists "trainee_read_own_task_assignments" on public.task_assignm
 
 drop policy if exists "admin_all_projects" on public.projects;
 drop policy if exists "reviewer_read_projects" on public.projects;
+drop policy if exists "scholar_read_invited_projects" on public.projects;
 
 drop policy if exists "admin_all_project_invitations" on public.project_invitations;
 drop policy if exists "reviewer_read_project_invitations" on public.project_invitations;
 drop policy if exists "scholar_read_own_project_invitations" on public.project_invitations;
 drop policy if exists "scholar_update_own_project_invitations" on public.project_invitations;
+
+drop policy if exists "project_submissions_scholar_insert_own" on public.project_submissions;
+drop policy if exists "project_submissions_scholar_read_own" on public.project_submissions;
+drop policy if exists "project_submissions_scholar_update_own_editable" on public.project_submissions;
+drop policy if exists "project_submissions_admin_read_update" on public.project_submissions;
+drop policy if exists "project_submissions_reviewer_read_update" on public.project_submissions;
+drop policy if exists "project_submissions_admin_read" on public.project_submissions;
+drop policy if exists "project_submissions_admin_update" on public.project_submissions;
+drop policy if exists "project_submissions_reviewer_read" on public.project_submissions;
+drop policy if exists "project_submissions_reviewer_update" on public.project_submissions;
+
+drop policy if exists "timesheets_scholar_insert_own" on public.timesheets;
+drop policy if exists "timesheets_scholar_read_own" on public.timesheets;
+drop policy if exists "timesheets_scholar_update_own_editable" on public.timesheets;
+drop policy if exists "timesheets_admin_read_update" on public.timesheets;
+drop policy if exists "timesheets_admin_read" on public.timesheets;
+drop policy if exists "timesheets_admin_update" on public.timesheets;
+drop policy if exists "timesheets_reviewer_read" on public.timesheets;
 
 drop policy if exists "admin_all_submissions" on public.submissions;
 drop policy if exists "submissions_scoped_read" on public.submissions;
@@ -356,6 +379,18 @@ on public.projects for select
 to authenticated
 using (public.is_reviewer());
 
+create policy "scholar_read_invited_projects"
+on public.projects for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.project_invitations pi
+    where pi.project_id = projects.id
+      and pi.scholar_id = auth.uid()
+  )
+);
+
 -- Project invitations
 -- Admin can manage invitations. Reviewers can read them. Scholars can read and
 -- respond to only their own invitations.
@@ -380,6 +415,101 @@ on public.project_invitations for update
 to authenticated
 using (scholar_id = auth.uid())
 with check (scholar_id = auth.uid());
+
+-- Project submissions
+-- Scholars submit and edit their own work while it is still editable.
+-- Admins and reviewers can read/update for review.
+create policy "project_submissions_scholar_insert_own"
+on public.project_submissions for insert
+to authenticated
+with check (
+  scholar_id = auth.uid()
+  and exists (
+    select 1
+    from public.project_invitations pi
+    where pi.id = project_submissions.project_invitation_id
+      and pi.project_id = project_submissions.project_id
+      and pi.scholar_id = auth.uid()
+      and pi.status = 'accepted'
+  )
+);
+
+create policy "project_submissions_scholar_read_own"
+on public.project_submissions for select
+to authenticated
+using (scholar_id = auth.uid());
+
+create policy "project_submissions_scholar_update_own_editable"
+on public.project_submissions for update
+to authenticated
+using (scholar_id = auth.uid() and status in ('submitted', 'revision_requested'))
+with check (scholar_id = auth.uid() and status in ('submitted', 'revision_requested'));
+
+create policy "project_submissions_admin_read"
+on public.project_submissions for select
+to authenticated
+using (public.is_admin());
+
+create policy "project_submissions_admin_update"
+on public.project_submissions for update
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "project_submissions_reviewer_read"
+on public.project_submissions for select
+to authenticated
+using (public.is_reviewer());
+
+create policy "project_submissions_reviewer_update"
+on public.project_submissions for update
+to authenticated
+using (public.is_reviewer())
+with check (public.is_reviewer());
+
+-- Timesheets
+-- Scholars log their own time. Admins manage approvals; reviewers can inspect time.
+create policy "timesheets_scholar_insert_own"
+on public.timesheets for insert
+to authenticated
+with check (
+  scholar_id = auth.uid()
+  and exists (
+    select 1
+    from public.project_invitations pi
+    where pi.id = timesheets.project_invitation_id
+      and pi.project_id = timesheets.project_id
+      and pi.scholar_id = auth.uid()
+      and pi.status = 'accepted'
+  )
+);
+
+create policy "timesheets_scholar_read_own"
+on public.timesheets for select
+to authenticated
+using (scholar_id = auth.uid());
+
+create policy "timesheets_scholar_update_own_editable"
+on public.timesheets for update
+to authenticated
+using (scholar_id = auth.uid() and status in ('draft', 'submitted', 'rejected'))
+with check (scholar_id = auth.uid() and status in ('draft', 'submitted', 'rejected'));
+
+create policy "timesheets_admin_read"
+on public.timesheets for select
+to authenticated
+using (public.is_admin());
+
+create policy "timesheets_admin_update"
+on public.timesheets for update
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "timesheets_reviewer_read"
+on public.timesheets for select
+to authenticated
+using (public.is_reviewer());
 
 -- Submissions
 -- Admin can manage all submissions. Reviewers can read and update submissions for scoring.
