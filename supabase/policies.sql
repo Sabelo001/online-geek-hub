@@ -100,6 +100,7 @@ drop policy if exists "profiles_self_insert" on public.profiles;
 drop policy if exists "profiles_self_read" on public.profiles;
 drop policy if exists "profiles_self_update" on public.profiles;
 drop policy if exists "admin_read_profiles" on public.profiles;
+drop policy if exists "admin_update_profiles" on public.profiles;
 drop policy if exists "reviewer_read_profiles" on public.profiles;
 
 drop policy if exists "admin_all_training_modules" on public.training_modules;
@@ -205,6 +206,17 @@ create policy "admin_read_profiles"
 on public.profiles for select
 to authenticated
 using (public.is_admin());
+
+create policy "admin_update_profiles"
+on public.profiles for update
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "reviewer_read_profiles"
+on public.profiles for select
+to authenticated
+using (public.is_reviewer());
 
 -- Training modules
 -- Admin can manage all modules. Other signed-in users can read published modules.

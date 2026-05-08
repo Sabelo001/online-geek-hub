@@ -17,7 +17,7 @@ const traineeLinks = [
 const adminLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/profile", label: "Profile", icon: UserCircle },
-  { href: "/scholars", label: "Scholars", icon: Users },
+  { href: "/admin/scholars", label: "Scholars", icon: Users },
   { href: "/learn", label: "Learn", icon: BookOpen },
   { href: "/tasks", label: "Tasks & Projects", icon: BriefcaseBusiness },
   { href: "/documents", label: "Documents", icon: FolderOpen },

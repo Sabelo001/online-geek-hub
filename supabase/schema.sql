@@ -21,6 +21,13 @@ exception
   when duplicate_object then null;
 end $$;
 
+alter type public.profile_status add value if not exists 'pending_profile';
+alter type public.profile_status add value if not exists 'trainee';
+alter type public.profile_status add value if not exists 'project_ready';
+alter type public.profile_status add value if not exists 'assigned';
+alter type public.profile_status add value if not exists 'paused';
+alter type public.profile_status add value if not exists 'archived';
+
 do $$
 begin
   create type public.training_module_status as enum ('draft', 'published');
@@ -106,8 +113,15 @@ alter table public.profiles
   add column if not exists first_name text,
   add column if not exists last_name text,
   add column if not exists location text,
+  add column if not exists professional_title text,
   add column if not exists skills text[],
+  add column if not exists languages text[],
+  add column if not exists availability_status text,
+  add column if not exists work_preference text,
   add column if not exists bio text,
+  add column if not exists experience_summary text,
+  add column if not exists portfolio_links text[],
+  add column if not exists preferred_task_types text[],
   add column if not exists avatar_path text,
   add column if not exists cv_path text,
   add column if not exists cv_name text,
@@ -364,6 +378,9 @@ create table if not exists public.announcements (
 -- Useful indexes for dashboard counts, role checks, joins, and trainee lookups.
 create index if not exists profiles_role_idx on public.profiles(role);
 create index if not exists profiles_email_idx on public.profiles(email);
+create index if not exists profiles_status_idx on public.profiles(status);
+create index if not exists profiles_skills_gin_idx on public.profiles using gin(skills);
+create index if not exists profiles_preferred_task_types_gin_idx on public.profiles using gin(preferred_task_types);
 create index if not exists training_modules_category_idx on public.training_modules(category);
 create index if not exists training_modules_status_idx on public.training_modules(status);
 create index if not exists training_modules_track_idx on public.training_modules(track);

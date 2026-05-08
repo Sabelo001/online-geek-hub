@@ -30,8 +30,12 @@ drop policy if exists "scholar_photos_owner_read" on storage.objects;
 drop policy if exists "scholar_photos_owner_write" on storage.objects;
 drop policy if exists "scholar_avatars_owner_read" on storage.objects;
 drop policy if exists "scholar_avatars_owner_write" on storage.objects;
+drop policy if exists "admin_read_scholar_avatars" on storage.objects;
+drop policy if exists "reviewer_read_scholar_avatars" on storage.objects;
 drop policy if exists "scholar_cvs_owner_read" on storage.objects;
 drop policy if exists "scholar_cvs_owner_write" on storage.objects;
+drop policy if exists "admin_read_scholar_cvs" on storage.objects;
+drop policy if exists "reviewer_read_scholar_cvs" on storage.objects;
 drop policy if exists "admin_all_scholar_docs" on storage.objects;
 drop policy if exists "scholar_docs_assigned_read" on storage.objects;
 drop policy if exists "scholar_docs_owner_write" on storage.objects;
@@ -93,6 +97,16 @@ on storage.objects for select
 to authenticated
 using (bucket_id = 'scholar-avatars' and owner = auth.uid());
 
+create policy "admin_read_scholar_avatars"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'scholar-avatars' and public.is_admin());
+
+create policy "reviewer_read_scholar_avatars"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'scholar-avatars' and public.is_reviewer());
+
 create policy "scholar_avatars_owner_write"
 on storage.objects for all
 to authenticated
@@ -104,6 +118,16 @@ create policy "scholar_cvs_owner_read"
 on storage.objects for select
 to authenticated
 using (bucket_id = 'scholar-cvs' and owner = auth.uid());
+
+create policy "admin_read_scholar_cvs"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'scholar-cvs' and public.is_admin());
+
+create policy "reviewer_read_scholar_cvs"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'scholar-cvs' and public.is_reviewer());
 
 create policy "scholar_cvs_owner_write"
 on storage.objects for all

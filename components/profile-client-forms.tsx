@@ -2,7 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { updateProfileBio, updateProfileSkills, uploadProfilePhoto } from "@/lib/actions";
+import {
+  updateProfileBio,
+  updateProfileLanguages,
+  updateProfilePortfolioLinks,
+  updateProfileSkills,
+  uploadProfilePhoto
+} from "@/lib/actions";
 
 export function PhotoIdentityBlock({
   avatarUrl,
@@ -60,56 +66,109 @@ export function PhotoIdentityBlock({
 }
 
 export function SkillsForm({ initialSkills }: { initialSkills: string[] }) {
-  const [skills, setSkills] = useState(initialSkills);
-  const [input, setInput] = useState("");
-  const serializedSkills = useMemo(() => JSON.stringify(skills), [skills]);
+  return (
+    <TagForm
+      action={updateProfileSkills}
+      fieldName="skills"
+      initialItems={initialSkills}
+      label="Skills"
+      placeholder="Data Annotation, Audio Transcription, Swahili"
+      submitLabel="Save Skills"
+    />
+  );
+}
 
-  function addSkill(skill: string) {
-    const nextSkill = skill.trim();
-    if (!nextSkill) return;
-    setSkills((current) => {
-      if (current.some((item) => item.toLowerCase() === nextSkill.toLowerCase())) return current;
-      return [...current, nextSkill];
+export function LanguagesForm({ initialLanguages }: { initialLanguages: string[] }) {
+  return (
+    <TagForm
+      action={updateProfileLanguages}
+      fieldName="languages"
+      initialItems={initialLanguages}
+      label="Languages"
+      placeholder="English, Swahili"
+      submitLabel="Save Languages"
+    />
+  );
+}
+
+export function PortfolioLinksForm({ initialLinks }: { initialLinks: string[] }) {
+  return (
+    <TagForm
+      action={updateProfilePortfolioLinks}
+      fieldName="portfolio_links"
+      initialItems={initialLinks}
+      label="Portfolio Links"
+      placeholder="https://example.com/work-sample"
+      submitLabel="Save Portfolio Links"
+    />
+  );
+}
+
+function TagForm({
+  action,
+  fieldName,
+  initialItems,
+  label,
+  placeholder,
+  submitLabel
+}: {
+  action: (formData: FormData) => void | Promise<void>;
+  fieldName: string;
+  initialItems: string[];
+  label: string;
+  placeholder: string;
+  submitLabel: string;
+}) {
+  const [items, setItems] = useState(initialItems);
+  const [input, setInput] = useState("");
+  const serializedItems = useMemo(() => JSON.stringify(items), [items]);
+
+  function addItem(item: string) {
+    const nextItem = item.trim();
+    if (!nextItem) return;
+    setItems((current) => {
+      if (current.some((currentItem) => currentItem.toLowerCase() === nextItem.toLowerCase())) return current;
+      return [...current, nextItem];
     });
     setInput("");
   }
 
   return (
-    <form action={updateProfileSkills} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <label className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700" htmlFor="skill-input">
-        Skills
+    <form action={action} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <label className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700" htmlFor={`${fieldName}-input`}>
+        {label}
       </label>
       <div className="mt-3 flex flex-wrap gap-2 rounded-md border border-slate-300 bg-white p-2">
-        {skills.map((skill) => (
-          <span key={skill} className="inline-flex items-center gap-2 rounded-full bg-[#06b6d4] px-3 py-1 text-sm font-semibold text-slate-950">
-            {skill}
+        {items.map((item) => (
+          <span key={item} className="inline-flex items-center gap-2 rounded-full bg-[#06b6d4] px-3 py-1 text-sm font-semibold text-slate-950">
+            {item}
             <button
               type="button"
-              aria-label={`Remove ${skill}`}
+              aria-label={`Remove ${item}`}
               className="rounded-full p-0.5 hover:bg-white/25"
-              onClick={() => setSkills((current) => current.filter((item) => item !== skill))}
+              onClick={() => setItems((current) => current.filter((currentItem) => currentItem !== item))}
             >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
         ))}
         <input
-          id="skill-input"
+          id={`${fieldName}-input`}
           value={input}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
-              addSkill(input);
+              addItem(input);
             }
           }}
-          placeholder={skills.length ? "Add another skill" : "Data Annotation, Audio Transcription, Swahili"}
+          placeholder={items.length ? `Add another ${label.toLowerCase()}` : placeholder}
           className="min-h-8 min-w-48 flex-1 border-0 bg-transparent px-1 text-sm text-slate-950 outline-none"
         />
       </div>
-      <input type="hidden" name="skills" value={serializedSkills} />
+      <input type="hidden" name={fieldName} value={serializedItems} />
       <button type="submit" className="focus-ring mt-4 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
-        Save Skills
+        {submitLabel}
       </button>
     </form>
   );

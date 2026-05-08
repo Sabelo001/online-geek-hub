@@ -1,10 +1,11 @@
 import { FileText, Upload } from "lucide-react";
-import { updateAvailability, uploadScholarCv, updateProfileInfo } from "@/lib/actions";
+import { updateAvailability, updateProfileTaskTypes, uploadScholarCv, updateProfileInfo } from "@/lib/actions";
 import { requireProfile } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ProtectedPage } from "@/components/protected-page";
-import { BioForm, PhotoIdentityBlock, SkillsForm } from "@/components/profile-client-forms";
+import { BioForm, LanguagesForm, PhotoIdentityBlock, PortfolioLinksForm, SkillsForm } from "@/components/profile-client-forms";
 import { Card, PageHeader, Select, TextArea, TextInput } from "@/components/ui";
+import { SCHOLAR_TASK_TYPES } from "@/lib/types";
 
 function splitName(fullName: string) {
   const [firstName, ...rest] = fullName.trim().split(/\s+/);
@@ -29,6 +30,11 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+function labelize(value: string | null) {
+  if (!value) return "Not set";
+  return value.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 async function signedUrl(bucket: string, path: string | null) {
   if (!path) return null;
   const supabase = await createSupabaseServerClient();
@@ -47,6 +53,9 @@ export default async function ProfilePage({
   const avatarUrl = await signedUrl("scholar-avatars", profile.avatar_path);
   const cvUrl = await signedUrl("scholar-cvs", profile.cv_path);
   const skills = Array.isArray(profile.skills) ? profile.skills : [];
+  const languages = Array.isArray(profile.languages) ? profile.languages : [];
+  const portfolioLinks = Array.isArray(profile.portfolio_links) ? profile.portfolio_links : [];
+  const preferredTaskTypes = Array.isArray(profile.preferred_task_types) ? profile.preferred_task_types : [];
 
   return (
     <ProtectedPage>
@@ -85,6 +94,39 @@ export default async function ProfilePage({
               Location
               <TextInput name="location" defaultValue={profile.location ?? ""} placeholder="City, country" />
             </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700">
+              Professional title
+              <TextInput name="professional_title" defaultValue={profile.professional_title ?? ""} placeholder="AI Data Contributor" />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700">
+              Availability status
+              <Select name="availability_status" defaultValue={profile.availability_status ?? ""}>
+                <option value="">Not set</option>
+                <option value="available">Available</option>
+                <option value="limited">Limited</option>
+                <option value="unavailable">Unavailable</option>
+                <option value="by_project">By project</option>
+              </Select>
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700">
+              Work preference
+              <Select name="work_preference" defaultValue={profile.work_preference ?? ""}>
+                <option value="">Not set</option>
+                <option value="part_time">Part-time</option>
+                <option value="full_time">Full-time</option>
+                <option value="project_based">Project-based</option>
+                <option value="temporary">Temporary</option>
+                <option value="flexible">Flexible</option>
+              </Select>
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-700 sm:col-span-2">
+              Experience summary
+              <TextArea
+                name="experience_summary"
+                defaultValue={profile.experience_summary ?? ""}
+                placeholder="Summarize relevant AI data, transcription, review, or remote operations experience."
+              />
+            </label>
           </div>
           <button className="focus-ring mt-4 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
             Save Changes
@@ -92,10 +134,45 @@ export default async function ProfilePage({
         </form>
 
         <SkillsForm initialSkills={skills} />
+        <LanguagesForm initialLanguages={languages} />
+        <PortfolioLinksForm initialLinks={portfolioLinks} />
+
+        <form action={updateProfileTaskTypes} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">Preferred Task Types</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {SCHOLAR_TASK_TYPES.map((taskType) => (
+              <label key={taskType} className="flex items-center gap-3 rounded-md border border-slate-200 p-3 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  name="preferred_task_types"
+                  value={taskType}
+                  defaultChecked={preferredTaskTypes.includes(taskType)}
+                  className="h-4 w-4 rounded border-slate-300 text-cyan-600"
+                />
+                {taskType}
+              </label>
+            ))}
+          </div>
+          <button className="focus-ring mt-4 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+            Save Task Types
+          </button>
+        </form>
+
         <BioForm initialBio={profile.bio ?? ""} />
 
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">CV / Resume</p>
+          <div className="mt-3 grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 sm:grid-cols-3">
+            <p>
+              <span className="font-semibold text-slate-800">Status:</span> {labelize(profile.status)}
+            </p>
+            <p>
+              <span className="font-semibold text-slate-800">Availability:</span> {labelize(profile.availability_status)}
+            </p>
+            <p>
+              <span className="font-semibold text-slate-800">Preference:</span> {labelize(profile.work_preference)}
+            </p>
+          </div>
           <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
             {profile.cv_path ? (
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -116,17 +193,17 @@ export default async function ProfilePage({
               <p className="text-sm text-slate-600">No CV uploaded yet</p>
             )}
             <form action={uploadScholarCv} className="mt-4 flex flex-wrap items-center gap-3">
-              <input name="cv" type="file" accept="application/pdf" className="max-w-full text-sm text-slate-600" />
+              <input name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="max-w-full text-sm text-slate-600" />
               <button className="focus-ring inline-flex items-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
                 <Upload className="h-4 w-4" />
                 {profile.cv_path ? "Replace" : "Upload CV"}
               </button>
             </form>
-            <p className="mt-3 text-xs text-slate-500">PDF only. Maximum file size: 5MB.</p>
+            <p className="mt-3 text-xs text-slate-500">PDF, DOC, or DOCX only. Maximum file size: 5MB.</p>
           </div>
         </section>
 
-        {profile.role === "trainee" ? (
+        {profile.role !== "admin" ? (
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">Schedule</p>
             <h2 className="mt-2 text-2xl font-bold text-slate-950">Availability</h2>

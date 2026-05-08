@@ -5,7 +5,15 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireProfile, requireRole } from "@/lib/auth";
-import { TRAINING_CATEGORIES, TRAINING_TRACKS, type CvTemplate, type InvoiceStatus, type ScholarDocumentType } from "@/lib/types";
+import {
+  SCHOLAR_STATUSES,
+  SCHOLAR_TASK_TYPES,
+  TRAINING_CATEGORIES,
+  TRAINING_TRACKS,
+  type CvTemplate,
+  type InvoiceStatus,
+  type ScholarDocumentType
+} from "@/lib/types";
 
 function value(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -141,6 +149,24 @@ function safeDocumentType(formData: FormData): ScholarDocumentType {
     return documentType as ScholarDocumentType;
   }
   return "Other";
+}
+
+function safeAvailabilityStatus(formData: FormData) {
+  const status = value(formData, "availability_status");
+  if (["available", "limited", "unavailable", "by_project"].includes(status)) return status;
+  return null;
+}
+
+function safeWorkPreference(formData: FormData) {
+  const preference = value(formData, "work_preference");
+  if (["part_time", "full_time", "project_based", "temporary", "flexible"].includes(preference)) return preference;
+  return null;
+}
+
+function safeScholarStatus(formData: FormData) {
+  const status = value(formData, "status");
+  if (SCHOLAR_STATUSES.includes(status as (typeof SCHOLAR_STATUSES)[number])) return status;
+  return "pending_profile";
 }
 
 function cvPayload(formData: FormData, userId: string) {
@@ -512,7 +538,11 @@ export async function updateProfileInfo(formData: FormData) {
       last_name: lastName || null,
       full_name: fullName,
       phone: optionalValue(formData, "phone"),
-      location: optionalValue(formData, "location")
+      location: optionalValue(formData, "location"),
+      professional_title: optionalValue(formData, "professional_title"),
+      availability_status: safeAvailabilityStatus(formData),
+      work_preference: safeWorkPreference(formData),
+      experience_summary: optionalValue(formData, "experience_summary")
     })
     .eq("id", profile.id);
 
@@ -522,17 +552,17 @@ export async function updateProfileInfo(formData: FormData) {
   redirect("/profile?message=Profile updated.");
 }
 
-function parseSkills(formData: FormData) {
-  const raw = value(formData, "skills");
+function parseStringList(formData: FormData, key: string, limit = 30) {
+  const raw = value(formData, key);
   if (!raw) return [];
 
   try {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
     return parsed
-      .map((skill) => String(skill).trim())
+      .map((item) => String(item).trim())
       .filter(Boolean)
-      .slice(0, 30);
+      .slice(0, limit);
   } catch {
     return [];
   }
@@ -541,12 +571,49 @@ function parseSkills(formData: FormData) {
 export async function updateProfileSkills(formData: FormData) {
   const profile = await requireProfile();
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("profiles").update({ skills: parseSkills(formData) }).eq("id", profile.id);
+  const { error } = await supabase.from("profiles").update({ skills: parseStringList(formData, "skills") }).eq("id", profile.id);
 
   if (error) actionError("/profile", `Skills were not saved: ${error.message}`);
 
   revalidatePath("/profile");
   redirect("/profile?message=Skills saved.");
+}
+
+export async function updateProfileLanguages(formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("profiles").update({ languages: parseStringList(formData, "languages") }).eq("id", profile.id);
+
+  if (error) actionError("/profile", `Languages were not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Languages saved.");
+}
+
+export async function updateProfilePortfolioLinks(formData: FormData) {
+  const profile = await requireProfile();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("profiles").update({ portfolio_links: parseStringList(formData, "portfolio_links", 12) }).eq("id", profile.id);
+
+  if (error) actionError("/profile", `Portfolio links were not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Portfolio links saved.");
+}
+
+export async function updateProfileTaskTypes(formData: FormData) {
+  const profile = await requireProfile();
+  const selected = formData
+    .getAll("preferred_task_types")
+    .map((item) => String(item))
+    .filter((item) => SCHOLAR_TASK_TYPES.includes(item as (typeof SCHOLAR_TASK_TYPES)[number]));
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("profiles").update({ preferred_task_types: selected }).eq("id", profile.id);
+
+  if (error) actionError("/profile", `Preferred task types were not saved: ${error.message}`);
+
+  revalidatePath("/profile");
+  redirect("/profile?message=Preferred task types saved.");
 }
 
 export async function updateProfileBio(formData: FormData) {
@@ -596,14 +663,15 @@ export async function uploadScholarCv(formData: FormData) {
   const profile = await requireProfile();
   const file = formData.get("cv");
 
-  if (!(file instanceof File) || file.size === 0) actionError("/profile", "Choose a PDF CV to upload.");
-  if (file.type !== "application/pdf") actionError("/profile", "CV must be a PDF file.");
+  if (!(file instanceof File) || file.size === 0) actionError("/profile", "Choose a resume or CV to upload.");
+  if (!allowedScholarDocumentTypes.has(file.type)) actionError("/profile", "CV must be a PDF, DOC, or DOCX file.");
   if (file.size > 5 * 1024 * 1024) actionError("/profile", "CV must be 5MB or smaller.");
 
   const supabase = await createSupabaseServerClient();
-  const path = `${profile.id}_cv.pdf`;
+  const extension = file.name.toLowerCase().endsWith(".docx") ? "docx" : file.name.toLowerCase().endsWith(".doc") ? "doc" : "pdf";
+  const path = `${profile.id}_cv.${extension}`;
   const { error: uploadError } = await supabase.storage.from("scholar-cvs").upload(path, file, {
-    contentType: "application/pdf",
+    contentType: file.type,
     upsert: true
   });
 
@@ -623,6 +691,23 @@ export async function uploadScholarCv(formData: FormData) {
 
   revalidatePath("/profile");
   redirect("/profile?message=CV uploaded.");
+}
+
+export async function updateScholarStatus(scholarId: string, formData: FormData) {
+  await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      status: safeScholarStatus(formData)
+    })
+    .eq("id", scholarId)
+    .neq("role", "admin");
+
+  if (error) actionError("/admin/scholars", `Scholar status was not updated: ${error.message}`);
+
+  revalidatePath("/admin/scholars");
+  redirect("/admin/scholars?message=Scholar status updated.");
 }
 
 async function uploadScholarDocFile(file: File, folder: string) {

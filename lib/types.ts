@@ -1,5 +1,5 @@
 export type Role = "admin" | "reviewer" | "trainee";
-export type Status = "active" | "inactive" | "pending";
+export type Status = "pending" | "active" | "inactive" | "pending_profile" | "trainee" | "project_ready" | "assigned" | "paused" | "archived";
 export type TrainingModuleStatus = "draft" | "published";
 export type CvTemplate = "professional" | "remote_work" | "data_annotation";
 export type CvPlan = "free" | "premium" | "professional_review";
@@ -9,6 +9,8 @@ export type InvoiceStatus = "pending" | "approved" | "paid" | "rejected";
 export type ScholarDocumentType = "ID Document" | "Certificate" | "Portfolio" | "Other" | "Agreement";
 export type ProjectInvitationStatus = "pending" | "accepted" | "declined" | "completed";
 export type ProjectStatus = "draft" | "active" | "closed";
+export type AvailabilityStatus = "available" | "limited" | "unavailable" | "by_project";
+export type WorkPreference = "part_time" | "full_time" | "project_based" | "temporary" | "flexible";
 export type TrainingTrack =
   | "Week 1 Onboarding"
   | "Data Annotation Track"
@@ -26,8 +28,15 @@ export type Profile = {
   first_name: string | null;
   last_name: string | null;
   location: string | null;
+  professional_title: string | null;
   skills: string[] | null;
+  languages: string[] | null;
+  availability_status: AvailabilityStatus | null;
+  work_preference: WorkPreference | null;
   bio: string | null;
+  experience_summary: string | null;
+  portfolio_links: string[] | null;
+  preferred_task_types: string[] | null;
   avatar_path: string | null;
   cv_path: string | null;
   cv_name: string | null;
@@ -36,6 +45,26 @@ export type Profile = {
   status: Status;
   created_at: string;
 };
+
+export const SCHOLAR_TASK_TYPES = [
+  "Data Annotation",
+  "AI Model Evaluation",
+  "Audio Transcription",
+  "Prompt and Response Review",
+  "Remote Operations",
+  "Research and Document Review",
+  "CV Support"
+] as const;
+
+export const SCHOLAR_STATUSES = [
+  "pending_profile",
+  "trainee",
+  "active",
+  "project_ready",
+  "assigned",
+  "paused",
+  "archived"
+] as const;
 
 export type TrainingModule = {
   id: string;
