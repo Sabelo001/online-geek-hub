@@ -5,7 +5,7 @@ import { BrandLogo } from "@/components/logo";
 const desktopNavLinks = [
   { href: "/#solutions", label: "Solutions" },
   { href: "/scholars", label: "Scholars" },
-  { href: "/#training", label: "Training" },
+  { href: "/scholars#quality-process", label: "How We Work" },
   { href: "/insights", label: "Insights" },
   { href: "/vendor-profile", label: "Vendor Profile" }
 ];
@@ -14,7 +14,7 @@ const mobileNavLinks = [
   { href: "/#solutions", label: "Solutions" },
   { href: "/#domains", label: "Domains" },
   { href: "/scholars", label: "Scholars" },
-  { href: "/#training", label: "Training" },
+  { href: "/scholars#quality-process", label: "How We Work" },
   { href: "/insights", label: "Insights" },
   { href: "/vendor-profile", label: "Vendor Profile" },
   { href: "/contact", label: "Contact" },

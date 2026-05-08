@@ -5,7 +5,6 @@ import {
   BookOpen,
   Bot,
   BriefcaseBusiness,
-  CheckCircle2,
   ClipboardCheck,
   FileText,
   Headphones,
@@ -151,16 +150,6 @@ const qualityLoop = [
     description: "Scholars who meet the required standard are cleared for supervised project work with ongoing review.",
     icon: ArrowRight
   }
-];
-
-const portalFeatures = [
-  "Training Modules",
-  "Practice Tasks",
-  "CV Generator",
-  "Scholar Profiles",
-  "Availability Tracking",
-  "Submissions and Reviews",
-  "Payment Records"
 ];
 
 export default function LandingPage() {
@@ -370,13 +359,13 @@ export default function LandingPage() {
                 href="/scholars"
                 className="cta-outline focus-ring"
               >
-                Meet Our Scholars
+                View Our Team
               </a>
               <Link
-                href="/signup"
+                href="/contact"
                 className="cta-primary dark-cta focus-ring ring-1 ring-white/30"
               >
-                Join the Scholar Program
+                Request a Team
               </Link>
             </div>
           </div>
@@ -470,46 +459,6 @@ export default function LandingPage() {
             >
               View Vendor Profile
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section id="training" className="scroll-mt-24 px-4 py-18 sm:px-6 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 rounded-lg border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5 sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#0A6EFF]">Private portal</p>
-            <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-slate-950">Scholar Portal</h2>
-            <p className="mt-4 text-lg leading-8 text-slate-600">
-              The Scholar Portal is our internal hub for training, task readiness, submissions, reviews, availability,
-              and operational records.
-            </p>
-            <div className="mt-8 flex flex-wrap items-start gap-3">
-              <Link
-                href="/login"
-                className="cta-primary dark-cta focus-ring min-w-fit shrink-0 justify-center overflow-visible px-4 whitespace-nowrap"
-              >
-                Login to Portal
-              </Link>
-              <Link href="/signup" className="cta-secondary focus-ring min-w-fit shrink-0 justify-center whitespace-nowrap">
-                Join Training
-              </Link>
-              <Link href="/cv" className="cta-secondary focus-ring min-w-fit shrink-0 justify-center whitespace-nowrap">
-                CV Generator
-              </Link>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {portalFeatures.map((feature) => (
-              <div
-                key={feature}
-                className={`flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-4 shadow-sm shadow-slate-950/5 ${
-                  feature === "Payment Records" ? "sm:col-span-2 sm:justify-center" : ""
-                }`}
-              >
-                <CheckCircle2 className="h-5 w-5 text-[#0A6EFF]" />
-                <span className="font-semibold text-slate-800">{feature}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>

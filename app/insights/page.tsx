@@ -60,8 +60,7 @@ export default function InsightsPage() {
               Insights, Resources, and Updates
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-sky-100 sm:text-xl">
-              A growing space for Online Geek Hub articles, use cases, downloadable resources, partner updates,
-              events, and future media mentions.
+              Our content hub is being built. Check back soon for case studies, blog posts, and resources from our team.
             </p>
           </div>
         </div>
@@ -82,7 +81,7 @@ export default function InsightsPage() {
                   </div>
                   <h2 className="mt-5 text-2xl font-extrabold tracking-normal text-slate-950">{item.title}</h2>
                   <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-                  <span className="cta-secondary focus-ring mt-6 cursor-not-allowed opacity-70" aria-disabled="true">
+                  <span className="cta-secondary focus-ring opacity-50 cursor-not-allowed pointer-events-none" aria-disabled="true">
                     Coming Soon
                   </span>
                 </article>

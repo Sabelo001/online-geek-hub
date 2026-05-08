@@ -384,10 +384,12 @@ export default function ScholarsPage() {
         </div>
       </section>
 
+      <hr className="border-slate-200" />
+
       <section className="px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl rounded-2xl bg-[#0F172A] p-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#06b6d4]">Become a Scholar</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-[#06b6d4]">Join Our Team</p>
             <h2 className="mt-3 text-4xl font-extrabold tracking-normal text-white">Build Real Skills. Do Real Work.</h2>
             <p className="mt-4 max-w-2xl leading-7 text-white/75">
               The Online Geek Hub Scholar Program is open to motivated contributors ready to train, practice, and take on
