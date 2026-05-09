@@ -41,7 +41,7 @@ export function PublicNavbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="font-display focus-ring whitespace-nowrap rounded-md px-1 py-2 text-[17px] uppercase leading-none tracking-[0.055em] text-slate-950 transition hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800 2xl:text-[18px]"
+                className="font-sans font-semibold focus-ring whitespace-nowrap rounded-md px-1 py-2 text-[13px] uppercase tracking-[0.08em] text-slate-950 transition hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800"
               >
                 {link.label}
               </Link>
@@ -58,7 +58,7 @@ export function PublicNavbar() {
           </div>
 
           <details className="group relative shrink-0 xl:hidden">
-            <summary className="focus-ring flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-slate-950 shadow-sm transition hover:border-cyan-200 hover:bg-cyan-50 [&::-webkit-details-marker]:hidden">
+            <summary className="focus-ring flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 font-sans text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-950 shadow-sm transition hover:border-cyan-200 hover:bg-cyan-50 [&::-webkit-details-marker]:hidden">
               <Menu className="h-5 w-5 text-slate-950" />
               Menu
             </summary>
@@ -68,7 +68,7 @@ export function PublicNavbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="font-display focus-ring whitespace-nowrap rounded-xl px-3 py-3 text-[18px] uppercase leading-none tracking-[0.06em] text-slate-950 transition hover:bg-cyan-50 hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800"
+                    className="font-sans font-semibold focus-ring whitespace-nowrap rounded-xl px-3 py-3 text-[13px] uppercase leading-none tracking-[0.08em] text-slate-950 transition hover:bg-cyan-50 hover:text-cyan-700 focus:text-cyan-700 active:text-cyan-800"
                   >
                     {link.label}
                   </Link>
