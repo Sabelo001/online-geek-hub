@@ -37,15 +37,54 @@ select {
 }
 
 .font-display {
-  font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
-  font-weight: 400;
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-weight: 700;
 }
 
 .public-page h1,
 .public-page h2 {
-  font-family: var(--font-bebas-neue), "Arial Narrow", Impact, sans-serif;
-  font-weight: 400;
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.02;
+}
+
+.public-page h1 {
+  line-height: 0.98;
+}
+
+.public-page section h3,
+.public-page article h3,
+.public-page footer h3 {
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+}
+
+.public-page .cta-primary,
+.public-page .cta-secondary,
+.public-page .cta-outline {
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.public-nav-link {
+  color: #0f172a;
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.public-nav-link-mobile {
+  font-size: 18px;
 }
 
 .dark-cta,
@@ -164,10 +203,18 @@ select {
 .cta-nav:visited {
   min-height: 2.9rem;
   padding: 0 3rem 0 1.15rem;
-  font-size: 1.1rem;
-  font-weight: 400;
-  letter-spacing: 0.065em;
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   box-shadow: 0 8px 18px rgba(2, 6, 23, 0.14);
+}
+
+.public-page .cta-nav,
+.public-page .cta-nav:visited {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .cta-nav::after {
@@ -280,6 +327,20 @@ select {
   color: #ffffff !important;
 }
 
+.public-page .cta-primary,
+.public-page .cta-primary:visited,
+.public-page .cta-secondary,
+.public-page .cta-secondary:visited,
+.public-page .cta-outline,
+.public-page .cta-outline:visited {
+  font-family: var(--font-barlow-condensed), "Arial Narrow", Impact, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 @media (max-width: 767px) {
   .public-page .cta-primary,
   .public-page .cta-secondary {
@@ -287,6 +348,12 @@ select {
     max-width: 100%;
     min-width: 0;
     white-space: normal;
+  }
+}
+
+@media (max-width: 1279px) {
+  .public-nav-link {
+    font-size: 18px;
   }
 }
 
