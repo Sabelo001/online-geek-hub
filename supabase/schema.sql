@@ -93,10 +93,13 @@ end $$;
 
 do $$
 begin
-  create type public.invoice_status as enum ('pending', 'approved', 'paid', 'rejected');
+  create type public.invoice_status as enum ('draft', 'submitted', 'pending', 'approved', 'paid', 'rejected');
 exception
   when duplicate_object then null;
 end $$;
+
+alter type public.invoice_status add value if not exists 'draft';
+alter type public.invoice_status add value if not exists 'submitted';
 
 -- User profiles are linked 1:1 with Supabase Auth users.
 create table if not exists public.profiles (
@@ -260,10 +263,32 @@ create table if not exists public.projects (
   project_type text not null,
   description text not null,
   deadline date,
+  rate_amount numeric,
+  rate_unit text not null default 'hour',
+  currency text not null default 'USD',
   status public.project_status not null default 'active',
   created_by uuid references public.profiles(id) on delete set null,
   created_at timestamptz not null default now()
 );
+
+alter table public.projects
+  add column if not exists rate_amount numeric,
+  add column if not exists rate_unit text not null default 'hour',
+  add column if not exists currency text not null default 'USD';
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'projects_rate_unit_check'
+      and conrelid = 'public.projects'::regclass
+  ) then
+    alter table public.projects
+      add constraint projects_rate_unit_check
+      check (rate_unit in ('hour', 'task', 'project'));
+  end if;
+end $$;
 
 -- Project invitations connect Scholars to real or pilot project opportunities.
 create table if not exists public.project_invitations (
@@ -332,11 +357,19 @@ create table if not exists public.timesheets (
   hours numeric not null check (hours > 0),
   work_summary text not null,
   status text not null default 'submitted' check (status in ('draft', 'submitted', 'approved', 'rejected')),
+  rate_amount numeric,
+  currency text not null default 'USD',
+  calculated_amount numeric,
   approved_by uuid references public.profiles(id),
   approved_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.timesheets
+  add column if not exists rate_amount numeric,
+  add column if not exists currency text not null default 'USD',
+  add column if not exists calculated_amount numeric;
 
 -- Submissions store trainee answers and reviewer feedback.
 create table if not exists public.submissions (
@@ -383,13 +416,30 @@ create table if not exists public.invoices (
   id uuid primary key default gen_random_uuid(),
   scholar_id uuid not null references public.profiles(id) on delete cascade,
   project_id uuid references public.projects(id) on delete set null,
+  invoice_number text,
   amount numeric(12, 2) not null check (amount >= 0),
-  currency text not null default 'KES' check (currency in ('KES', 'USD')),
-  status public.invoice_status not null default 'pending',
+  currency text not null default 'USD' check (currency in ('KES', 'USD')),
+  subtotal numeric(12, 2),
+  total_amount numeric(12, 2),
+  status public.invoice_status not null default 'draft',
   issued_at timestamptz not null default now(),
+  due_at timestamptz,
   paid_at timestamptz,
   notes text
 );
+
+alter table public.invoices
+  add column if not exists invoice_number text,
+  add column if not exists subtotal numeric(12, 2),
+  add column if not exists total_amount numeric(12, 2),
+  add column if not exists due_at timestamptz;
+
+alter table public.invoices
+  alter column currency set default 'USD',
+  alter column status set default 'draft';
+
+alter table public.timesheets
+  add column if not exists invoice_id uuid references public.invoices(id) on delete set null;
 
 -- Scholar documents include self-uploaded files and admin-sent agreements.
 create table if not exists public.scholar_documents (
@@ -447,6 +497,7 @@ create index if not exists practice_tasks_status_idx on public.practice_tasks(st
 create index if not exists task_assignments_task_idx on public.task_assignments(task_id);
 create index if not exists task_assignments_trainee_idx on public.task_assignments(trainee_id);
 create index if not exists projects_status_idx on public.projects(status);
+create index if not exists projects_rate_unit_idx on public.projects(rate_unit);
 create index if not exists project_invitations_scholar_idx on public.project_invitations(scholar_id);
 create index if not exists project_invitations_project_idx on public.project_invitations(project_id);
 create index if not exists project_invitations_status_idx on public.project_invitations(status);
@@ -459,6 +510,8 @@ create index if not exists timesheets_project_idx on public.timesheets(project_i
 create index if not exists timesheets_scholar_idx on public.timesheets(scholar_id);
 create index if not exists timesheets_status_idx on public.timesheets(status);
 create index if not exists timesheets_work_date_idx on public.timesheets(work_date);
+create index if not exists timesheets_invoice_idx on public.timesheets(invoice_id);
+create index if not exists timesheets_scholar_status_invoice_idx on public.timesheets(scholar_id, status, invoice_id);
 create index if not exists submissions_status_idx on public.submissions(status);
 create index if not exists submissions_task_idx on public.submissions(task_id);
 create index if not exists submissions_trainee_idx on public.submissions(trainee_id);
@@ -470,6 +523,7 @@ create index if not exists invoices_scholar_idx on public.invoices(scholar_id);
 create index if not exists invoices_project_idx on public.invoices(project_id);
 create index if not exists invoices_status_idx on public.invoices(status);
 create index if not exists invoices_issued_at_idx on public.invoices(issued_at);
+create unique index if not exists invoices_invoice_number_unique_idx on public.invoices(invoice_number) where invoice_number is not null;
 create index if not exists scholar_documents_scholar_idx on public.scholar_documents(scholar_id);
 create index if not exists scholar_documents_recipient_idx on public.scholar_documents(recipient_id);
 create index if not exists scholar_documents_uploaded_by_idx on public.scholar_documents(uploaded_by);

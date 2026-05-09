@@ -14,6 +14,13 @@ function formatDateTime(date: string | null) {
   return new Date(date).toLocaleString();
 }
 
+function formatMoney(amount: number | null | undefined, currency = "USD") {
+  return `${currency} ${Number(amount ?? 0).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
 function statusTone(status: string): "blue" | "cyan" | "green" | "amber" | "red" {
   if (status === "approved") return "green";
   if (status === "rejected") return "red";
@@ -106,6 +113,9 @@ export default async function ReviewsPage({
                   </p>
                   <p>
                     <span className="font-semibold text-slate-950">Created:</span> {formatDateTime(timesheet.created_at)}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-950">Amount:</span> {formatMoney(timesheet.calculated_amount, timesheet.currency)}
                   </p>
                 </div>
                 <p className="mt-4 rounded-md bg-slate-50 p-4 text-sm leading-6 text-slate-700">{timesheet.work_summary}</p>

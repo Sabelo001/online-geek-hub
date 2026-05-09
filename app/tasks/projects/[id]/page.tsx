@@ -31,6 +31,11 @@ function statusLabel(status: string) {
   return status.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function formatMoney(amount: number | null, currency = "USD") {
+  if (amount === null) return "Not calculated";
+  return `${currency} ${Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 function SubmissionList({ submissions, canReview }: { submissions: ProjectSubmission[]; canReview: boolean }) {
   return (
     <div className="grid gap-3">
@@ -78,6 +83,15 @@ function TimesheetList({ timesheets, canReview }: { timesheets: Timesheet[]; can
             <Badge tone={statusTone(timesheet.status)}>{statusLabel(timesheet.status)}</Badge>
           </div>
           <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-600">{timesheet.work_summary}</p>
+          <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+            <p>
+              <span className="font-semibold text-slate-950">Rate:</span>{" "}
+              {timesheet.rate_amount ? `${timesheet.currency} ${Number(timesheet.rate_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / ${timesheet.projects?.rate_unit ?? "hour"}` : "Not set"}
+            </p>
+            <p>
+              <span className="font-semibold text-slate-950">Amount:</span> {formatMoney(timesheet.calculated_amount, timesheet.currency)}
+            </p>
+          </div>
           {canReview ? (
             <div className="mt-4 flex flex-wrap gap-2">
               <button disabled className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-400">

@@ -4,6 +4,7 @@ import type {
   CvProfile,
   Invoice,
   InvoiceStatus,
+  InvoiceWithTimesheets,
   Payment,
   PracticeTask,
   Profile,
@@ -196,7 +197,7 @@ async function attachTimesheetDisplayData(timesheets: Timesheet[]): Promise<Time
 
   const [profilesResponse, projectsResponse] = await Promise.all([
     scholarIds.length ? supabase.from("profiles").select("id,full_name,email").in("id", scholarIds) : Promise.resolve({ data: [] }),
-    projectIds.length ? supabase.from("projects").select("id,title,project_type").in("id", projectIds) : Promise.resolve({ data: [] })
+    projectIds.length ? supabase.from("projects").select("id,title,project_type,rate_unit").in("id", projectIds) : Promise.resolve({ data: [] })
   ]);
 
   const profilesById = new Map((profilesResponse.data ?? []).map((profile) => [profile.id, profile]));
@@ -259,6 +260,33 @@ export type InvoiceFilters = {
   dateTo?: string;
 };
 
+export type EarningsCurrencySummary = {
+  currency: string;
+  approved: number;
+  pending: number;
+};
+
+export async function getScholarEarningsSummary(profileId: string): Promise<EarningsCurrencySummary[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("timesheets")
+    .select("currency,calculated_amount,status")
+    .eq("scholar_id", profileId)
+    .in("status", ["approved", "submitted"]);
+
+  const totals = new Map<string, EarningsCurrencySummary>();
+  for (const row of data ?? []) {
+    const currency = row.currency ?? "USD";
+    const current = totals.get(currency) ?? { currency, approved: 0, pending: 0 };
+    const amount = Number(row.calculated_amount ?? 0);
+    if (row.status === "approved") current.approved += amount;
+    if (row.status === "submitted") current.pending += amount;
+    totals.set(currency, current);
+  }
+
+  return Array.from(totals.values()).sort((a, b) => a.currency.localeCompare(b.currency));
+}
+
 export async function getInvoices(profile: Profile, filters: InvoiceFilters = {}): Promise<Invoice[]> {
   const supabase = await createSupabaseServerClient();
   let query = supabase
@@ -277,6 +305,32 @@ export async function getInvoices(profile: Profile, filters: InvoiceFilters = {}
 
   const { data } = await query;
   return (data ?? []) as Invoice[];
+}
+
+export async function getInvoiceById(invoiceId: string, profile: Profile): Promise<InvoiceWithTimesheets | null> {
+  const supabase = await createSupabaseServerClient();
+  let invoiceQuery = supabase
+    .from("invoices")
+    .select("*, profiles(full_name,email), projects(title,project_type)")
+    .eq("id", invoiceId);
+
+  if (profile.role !== "admin") invoiceQuery = invoiceQuery.eq("scholar_id", profile.id);
+
+  const { data: invoice } = await invoiceQuery.single();
+  if (!invoice) return null;
+
+  const { data: timesheets } = await supabase
+    .from("timesheets")
+    .select("*")
+    .eq("invoice_id", invoiceId)
+    .order("work_date", { ascending: true });
+
+  const lineItems = await attachTimesheetDisplayData((timesheets ?? []) as Timesheet[]);
+
+  return {
+    ...(invoice as Invoice),
+    timesheets: lineItems
+  };
 }
 
 export async function getScholarDocuments(profile: Profile): Promise<ScholarDocument[]> {

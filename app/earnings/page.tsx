@@ -1,20 +1,21 @@
 import Link from "next/link";
 import { CalendarDays, CircleDollarSign, FileText } from "lucide-react";
-import { updateInvoiceStatus } from "@/lib/actions";
+import { generateInvoiceForScholar, updateInvoiceStatus } from "@/lib/actions";
 import { requireProfile } from "@/lib/auth";
-import { getInvoices, getPayments, getProfiles, type InvoiceFilters } from "@/lib/data";
-import type { Invoice, InvoiceStatus, Payment, Profile } from "@/lib/types";
+import { getInvoices, getMyTimesheets, getPayments, getProfiles, getScholarEarningsSummary, getTimesheets, type EarningsCurrencySummary, type InvoiceFilters } from "@/lib/data";
+import type { Invoice, InvoiceStatus, Payment, Profile, Timesheet } from "@/lib/types";
 import { ProtectedPage } from "@/components/protected-page";
 import { Badge, Card, PageHeader, Select, TextInput } from "@/components/ui";
 
 const tabs = [
   { key: "invoices", label: "Invoices" },
+  { key: "timesheets", label: "Timesheets" },
   { key: "payments", label: "Payments" }
 ] as const;
 
 type EarningsTab = (typeof tabs)[number]["key"];
 
-const statusOptions: InvoiceStatus[] = ["pending", "approved", "paid", "rejected"];
+const statusOptions: InvoiceStatus[] = ["draft", "submitted", "pending", "approved", "paid", "rejected"];
 
 function firstParam(value: string | string[] | undefined) {
   if (Array.isArray(value)) return value[0];
@@ -22,6 +23,7 @@ function firstParam(value: string | string[] | undefined) {
 }
 
 function safeTab(tab?: string): EarningsTab {
+  if (tab === "timesheets") return "timesheets";
   if (tab === "payments") return "payments";
   return "invoices";
 }
@@ -35,11 +37,15 @@ function formatDate(date: string | null) {
   return new Date(date).toLocaleDateString();
 }
 
-function formatMoney(invoice: Pick<Invoice, "amount" | "currency">) {
-  return `${invoice.currency} ${Number(invoice.amount).toLocaleString(undefined, {
+function formatCurrencyAmount(amount: number | null | undefined, currency = "USD") {
+  return `${currency} ${Number(amount ?? 0).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })}`;
+}
+
+function formatMoney(invoice: Pick<Invoice, "amount" | "currency" | "total_amount">) {
+  return formatCurrencyAmount(invoice.total_amount ?? invoice.amount, invoice.currency);
 }
 
 function formatAmount(amount: number, currency = "KES") {
@@ -50,7 +56,7 @@ function formatAmount(amount: number, currency = "KES") {
 }
 
 function invoiceNumber(invoice: Invoice) {
-  return `INV-${invoice.id.slice(0, 8).toUpperCase()}`;
+  return invoice.invoice_number ?? `INV-${invoice.id.slice(0, 8).toUpperCase()}`;
 }
 
 function projectName(invoice: Invoice) {
@@ -62,7 +68,7 @@ function scholarName(invoice: Invoice) {
 }
 
 function statusTone(status: InvoiceStatus): "amber" | "cyan" | "green" | "red" {
-  if (status === "approved") return "cyan";
+  if (status === "approved" || status === "submitted") return "cyan";
   if (status === "paid") return "green";
   if (status === "rejected") return "red";
   return "amber";
@@ -78,7 +84,7 @@ function EarningsTabs({ activeTab }: { activeTab: EarningsTab }) {
       {tabs.map((tab) => (
         <Link
           key={tab.key}
-          href={tab.key === "invoices" ? "/earnings" : "/earnings?tab=payments"}
+          href={tab.key === "invoices" ? "/earnings" : `/earnings?tab=${tab.key}`}
           className={`focus-ring -mb-px border-b-2 px-4 py-3 text-sm font-semibold transition ${
             activeTab === tab.key
               ? "border-[#06b6d4] bg-white text-slate-950"
@@ -136,11 +142,11 @@ function SummaryBar({ invoices }: { invoices: Invoice[] }) {
   );
 }
 
-function ViewInvoiceButton() {
+function ViewInvoiceButton({ invoiceId }: { invoiceId: string }) {
   return (
-    <button type="button" className="focus-ring rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+    <Link href={`/earnings/invoices/${invoiceId}`} className="focus-ring inline-flex rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
       View Invoice
-    </button>
+    </Link>
   );
 }
 
@@ -164,7 +170,7 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
       </div>
       {invoice.notes ? <p className="mt-4 leading-7 text-slate-600">{invoice.notes}</p> : null}
       <div className="mt-5">
-        <ViewInvoiceButton />
+        <ViewInvoiceButton invoiceId={invoice.id} />
       </div>
     </Card>
   );
@@ -267,7 +273,7 @@ function AdminInvoiceTable({ invoices }: { invoices: Invoice[] }) {
                 </td>
                 <td className="py-4 pr-4">
                   <div className="flex flex-wrap gap-2">
-                    <ViewInvoiceButton />
+                    <ViewInvoiceButton invoiceId={invoice.id} />
                     {invoice.status !== "approved" && invoice.status !== "paid" ? (
                       <InvoiceActionButton invoice={invoice} status="approved">Approve</InvoiceActionButton>
                     ) : null}
@@ -286,6 +292,133 @@ function AdminInvoiceTable({ invoices }: { invoices: Invoice[] }) {
         {!invoices.length ? <p className="py-4 text-sm text-slate-500">No invoices match the current filters.</p> : null}
       </div>
     </Card>
+  );
+}
+
+function TimesheetStatusBadge({ status }: { status: Timesheet["status"] }) {
+  const tone = status === "approved" ? "green" : status === "rejected" ? "red" : status === "submitted" ? "cyan" : "amber";
+  return <Badge tone={tone}>{status}</Badge>;
+}
+
+function TimesheetTotals({ summary }: { summary: EarningsCurrencySummary[] }) {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <Card className="border-emerald-100 bg-emerald-50">
+        <p className="text-sm font-semibold text-emerald-800">Total approved amount</p>
+        <p className="mt-3 text-2xl font-bold text-emerald-900">
+          {summary.length ? summary.map((item) => formatCurrencyAmount(item.approved, item.currency)).join(" / ") : "USD 0.00"}
+        </p>
+      </Card>
+      <Card className="border-amber-100 bg-amber-50">
+        <p className="text-sm font-semibold text-amber-800">Total pending amount</p>
+        <p className="mt-3 text-2xl font-bold text-amber-900">
+          {summary.length ? summary.map((item) => formatCurrencyAmount(item.pending, item.currency)).join(" / ") : "USD 0.00"}
+        </p>
+      </Card>
+    </div>
+  );
+}
+
+function TimesheetTable({ timesheets, showScholar }: { timesheets: Timesheet[]; showScholar: boolean }) {
+  return (
+    <Card>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[980px] text-left text-sm">
+          <thead className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              {showScholar ? <th className="py-3 pr-4">Scholar</th> : null}
+              <th className="py-3 pr-4">Project</th>
+              <th className="py-3 pr-4">Work date</th>
+              <th className="py-3 pr-4">Hours</th>
+              <th className="py-3 pr-4">Rate</th>
+              <th className="py-3 pr-4">Amount</th>
+              <th className="py-3 pr-4">Status</th>
+              <th className="py-3 pr-4">Invoice</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {timesheets.map((timesheet) => (
+              <tr key={timesheet.id}>
+                {showScholar ? <td className="py-4 pr-4 text-slate-600">{timesheet.profiles?.full_name ?? "Scholar"}</td> : null}
+                <td className="py-4 pr-4 font-semibold text-slate-950">{timesheet.projects?.title ?? "Project"}</td>
+                <td className="py-4 pr-4 text-slate-600">{formatDate(timesheet.work_date)}</td>
+                <td className="py-4 pr-4 text-slate-600">{Number(timesheet.hours).toLocaleString()}</td>
+                <td className="py-4 pr-4 text-slate-600">
+                  {timesheet.rate_amount ? `${formatCurrencyAmount(timesheet.rate_amount, timesheet.currency)} / ${timesheet.projects?.rate_unit ?? "hour"}` : "Not set"}
+                </td>
+                <td className="py-4 pr-4 text-slate-600">{formatCurrencyAmount(timesheet.calculated_amount, timesheet.currency)}</td>
+                <td className="py-4 pr-4"><TimesheetStatusBadge status={timesheet.status} /></td>
+                <td className="py-4 pr-4">
+                  {timesheet.invoice_id ? (
+                    <Link href={`/earnings/invoices/${timesheet.invoice_id}`} className="font-semibold text-cyan-700 hover:underline">
+                      View
+                    </Link>
+                  ) : (
+                    <span className="text-slate-400">Not invoiced</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {!timesheets.length ? <p className="py-4 text-sm text-slate-500">No timesheets found.</p> : null}
+      </div>
+    </Card>
+  );
+}
+
+function GenerateInvoiceCard({ scholars, timesheets }: { scholars: Profile[]; timesheets: Timesheet[] }) {
+  const eligibleScholarIds = new Set(
+    timesheets
+      .filter((timesheet) => timesheet.status === "approved" && !timesheet.invoice_id && Number(timesheet.calculated_amount ?? 0) > 0)
+      .map((timesheet) => timesheet.scholar_id)
+      .filter(Boolean)
+  );
+
+  return (
+    <Card>
+      <h2 className="text-xl font-bold text-slate-950">Generate Invoice from Approved Timesheets</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-600">
+        Creates one submitted invoice from all approved, uninvoiced timesheets for the selected Scholar.
+      </p>
+      <form action={generateInvoiceForScholar} className="mt-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+        <label className="grid gap-2 text-sm font-semibold text-slate-700">
+          Scholar
+          <Select name="scholar_id" required defaultValue="">
+            <option value="" disabled>Choose a Scholar</option>
+            {scholars.map((scholar) => (
+              <option key={scholar.id} value={scholar.id}>
+                {scholar.full_name}{eligibleScholarIds.has(scholar.id) ? "" : " (no approved uninvoiced time)"}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <button className="focus-ring rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+          Generate Invoice
+        </button>
+      </form>
+    </Card>
+  );
+}
+
+function TimesheetsTab({
+  profile,
+  timesheets,
+  scholars,
+  summary
+}: {
+  profile: Profile;
+  timesheets: Timesheet[];
+  scholars: Profile[];
+  summary: EarningsCurrencySummary[];
+}) {
+  const isAdmin = profile.role === "admin";
+  return (
+    <div className="grid gap-6">
+      <TimesheetTotals summary={summary} />
+      {isAdmin ? <GenerateInvoiceCard scholars={scholars} timesheets={timesheets} /> : null}
+      <TimesheetTable timesheets={timesheets} showScholar={isAdmin} />
+    </div>
   );
 }
 
@@ -377,12 +510,27 @@ export default async function EarningsPage({
     dateFrom: firstParam(params.date_from) || undefined,
     dateTo: firstParam(params.date_to) || undefined
   };
-  const [invoices, payments, profiles] = await Promise.all([
+  const [invoices, payments, profiles, timesheets, earningsSummary] = await Promise.all([
     getInvoices(profile, filters),
     getPayments(profile.role === "trainee" ? profile.id : undefined),
-    profile.role === "admin" ? getProfiles() : Promise.resolve([])
+    profile.role === "admin" ? getProfiles() : Promise.resolve([]),
+    profile.role === "admin" ? getTimesheets() : getMyTimesheets(profile.id),
+    profile.role === "admin" ? Promise.resolve([]) : getScholarEarningsSummary(profile.id)
   ]);
   const scholars = profiles.filter((item) => item.role === "trainee");
+  const adminSummary = profile.role === "admin"
+    ? Array.from(
+        timesheets.reduce((totals, timesheet) => {
+          const currency = timesheet.currency ?? "USD";
+          const current = totals.get(currency) ?? { currency, approved: 0, pending: 0 };
+          const amount = Number(timesheet.calculated_amount ?? 0);
+          if (timesheet.status === "approved") current.approved += amount;
+          if (timesheet.status === "submitted") current.pending += amount;
+          totals.set(currency, current);
+          return totals;
+        }, new Map<string, EarningsCurrencySummary>()).values()
+      )
+    : earningsSummary;
 
   return (
     <ProtectedPage>
@@ -397,6 +545,9 @@ export default async function EarningsPage({
           error={firstParam(params.error)}
           message={firstParam(params.message)}
         />
+      ) : null}
+      {activeTab === "timesheets" ? (
+        <TimesheetsTab profile={profile} timesheets={timesheets} scholars={scholars} summary={adminSummary} />
       ) : null}
       {activeTab === "payments" ? <PaymentsTab payments={payments} /> : null}
     </ProtectedPage>

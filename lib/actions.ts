@@ -144,6 +144,26 @@ function safeProjectType(formData: FormData) {
   return "Data Annotation";
 }
 
+function safeRateUnit(formData: FormData) {
+  const rateUnit = value(formData, "rate_unit");
+  if (["hour", "task", "project"].includes(rateUnit)) return rateUnit;
+  return "hour";
+}
+
+function safeCurrency(formData: FormData) {
+  const currency = value(formData, "currency").toUpperCase();
+  if (currency === "KES" || currency === "USD") return currency;
+  return "USD";
+}
+
+function optionalPositiveNumber(formData: FormData, key: string) {
+  const raw = value(formData, key);
+  if (!raw) return null;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return null;
+  return parsed;
+}
+
 function supabaseErrorMessage(error: { message: string; details?: string | null; hint?: string | null; code?: string | null }) {
   return [error.message, error.details, error.hint, error.code ? `Code: ${error.code}` : null].filter(Boolean).join(" ");
 }
@@ -955,6 +975,19 @@ export async function createTimesheet(formData: FormData) {
   if (!Number.isFinite(hours) || hours <= 0) actionError(`/tasks/projects/${invitation.project_id}`, "Hours must be greater than zero.");
 
   const supabase = await createSupabaseServerClient();
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select("rate_amount,rate_unit,currency")
+    .eq("id", invitation.project_id)
+    .single();
+
+  if (projectError || !project) {
+    actionError(`/tasks/projects/${invitation.project_id}`, `Project rate could not be loaded: ${projectError?.message ?? "No project row returned."}`);
+  }
+
+  const rateAmount = project.rate_amount ? Number(project.rate_amount) : null;
+  const calculatedAmount = project.rate_unit === "hour" && rateAmount ? hours * rateAmount : null;
+
   const { error } = await supabase.from("timesheets").insert({
     project_id: invitation.project_id,
     project_invitation_id: invitation.id,
@@ -962,6 +995,9 @@ export async function createTimesheet(formData: FormData) {
     work_date: value(formData, "work_date"),
     hours,
     work_summary: value(formData, "work_summary"),
+    rate_amount: rateAmount,
+    currency: project.currency ?? "USD",
+    calculated_amount: calculatedAmount,
     status: "submitted"
   });
 
@@ -988,6 +1024,8 @@ export async function updateTimesheet(timesheetId: string, formData: FormData) {
 
   const hours = Number(value(formData, "hours"));
   if (!Number.isFinite(hours) || hours <= 0) actionError(`/tasks/projects/${existing.project_id}`, "Hours must be greater than zero.");
+  const rateAmount = existing.rate_amount ? Number(existing.rate_amount) : null;
+  const calculatedAmount = rateAmount ? hours * rateAmount : null;
 
   const { error } = await supabase
     .from("timesheets")
@@ -995,6 +1033,7 @@ export async function updateTimesheet(timesheetId: string, formData: FormData) {
       work_date: value(formData, "work_date"),
       hours,
       work_summary: value(formData, "work_summary"),
+      calculated_amount: calculatedAmount,
       updated_at: new Date().toISOString()
     })
     .eq("id", timesheetId)
@@ -1074,12 +1113,17 @@ export async function createProject(formData: FormData) {
 
   if (!title) actionError("/tasks", "Project title is required.");
   if (!description) actionError("/tasks", "Project description is required.");
+  const rateAmount = optionalPositiveNumber(formData, "rate_amount");
+  if (value(formData, "rate_amount") && !rateAmount) actionError("/tasks", "Rate amount must be a positive number.");
 
   const { data, error } = await supabase.from("projects").insert({
     title,
     project_type: safeProjectType(formData),
     description,
     deadline: optionalValue(formData, "deadline"),
+    rate_amount: rateAmount,
+    rate_unit: safeRateUnit(formData),
+    currency: safeCurrency(formData),
     status: "active",
     created_by: profile.id
   }).select("id,title").single();
@@ -1126,6 +1170,71 @@ export async function sendProjectInvitations(formData: FormData) {
   redirect(`/tasks?message=${encodeURIComponent(`Invitations sent to ${scholarIds.length} scholars`)}`);
 }
 
+function invoiceNumber() {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  return `OGH-${date}-${randomUUID().slice(0, 4).toUpperCase()}`;
+}
+
+export async function generateInvoiceForScholar(formData: FormData) {
+  await requireRole(["admin"]);
+  const supabase = await createSupabaseServerClient();
+  const scholarId = value(formData, "scholar_id");
+
+  if (!scholarId) actionError("/earnings", "Choose a Scholar before generating an invoice.");
+
+  const { data: timesheets, error: timesheetError } = await supabase
+    .from("timesheets")
+    .select("id,project_id,currency,calculated_amount")
+    .eq("scholar_id", scholarId)
+    .eq("status", "approved")
+    .is("invoice_id", null)
+    .order("work_date", { ascending: true });
+
+  if (timesheetError) actionError("/earnings", `Approved timesheets could not be loaded: ${timesheetError.message}`);
+  if (!timesheets?.length) actionError("/earnings", "No approved uninvoiced timesheets found for this Scholar.");
+
+  const currencies = Array.from(new Set(timesheets.map((timesheet) => timesheet.currency ?? "USD")));
+  if (currencies.length > 1) {
+    actionError("/earnings", "This Scholar has approved timesheets in multiple currencies. Generate invoices separately after filtering by currency.");
+  }
+
+  const currency = currencies[0] ?? "USD";
+  const subtotal = timesheets.reduce((sum, timesheet) => sum + Number(timesheet.calculated_amount ?? 0), 0);
+  if (subtotal <= 0) actionError("/earnings", "Approved timesheets do not have a calculated amount to invoice.");
+
+  const { data: invoice, error: invoiceError } = await supabase
+    .from("invoices")
+    .insert({
+      scholar_id: scholarId,
+      project_id: timesheets[0]?.project_id ?? null,
+      invoice_number: invoiceNumber(),
+      amount: subtotal,
+      subtotal,
+      total_amount: subtotal,
+      currency,
+      status: "submitted",
+      notes: `Generated from ${timesheets.length} approved timesheet${timesheets.length === 1 ? "" : "s"}.`
+    })
+    .select("id,invoice_number")
+    .single();
+
+  if (invoiceError || !invoice) {
+    actionError("/earnings", `Invoice was not generated: ${invoiceError ? supabaseErrorMessage(invoiceError) : "No invoice row returned."}`);
+  }
+
+  const { error: updateError } = await supabase
+    .from("timesheets")
+    .update({ invoice_id: invoice.id, updated_at: new Date().toISOString() })
+    .in("id", timesheets.map((timesheet) => timesheet.id));
+
+  if (updateError) actionError("/earnings", `Invoice was created but timesheets were not linked: ${updateError.message}`);
+
+  revalidatePath("/earnings");
+  revalidatePath("/dashboard");
+  revalidatePath(`/earnings/invoices/${invoice.id}`);
+  redirect(`/earnings?message=${encodeURIComponent(`Invoice ${invoice.invoice_number ?? invoice.id} generated.`)}`);
+}
+
 export async function updateInvoiceStatus(invoiceId: string, status: Extract<InvoiceStatus, "approved" | "rejected" | "paid">) {
   await requireRole(["admin"]);
   const supabase = await createSupabaseServerClient();
@@ -1137,8 +1246,10 @@ export async function updateInvoiceStatus(invoiceId: string, status: Extract<Inv
     })
     .eq("id", invoiceId);
 
-  if (error) actionError("/invoices", `Invoice was not updated: ${error.message}`);
+  if (error) actionError("/earnings", `Invoice was not updated: ${error.message}`);
 
+  revalidatePath("/earnings");
+  revalidatePath(`/earnings/invoices/${invoiceId}`);
   revalidatePath("/invoices");
-  redirect("/invoices?message=Invoice updated.");
+  redirect("/earnings?message=Invoice updated.");
 }

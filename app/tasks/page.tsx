@@ -26,6 +26,14 @@ function formatDate(date: string | null) {
   return new Date(date).toLocaleDateString();
 }
 
+function formatProjectRate(project: Pick<ProjectWithInvitations, "rate_amount" | "rate_unit" | "currency">) {
+  if (!project.rate_amount) return "Not set";
+  return `${project.currency ?? "USD"} ${Number(project.rate_amount).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} / ${project.rate_unit}`;
+}
+
 function EmptyState({ children }: { children: React.ReactNode }) {
   return (
     <Card>
@@ -166,6 +174,27 @@ function AdminTasksPage({
               Deadline
               <TextInput name="deadline" type="date" />
             </label>
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                Rate amount
+                <TextInput name="rate_amount" type="number" min="0.01" step="0.01" placeholder="5.00" />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                Rate unit
+                <Select name="rate_unit" defaultValue="hour">
+                  <option value="hour">Hour</option>
+                  <option value="task">Task</option>
+                  <option value="project">Project</option>
+                </Select>
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                Currency
+                <Select name="currency" defaultValue="USD">
+                  <option value="USD">USD</option>
+                  <option value="KES">KES</option>
+                </Select>
+              </label>
+            </div>
             <button className="focus-ring rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-fit">
               Create Project
             </button>
@@ -215,6 +244,7 @@ function AdminTasksPage({
                 <tr>
                   <th className="py-3 pr-4">Project title</th>
                   <th className="py-3 pr-4">Type</th>
+                  <th className="py-3 pr-4">Rate</th>
                   <th className="py-3 pr-4">Deadline</th>
                   <th className="py-3 pr-4">Invited</th>
                   <th className="py-3 pr-4">Accepted</th>
@@ -230,6 +260,7 @@ function AdminTasksPage({
                       <tr>
                         <td className="py-3 pr-4 font-semibold text-slate-950">{project.title}</td>
                         <td className="py-3 pr-4 text-slate-600">{project.project_type}</td>
+                        <td className="py-3 pr-4 text-slate-600">{formatProjectRate(project)}</td>
                         <td className="py-3 pr-4 text-slate-600">{formatDate(project.deadline)}</td>
                         <td className="py-3 pr-4 text-slate-600">{counts.invited}</td>
                         <td className="py-3 pr-4 text-slate-600">{counts.accepted}</td>
@@ -237,7 +268,7 @@ function AdminTasksPage({
                         <td className="py-3 pr-4"><Badge tone={statusTone(project.status)}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</Badge></td>
                       </tr>
                       <tr>
-                        <td colSpan={7} className="pb-4 pr-4">
+                        <td colSpan={8} className="pb-4 pr-4">
                           <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
                             <summary className="cursor-pointer text-sm font-semibold text-slate-700">Scholar responses</summary>
                             <div className="mt-3 overflow-x-auto">

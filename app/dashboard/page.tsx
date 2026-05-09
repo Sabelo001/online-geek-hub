@@ -2,23 +2,21 @@ import { Activity, AlertCircle, Banknote, BookOpen, BriefcaseBusiness, CheckCirc
 import { ClearAuthMessage } from "@/components/clear-auth-message";
 import { Card, PageHeader } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
-import { getDashboardMetrics } from "@/lib/data";
+import { getDashboardMetrics, getScholarEarningsSummary } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function getScholarDashboardMetrics(profileId: string) {
   const supabase = await createSupabaseServerClient();
-  const [{ count: completedSteps }, { count: activeProjects }, { data: paidInvoices }] = await Promise.all([
+  const [{ count: completedSteps }, { count: activeProjects }, earningsSummary] = await Promise.all([
     supabase.from("training_progress").select("*", { count: "exact", head: true }).eq("user_id", profileId),
     supabase.from("project_invitations").select("*", { count: "exact", head: true }).eq("scholar_id", profileId).eq("status", "accepted"),
-    supabase.from("invoices").select("amount").eq("scholar_id", profileId).eq("status", "paid")
+    getScholarEarningsSummary(profileId)
   ]);
-
-  const earnings = (paidInvoices ?? []).reduce((total, invoice) => total + Number(invoice.amount ?? 0), 0);
 
   return {
     completedSteps: completedSteps ?? 0,
     activeProjects: activeProjects ?? 0,
-    earnings
+    earningsSummary
   };
 }
 
@@ -28,6 +26,13 @@ type DashboardMetricItem = {
   detail: string;
   icon: LucideIcon;
 };
+
+function formatCurrencySummary(summary: Awaited<ReturnType<typeof getScholarDashboardMetrics>>["earningsSummary"], key: "approved" | "pending") {
+  if (!summary.length) return "USD 0.00";
+  return summary
+    .map((item) => `${item.currency} ${item[key].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+    .join(" / ");
+}
 
 export default async function DashboardPage({
   searchParams
@@ -52,7 +57,12 @@ export default async function DashboardPage({
     metricItems = [
       { label: "My Training Status", value: metrics.completedSteps, detail: "Steps completed", icon: BookOpen },
       { label: "My Active Projects", value: metrics.activeProjects, detail: "Projects in progress", icon: BriefcaseBusiness },
-      { label: "My Earnings", value: `KES ${metrics.earnings.toLocaleString()}`, detail: "Total paid to date", icon: Banknote }
+      {
+        label: "My Earnings",
+        value: formatCurrencySummary(metrics.earningsSummary, "approved"),
+        detail: `Pending: ${formatCurrencySummary(metrics.earningsSummary, "pending")}`,
+        icon: Banknote
+      }
     ];
   }
 

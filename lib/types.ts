@@ -5,10 +5,11 @@ export type CvTemplate = "professional" | "remote_work" | "data_annotation";
 export type CvPlan = "free" | "premium" | "professional_review";
 export type SubmissionStatus = "submitted" | "approved" | "rejected" | "revision_requested";
 export type PaymentStatus = "pending" | "approved" | "paid" | "held";
-export type InvoiceStatus = "pending" | "approved" | "paid" | "rejected";
+export type InvoiceStatus = "draft" | "submitted" | "pending" | "approved" | "paid" | "rejected";
 export type ScholarDocumentType = "ID Document" | "Certificate" | "Portfolio" | "Other" | "Agreement";
 export type ProjectInvitationStatus = "pending" | "accepted" | "declined" | "completed";
 export type ProjectStatus = "draft" | "active" | "closed";
+export type ProjectRateUnit = "hour" | "task" | "project";
 export type ProjectSubmissionStatus = "submitted" | "under_review" | "revision_requested" | "approved" | "rejected";
 export type TimesheetStatus = "draft" | "submitted" | "approved" | "rejected";
 export type AvailabilityStatus = "available" | "limited" | "unavailable" | "by_project";
@@ -178,14 +179,18 @@ export type Invoice = {
   id: string;
   scholar_id: string;
   project_id: string | null;
+  invoice_number: string | null;
   amount: number;
   currency: "KES" | "USD";
+  subtotal: number | null;
+  total_amount: number | null;
   status: InvoiceStatus;
   issued_at: string;
+  due_at: string | null;
   paid_at: string | null;
   notes: string | null;
   profiles?: Pick<Profile, "full_name" | "email"> | null;
-  projects?: Pick<Project, "title" | "project_type"> | null;
+  projects?: Pick<Project, "title" | "project_type" | "rate_unit"> | null;
 };
 
 export type ScholarDocument = {
@@ -229,6 +234,9 @@ export type Project = {
   project_type: string;
   description: string;
   deadline: string | null;
+  rate_amount: number | null;
+  rate_unit: ProjectRateUnit;
+  currency: "KES" | "USD";
   status: ProjectStatus;
   created_by: string | null;
   created_at: string;
@@ -270,10 +278,18 @@ export type Timesheet = {
   hours: number;
   work_summary: string;
   status: TimesheetStatus;
+  rate_amount: number | null;
+  currency: "KES" | "USD";
+  calculated_amount: number | null;
+  invoice_id: string | null;
   approved_by: string | null;
   approved_at: string | null;
   created_at: string;
   updated_at: string;
   profiles?: Pick<Profile, "full_name" | "email"> | null;
-  projects?: Pick<Project, "title" | "project_type"> | null;
+  projects?: Pick<Project, "title" | "project_type" | "rate_unit"> | null;
+};
+
+export type InvoiceWithTimesheets = Invoice & {
+  timesheets: Timesheet[];
 };
